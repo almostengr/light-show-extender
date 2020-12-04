@@ -11,7 +11,7 @@ namespace Almostengr.FalconPiMonitor
         private IWebDriver driver;
         private const string websiteUrl = "http://falconpi/";
         private bool errorReported = false;
-        private int failCounter = 0;
+        // private int failCounter = 0;
 
         public void PerformChecks()
         {
@@ -21,7 +21,7 @@ namespace Almostengr.FalconPiMonitor
             try
             {
                 StartBrowser();
-                CheckReachable();
+                // CheckReachable();
                 CheckSchedulerStatus();
                 TemperatureCheck();
                 NoRestartRequired();
@@ -30,11 +30,11 @@ namespace Almostengr.FalconPiMonitor
             }
             catch (ElementNotVisibleException ex)
             {
-                ReportError($"Element was not visible on page. {ex}");
+                ReportError($"Element was not visible on page. {ex.Message}");
             }
             catch (WebDriverException ex)
             {
-                ReportError($"A Webdriver Exception occurred. {ex}");
+                ReportError($"A Webdriver Exception occurred. {ex.Message}");
             }
 
             CloseBrowser();
@@ -56,15 +56,15 @@ namespace Almostengr.FalconPiMonitor
             driver = new ChromeDriver(options);
         }
 
-        private void CheckReachable()
-        {
-            driver.Navigate().GoToUrl(websiteUrl);
+        // private void CheckReachable()
+        // {
+        //     driver.Navigate().GoToUrl(websiteUrl);
 
-            if (driver.Title.Contains("falconpi") == false)
-            {
-                ReportError("Falcon Pi Player not reachable");
-            }
-        }
+        //     if (driver.Title.Contains("falconpi") == false)
+        //     {
+        //         ReportError("Falcon Pi Player not reachable");
+        //     }
+        // }
 
         private void CheckSchedulerStatus()
         {
@@ -123,12 +123,12 @@ namespace Almostengr.FalconPiMonitor
             LogMessage(message);
 
             errorReported = true;
-            failCounter++;
         }
 
         private void RestartFalconPlayer()
         {
             LogMessage("Restarting Falcon Player");
+
 #if RELEASE
             driver.FindElement(By.Id("btnRestartFPPD")).Click();
 #endif
