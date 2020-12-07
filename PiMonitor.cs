@@ -142,5 +142,17 @@ namespace Almostengr.FalconPiMonitor
             driver.FindElement(By.Id("btnStopGracefully")).Click();
 #endif
         }
+
+        private void PostCurrentSong()
+        {
+            driver.Navigate().GoToUrl(websiteUrl);
+
+            // get the current song that is being played
+            string playerStatus = driver.FindElement(By.Id("txtPlayerStatus")).Text;
+            playerStatus = playerStatus.Substring(playerStatus.IndexOf("| "));
+            playerStatus = playerStatus.Replace("Playing  - ", "").Replace("'","").Replace("_", " ");
+
+            string tweet = $"Currently playing {playerStatus} at {DateTime.Now}";
+        }
     }
 }
