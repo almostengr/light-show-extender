@@ -5,22 +5,7 @@ namespace Almostengr.FalconPiMonitor
     public class FalconStatus
     {
         public FalconStatusCurrentPlayList Current_PlayList { get; set; }
-
-        // private string _currentSong;
-        public string Current_Song
-        {
-            // get { return _currentSong; }
-            // set
-            // {
-            //     // TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-            //     // value = value.Replace(".mp3", "").Replace(".ogg", "")
-            //     //     .Replace(".m4a", "") //.Replace("-", " ")
-            //     //     .Replace("_", " ").Replace(" - ", " by ");
-            //     // _currentSong = textInfo.ToTitleCase(value);
-            //     _currentSong = value;
-            // }
-            get; set;
-        }
+        public string Current_Song { get; set; }
 
         private string _currentSequence;
         public string Current_Sequence
