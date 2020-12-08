@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using System.Threading.Tasks;
 
 namespace Almostengr.FalconPiMonitor
 {
@@ -9,16 +6,8 @@ namespace Almostengr.FalconPiMonitor
     {
         static async Task Main(string[] args)
         {
-            // PiMonitor piMonitor = new PiMonitor();
-            // while (true)
-            // {
-            //     piMonitor.PerformChecks();
-            // }
-
-            FalconApi falconApi = new FalconApi();
-            var songName = await falconApi.GetCurrentSong();
-
-            Console.WriteLine(songName);
+            FppMonitor fppMonitor = new FppMonitor();
+            await fppMonitor.RunMonitor();
         }
     }
 }
