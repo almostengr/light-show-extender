@@ -50,7 +50,7 @@ namespace Almostengr.FalconPiMonitor
                 }
                 catch (NullReferenceException ex)
                 {
-                    LogMessage(string.Concat("Exception occurred: ", ex.Message));
+                    LogMessage(string.Concat("Null Exception occurred: ", ex.Message));
                 }
                 catch (SocketException ex)
                 {
@@ -58,13 +58,12 @@ namespace Almostengr.FalconPiMonitor
                 }
                 catch (HttpRequestException ex)
                 {
-                    LogMessage(ex.Message);
+                    LogMessage(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
                 }
                 catch (Exception ex)
                 {
-                    LogMessage(string.Concat("General exception occurred: ", ex.Message));
+                    LogMessage(string.Concat("Exception occurred: ", ex.Message));
                 }
-
 
 #if RELEASE
                 Thread.Sleep(TimeSpan.FromSeconds(15));
