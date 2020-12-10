@@ -38,13 +38,13 @@ namespace Almostengr.FalconPiMonitor
                         falconStatusMediaMeta.Format.Tags.Title = falconStatus.Current_Song_NotFile;
                     }
 
-                    if (falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline") == false)
-                    {
+                    // if (falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline") == false)
+                    // {
                         previousSong = await PostCurrentSong(
                             previousSong, falconStatusMediaMeta.Format.Tags.Title,
                             falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
                             falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
-                    }
+                    // }
 
                     await TemperatureCheck(falconStatus.Sensors);
                 }
@@ -80,6 +80,12 @@ namespace Almostengr.FalconPiMonitor
             if (prevSongTitle == currSongTitle)
             {
                 return prevSongTitle;
+            }
+
+            if (showOffline)
+            {
+                LogMessage("Show is offline. Not posting song");
+                return currSongTitle;
             }
 
             DebugMessage("Updating current song");
