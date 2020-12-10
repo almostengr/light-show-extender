@@ -38,10 +38,13 @@ namespace Almostengr.FalconPiMonitor
                         falconStatusMediaMeta.Format.Tags.Title = falconStatus.Current_Song_NotFile;
                     }
 
-                    previousSong = await PostCurrentSong(
-                        previousSong, falconStatusMediaMeta.Format.Tags.Title,
-                        falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
-                        falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
+                    if (falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline") == false)
+                    {
+                        previousSong = await PostCurrentSong(
+                            previousSong, falconStatusMediaMeta.Format.Tags.Title,
+                            falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
+                            falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
+                    }
 
                     await TemperatureCheck(falconStatus.Sensors);
                 }
