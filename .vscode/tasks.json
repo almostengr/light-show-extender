@@ -19,6 +19,29 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "release",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "-r",
+                "linux-arm",
+                "-c",
+                "RELEASE",
+            ],
+            "group": "none"
+        },
+        {
+            "label": "deploy",
+            "command": "scp",
+            "type": "shell",
+            "args": [
+                "-pr",
+                "$HOME/falconpimonitor/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
+                "fpp@falconpi://home/fpp/falconpimonitor"
+            ]
         }
     ]
 }

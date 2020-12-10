@@ -12,7 +12,14 @@ namespace Almostengr.FalconPiMonitor
 
         public static void DebugMessage(string message)
         {
+            #if DEBUG
             LogMessage($"DEBUG: {message}");
+            #endif
+        }
+        
+        public static void TwitterMessage(string message)
+        {
+            LogMessage($"TWEET: {message}");
         }
     }
 }

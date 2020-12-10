@@ -5,18 +5,34 @@ namespace Almostengr.FalconPiMonitor
     public class FalconStatus
     {
         public FalconStatusCurrentPlayList Current_PlayList { get; set; }
-        public string Current_Song { get; set; }
+        public FalconStatusNextPlaylist Next_PlayList { get; set; }
 
-        private string _currentSequence;
-        public string Current_Sequence
+        private string _currentSong;
+        public string Current_Song
         {
-            get { return _currentSequence; }
-            set { _currentSequence = value.Replace(".fseq", ""); }
+            get { return _currentSong; }
+            set { _currentSong = value; }
         }
+
+        public string Current_Song_NotFile
+        {
+            get
+            {
+                return _currentSong.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
+                    .Replace("_", " ").Replace("-", " ");
+            }
+        }
+
 
         public string Fppd { get; set; }
         public string Status_Name { get; set; }
         public IList<FalconStatusSensor> Sensors { get; set; }
+    }
+
+    public class FalconStatusNextPlaylist
+    {
+        public string PlayList { get; set; }
+        public string Start_Time { get; set; }
     }
 
     public class FalconStatusSensor

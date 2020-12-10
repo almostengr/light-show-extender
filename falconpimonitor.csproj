@@ -4,6 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Selenium.WebDriver" Version="3.141.0"/>
+    <PackageReference Include="TweetinviAPI" Version="5.0.3"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.10"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.10"/>
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0"/>
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0"/>
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1"/>
   </ItemGroup>
 </Project>
