@@ -5,14 +5,23 @@
     "tasks": [
         {
             "label": "build",
-            "command": "dotnet",
+            "command": "/bin/bash",
             "type": "shell",
             "args": [
+                "-c",
+                "\"",
+                "cp",
+                "-p",
+                "${workspaceRoot}/appsettings.json",
+                "${workspaceRoot}/bin/Debug/netcoreapp3.1/",
+                "&&",
+                "dotnet",
                 "build",
                 // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
                 // Do not generate summary otherwise it leads to duplicate errors in Problems panel
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "\""
             ],
             "group": "build",
             "presentation": {
@@ -22,7 +31,6 @@
         },
         {
             "label": "Copy appsettings.json file",
-            "command": "cp",
             "type": "shell",
             "args": [
                 "-p",
@@ -32,17 +40,31 @@
             "group": "build",
         },
         {
-            "label": "release",
-            "command": "dotnet",
+            "label": "Create Release",
+            "command": "/bin/bash",
             "type": "shell",
             "args": [
+                "-c",
+                "\"",
+                "rm",
+                "falconpimonitor.tar",
+                "&&",
+                "dotnet",
                 "publish",
                 "-r",
                 "linux-arm",
                 "-c",
-                "RELEASE",
+                "Release",
+                "-o",
+                "${workspaceRoot}/release",
+                "&&",
+                "tar",
+                "-cf",
+                "falconpimonitor.tar",
+                "release/",
+                "\""
             ],
-            "group": "none"
+            "group": "build"
         },
         {
             "label": "deploy",
@@ -50,7 +72,7 @@
             "type": "shell",
             "args": [
                 "-pr",
-                "${workspaceRoot}/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
+                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm/publish/*",
                 "fpp@falconpi://home/fpp/falconpimonitor"
             ]
         }
