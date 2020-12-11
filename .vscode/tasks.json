@@ -30,26 +30,12 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Copy appsettings.json file",
-            "command": "cp",
-            "type": "shell",
-            "args": [
-                "-p",
-                "${workspaceRoot}/appsettings.json",
-                "${workspaceRoot}/bin/Debug/netcoreapp3.1/",
-            ],
-            "group": "build",
-        },
-        {
             "label": "Create Release",
             "command": "/bin/bash",
             "type": "shell",
             "args": [
                 "-c",
                 "\"",
-                // "rm",
-                // "falconpimonitor.tar",
-                // "&&",
                 "dotnet",
                 "publish",
                 "-r",
@@ -67,6 +53,12 @@
                 "zip",
                 "package/falconpimonitor.zip",
                 "release/*",
+                "&&",
+                "git",
+                "tag",
+                "|",
+                "tail",
+                "-1",
                 "\""
             ],
             "group": "build"
