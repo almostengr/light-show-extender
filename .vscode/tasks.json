@@ -46,9 +46,9 @@
             "args": [
                 "-c",
                 "\"",
-                "rm",
-                "falconpimonitor.tar",
-                "&&",
+                // "rm",
+                // "falconpimonitor.tar",
+                // "&&",
                 "dotnet",
                 "publish",
                 "-r",
@@ -60,8 +60,12 @@
                 "&&",
                 "tar",
                 "-cf",
-                "falconpimonitor.tar",
-                "release/",
+                "package/falconpimonitor.tar",
+                "release/*",
+                "&&",
+                "zip",
+                "package/falconpimonitor.zip",
+                "release/*",
                 "\""
             ],
             "group": "build"
