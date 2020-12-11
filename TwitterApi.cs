@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Tweetinvi;
 using static Almostengr.FalconPiMonitor.Logger;
@@ -7,10 +6,6 @@ namespace Almostengr.FalconPiMonitor
 {
     public class TwitterApi
     {
-        // private string ConsumerKey { get; set; }
-        // private string ConsumerSecret { get; set; }
-        // private string AccessToken { get; set; }
-        // private string AccessSecret { get; set; }
         private TwitterClient twitterClient { get; set; }
 
         public TwitterApi(string consumerKey, string consumerSecret, string accessToken, string accessSecret)

@@ -10,7 +10,7 @@ namespace Almostengr.FalconPiMonitor
 {
     public class FppMonitor
     {
-        private FalconApi FalconApi {get; set;}
+        private FalconApi FalconApi { get; set; }
         private TwitterApi TwitterApi { get; set; }
         private bool TemperatureAlarm { get; set; }
         private double TemperatureThreshold { get; set; }

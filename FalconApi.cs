@@ -8,8 +8,9 @@ namespace Almostengr.FalconPiMonitor
     {
         private readonly HttpClient HttpClient = new HttpClient();
 
-        private string _baseUri ;
-        private string BaseUri {
+        private string _baseUri;
+        private string BaseUri
+        {
             get { return _baseUri; }
             set { _baseUri = SetBaseUri(value); }
         }
@@ -21,13 +22,13 @@ namespace Almostengr.FalconPiMonitor
 
         private string SetBaseUri(string uri)
         {
-            uri = uri.ToLower().Replace("api/", "").Replace("api", ""); 
+            uri = uri.ToLower().Replace("api/", "").Replace("api", "");
 
             if (uri.StartsWith("http://") == false && uri.StartsWith("https://") == false)
             {
                 uri = string.Concat("http://", uri);
             }
-            
+
             uri = string.Concat(uri, "/api/");
             uri = uri.Replace("//api/", "/api/");
 
@@ -51,7 +52,7 @@ namespace Almostengr.FalconPiMonitor
         public async Task<FalconStatusMediaMeta> GetCurrentSongMetaData(string songFileName)
         {
             HttpResponseMessage response = await HttpClient.GetAsync(string.Concat(BaseUri, "media/", songFileName, "/meta"));
-            
+
             if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<FalconStatusMediaMeta>(response.Content.ReadAsStringAsync().Result);
