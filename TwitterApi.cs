@@ -7,10 +7,10 @@ namespace Almostengr.FalconPiMonitor
 {
     public class TwitterApi
     {
-        private readonly string ConsumerKey = Environment.GetEnvironmentVariable("HPC_TWITTER_CONSUMER_KEY");
-        private readonly string ConsumerSecret = Environment.GetEnvironmentVariable("HPC_TWITTER_CONSUMER_SECRET");
-        private readonly string AccessToken = Environment.GetEnvironmentVariable("HPC_TWITTER_ACCESS_TOKEN");
-        private readonly string AccessSecret = Environment.GetEnvironmentVariable("HPC_TWITTER_ACCESS_SECRET");
+        private readonly string ConsumerKey = Environment.GetEnvironmentVariable("FPM_TWITTER_CONSUMER_KEY");
+        private readonly string ConsumerSecret = Environment.GetEnvironmentVariable("FPM_TWITTER_CONSUMER_SECRET");
+        private readonly string AccessToken = Environment.GetEnvironmentVariable("FPM_TWITTER_ACCESS_TOKEN");
+        private readonly string AccessSecret = Environment.GetEnvironmentVariable("FPM_TWITTER_ACCESS_SECRET");
         private TwitterClient twitterClient { get; set; }
 
         public TwitterApi()
