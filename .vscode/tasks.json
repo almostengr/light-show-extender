@@ -64,7 +64,7 @@
             "group": "build"
         },
         {
-            "label": "deploy",
+            "label": "Deploy Local",
             "command": "/bin/bash",
             "type": "shell",
             "args": [
@@ -73,12 +73,12 @@
                 "scp",
                 "-p",
                 "${workspaceRoot}/appsettings.json",
-                "fpp@falconpi://home/fpp/falconpimonitor",
+                "fpp@falconpi://home/fpp/fpmonitor/appsettings.json",
                 "&&",
                 "scp",
                 "-pr",
-                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm",
-                "fpp@falconpi://home/fpp/falconpimonitor",
+                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm/*",
+                "fpp@falconpi://home/fpp/fpmonitor",
                 "\""
             ],
             "group": "build"
