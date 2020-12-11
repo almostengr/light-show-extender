@@ -21,6 +21,17 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "Copy appsettings.json file",
+            "command": "cp",
+            "type": "shell",
+            "args": [
+                "-p",
+                "${workspaceRoot}/appsettings.json",
+                "${workspaceRoot}/bin/Debug/netcoreapp3.1/",
+            ],
+            "group": "build",
+        },
+        {
             "label": "release",
             "command": "dotnet",
             "type": "shell",
@@ -39,7 +50,7 @@
             "type": "shell",
             "args": [
                 "-pr",
-                "$HOME/falconpimonitor/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
+                "${workspaceRoot}/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
                 "fpp@falconpi://home/fpp/falconpimonitor"
             ]
         }
