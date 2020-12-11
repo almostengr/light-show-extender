@@ -9,8 +9,8 @@ namespace Almostengr.FalconPiMonitor
     {
         static async Task Main(string[] args)
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            LogMessage(string.Concat("ENVIRONMENT: ", env));
+            // var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            // LogMessage(string.Concat("ENVIRONMENT: ", env));
 
             var builder = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.json", true, true)

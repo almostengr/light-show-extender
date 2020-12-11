@@ -93,7 +93,7 @@ namespace Almostengr.FalconPiMonitor
 
             if (showOffline && PostOffline == false)
             {
-                LogMessage("Show is offline. Not posting song");
+                LogMessage($"Show is offline. Not posting song \"{currSongTitle}\"");
                 return currSongTitle;
             }
 
