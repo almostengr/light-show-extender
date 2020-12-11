@@ -31,6 +31,7 @@
         },
         {
             "label": "Copy appsettings.json file",
+            "command": "cp",
             "type": "shell",
             "args": [
                 "-p",
@@ -72,13 +73,23 @@
         },
         {
             "label": "deploy",
-            "command": "scp",
+            "command": "/bin/bash",
             "type": "shell",
             "args": [
+                "-c",
+                "\"",
+                "scp",
+                "-p",
+                "${workspaceRoot}/appsettings.json",
+                "fpp@falconpi://home/fpp/falconpimonitor",
+                "&&",
+                "scp",
                 "-pr",
-                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm/publish/*",
-                "fpp@falconpi://home/fpp/falconpimonitor"
-            ]
+                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm",
+                "fpp@falconpi://home/fpp/falconpimonitor",
+                "\""
+            ],
+            "group": "build"
         }
     ]
 }
