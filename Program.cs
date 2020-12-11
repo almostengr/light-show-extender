@@ -14,16 +14,14 @@ namespace Almostengr.FalconPiMonitor
 
             var builder = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{env}.json", true, true)
+                // .AddJsonFile($"appsettings.{env}.json", true, true)
                 .AddEnvironmentVariables();
 
             var config = builder.Build();
-            var cfg = config.Get<AppSettings>();
+            AppSettings cfg = config.Get<AppSettings>();
 
-            Console.WriteLine(cfg.TwitterConfig.AccessSecret);
-
-            // FppMonitor fppMonitor = new FppMonitor();
-            // await fppMonitor.RunMonitor();
+            FppMonitor fppMonitor = new FppMonitor(cfg);
+            await fppMonitor.RunMonitor();
         }
     }
 }
