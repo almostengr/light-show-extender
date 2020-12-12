@@ -58,8 +58,8 @@ namespace Almostengr.FalconPiMonitor
                         await GetTwitterUsername();
                     }
 
-                    FalconStatus falconStatus = await GetCurrentStatus();
-                    FalconStatusMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
+                    FalconFppdStatus falconStatus = await GetCurrentStatus();
+                    FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
 
                     if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)
                     {
@@ -68,7 +68,8 @@ namespace Almostengr.FalconPiMonitor
 
                     previousSong = await PostCurrentSong(
                         previousSong, falconStatusMediaMeta.Format.Tags.Title,
-                        falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
+                        falconStatusMediaMeta.Format.Tags.Artist,
+                        falconStatusMediaMeta.Format.Tags.Album,
                         falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
 
                     await TemperatureCheck(falconStatus.Sensors);
@@ -118,7 +119,7 @@ namespace Almostengr.FalconPiMonitor
             }
 
 #if RELEASE
-                var tweet = await twitterClient.Tweets.PublishTweetAsync(tweetText);
+                var tweet = await _twitterClient.Tweets.PublishTweetAsync(tweetText);
 #endif
 
             _logger.LogInformation("TWEETED: {tweetText}", tweetText);
@@ -129,14 +130,14 @@ namespace Almostengr.FalconPiMonitor
 
         #region FalconPiPlayer
 
-        public async Task<FalconStatus> GetCurrentStatus()
+        public async Task<FalconFppdStatus> GetCurrentStatus()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "fppd/status"));
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<FalconStatus>(response.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<FalconFppdStatus>(response.Content.ReadAsStringAsync().Result);
             }
             else
             {
@@ -144,14 +145,14 @@ namespace Almostengr.FalconPiMonitor
             }
         }
 
-        public async Task<FalconStatusMediaMeta> GetCurrentSongMetaData(string songFileName)
+        public async Task<FalconMediaMeta> GetCurrentSongMetaData(string songFileName)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "media/", songFileName, "/meta"));
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<FalconStatusMediaMeta>(response.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<FalconMediaMeta>(response.Content.ReadAsStringAsync().Result);
             }
             else
             {
@@ -230,7 +231,7 @@ namespace Almostengr.FalconPiMonitor
         //     }
         // }
 
-        private async Task TemperatureCheck(IList<FalconStatusSensor> sensors)
+        private async Task TemperatureCheck(IList<FalconFppdStatusSensor> sensors)
         {
             if (Double.IsNegative(_appSettings.AlarmSettings.TempThreshold) || Double.IsNaN(_appSettings.AlarmSettings.TempThreshold))
             {
