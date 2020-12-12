@@ -1,7 +1,8 @@
 # Falcon Pi Monitor
 
-This project contains a set of actions that I use to monitor the status of my Falcon Pi Player. Those actions
-are using to post updates via Twitter and alert if there are problems detected.
+This project is designed for Falcon Pi Player to provide updates via Twitter on the light show that 
+you are running. Those updates include posting the current song and providing alerts when problems
+are detected.
 
 This application is ONLY designed to run on Falcon Pi Players that are installed on Raspberry Pi.
 
@@ -10,7 +11,7 @@ This application is ONLY designed to run on Falcon Pi Players that are installed
 ### Tweeting Song Information
 
 This application calls the Falcon Pi Player API to get the meta data for the song that is current playing. 
-Then uses that information to compose a tweet. If the song that is playing does not have ID3 tag 
+Then it uses that information to compose a tweet. If the song that is playing does not have ID3 tag 
 information entered, then will not display part or all of the song data. If you need to add the song 
 meta data to the file, you can use a program like Audacity to do so.
 
@@ -32,9 +33,9 @@ Within that project, create Consumer Key (aka API Key), Consumer Secret (aka API
 Also within that project, update the App Permissions to "Read and Write". By default, permissions are "Read".
 * Copy appsettings.template.json to appsettings.json.
 * Add the key, secrets, and token that you got from your Twitter developer account to the appsettings.json file.
-See [Example appsettings.json File](#example-appsettings.json-file) and 
-[About appsettings.json File](#about-appsettings.json-file) for explainations and details.
-* Create a cronjob that will run the automation on startup. See [Creating Cronjob](#cronjob) for explaination.
+See [Example appsettings.json File](#example-appsettingsjson-file) and 
+[About appsettings.json File](#about-appsettingsjson-file) for explainations and details.
+* Create a cronjob that will run the automation on startup. See [Creating Cronjob](#creating-cronjob) for explaination.
 * Reboot your Raspberry Pi
 * Once the Pi has come back online, check the log file to confirm that the monitor has started. 
 You should see output similar to the below at the beginning of the log file.
@@ -71,6 +72,13 @@ the following:
 
 ```json
 {
+    "Logging": {
+        "LogLevel": {
+        "Default": "Information",
+        "Microsoft": "Warning",
+        "Microsoft.Hosting.Lifetime": "Information"
+        }
+    },
     "TwitterSettings": {
         "ConsumerKey": "8W4tZQ6xp7",
         "ConsumerSecret": "qJz6nDw2T7",
@@ -78,13 +86,14 @@ the following:
         "AccessSecret": "8nftJzHOAI",
     },
     "AlarmSettings": {
-        "AlarmUser": "@XrGOEz2Wc7",
+        "TwitterUser": "@XrGOEz2Wc7",
         "Temperature": 55.0
     },
-    "FppShow":{
-        "PostOffline": false
+    "FppMonitorSettings":{
+        "PostOffline": false,
+        "RefreshInterval": 15
     },
-    "FalconPiSettings":{
+    "FalconPiPlayerSettings":{
         "FalconUri": "http://falconpi/"
     }
 }
@@ -92,15 +101,20 @@ the following:
 
 ### About appsettings.json File
 
-* "AlarmUser" should be the name of the Twitter account that can be mentioned if 
+* "TwitterUser" should be the name of the Twitter account that can be mentioned if 
 there is an issue with the show (e.g. Raspberry Pi having high CPU temperature). Value needs to include 
 the at (@) symbol.
 * "FalconUri" should be the hostname or IP address to your Falcon Pi Player. If your FPP does not have an 
 assigned or static IP address, then I would recommend using the hostname.
 * "Temperature" should be the threshold that has to be reached before a high temperature alert is triggered.
 In warmer climates, you will want to set this value higher to prevent false alerts.
-Per the Raspberry Pi documentation, 60 to 65 s
-degrees Celsius is close to the upper operating limit of the Pi. This value needs to be in degrees Celsius
+Per the Raspberry Pi documentation, 60 to 65
+degrees Celsius is close to the safe upper operating limit of the Pi. This value needs to be in degrees Celsius.
+
+## Twitter Examples
+
+Follow my Christmas Light Show account [@hpchristmas](https://twitter.com/hpchristmas) to see what this 
+application can do.
 
 ## Known Bugs
 
@@ -112,3 +126,5 @@ in the log that HttpRequestException is not repeating in the logs after 2 or 3 a
 ## Questions / Comments
 
 Please file an Issue on the repo if you have questions, comments, or bug reports about this application.
+
+You can also reach out to the developer via Twitter [@almostengr](https://twitter.com/almostengr).
