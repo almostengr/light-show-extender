@@ -1,11 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-falconpimonitor-3817F232-7A06-4C0C-A269-235458F451AD</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TweetinviAPI" Version="5.0.3"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.10"/>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.10"/>
+    <PackageReference Include="TweetinviAPI" Version="5.0.3"/>
   </ItemGroup>
 </Project>

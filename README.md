@@ -1,11 +1,25 @@
 # Falcon Pi Monitor
 
 This project provides a way for the Falcon Pi Player to post the current playing 
-song and alerts on Twitter.
+song and alerts on Twitter. This application uses .NET Core with C# and TweetInvi.
 
-## Technology
+This application is ONLY designed to run on Falcon Pi Players that are installed on Raspberry Pi.
 
-This project uses C# and TweetInvi.
+## How Does It Work
+
+### Tweeting Song Information
+
+This application calls the Falcon Pi Player API to get the meta data for the song that is current playing. 
+Then uses that information to compose a tweet. If the song that is playing does not have ID3 tag 
+information entered, then will not display part or all of the song data. If you need to add the song 
+meta data to the file, you can use a program like Audacity to do so.
+
+### Tweeting Temperature Alerts
+
+The application calls the Falcon Pi Player API to get the current temperature of the Raspberry Pi. 
+If it is above the threshold that is specified in the appsettings.json file, then it will send a tweet
+that mentions the users specified in the appsettings.json file a message to let them know if the 
+current temperature. When the temperature drops below the threshold, then another tweet is sent.
 
 ## Installation Instructions
 
@@ -25,9 +39,9 @@ See [Example appsettings.json File](#example-appsettings.json-file) and
 * Once the Pi has come back online, check the log file to confirm that the monitor has started. 
 You should see output similar to the below at the beginning of the log file.
 ```
-12/10/2020 11:05:52 PM | Monitoring show
-12/10/2020 11:05:52 PM | Exit program by pressing Ctrl+C
-12/10/2020 11:06:11 PM | Connected to Twitter as hpchristmas
+Starting service
+Exit program by pressing Ctrl+C
+Connected to Twitter as hpchristmas
 ```
 
 The "Connected to Twitter" message in the log file, confirms that your account has been properly configured
