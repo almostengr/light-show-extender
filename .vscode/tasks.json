@@ -30,25 +30,12 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Copy appsettings.json file",
-            "type": "shell",
-            "args": [
-                "-p",
-                "${workspaceRoot}/appsettings.json",
-                "${workspaceRoot}/bin/Debug/netcoreapp3.1/",
-            ],
-            "group": "build",
-        },
-        {
             "label": "Create Release",
             "command": "/bin/bash",
             "type": "shell",
             "args": [
                 "-c",
                 "\"",
-                // "rm",
-                // "falconpimonitor.tar",
-                // "&&",
                 "dotnet",
                 "publish",
                 "-r",
@@ -56,29 +43,45 @@
                 "-c",
                 "Release",
                 "-o",
-                "${workspaceRoot}/release",
+                "${workspaceRoot}/fpmonitor",
                 "&&",
                 "tar",
                 "-cf",
                 "package/falconpimonitor.tar",
-                "release/*",
+                "fpmonitor/*",
                 "&&",
                 "zip",
                 "package/falconpimonitor.zip",
-                "release/*",
+                "fpmonitor/*",
+                "&&",
+                "git",
+                "tag",
+                "|",
+                "tail",
+                "-1",
                 "\""
             ],
             "group": "build"
         },
         {
-            "label": "deploy",
-            "command": "scp",
+            "label": "Deploy Local",
+            "command": "/bin/bash",
             "type": "shell",
             "args": [
+                "-c",
+                "\"",
+                "scp",
+                "-p",
+                "${workspaceRoot}/appsettings.json",
+                "fpp@falconpi://home/fpp/fpmonitor/appsettings.json",
+                "&&",
+                "scp",
                 "-pr",
-                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm/publish/*",
-                "fpp@falconpi://home/fpp/falconpimonitor"
-            ]
+                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm/*",
+                "fpp@falconpi://home/fpp/fpmonitor",
+                "\""
+            ],
+            "group": "build"
         }
     ]
 }

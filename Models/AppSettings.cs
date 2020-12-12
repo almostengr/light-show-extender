@@ -1,20 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Almostengr.FalconPiMonitor
+namespace Almostengr.FalconPiMonitor.Models
 {
     public class AppSettings
     {
         [Required]
         public TwitterSettings TwitterSettings { get; set; }
         public AlarmSettings AlarmSettings { get; set; }
-        public FppShow FppShow { get; set; }
-        public FalconPiSettings FalconPiSettings { get; set; }
-    }
-
-    public class FalconPiSettings
-    {
-        [Required]
-        public string FalconUri { get; set; }
+        public FppMonitorSettings FppMonitorSettings { get; set; }
+        public FalconPiPlayerSettings FalconPiPlayerSettings { get; set; }
     }
 
     public class TwitterSettings
@@ -32,11 +26,18 @@ namespace Almostengr.FalconPiMonitor
     public class AlarmSettings
     {
         public double Temperature { get; set; }
-        public string AlarmUser { get; set; }
+        public string TwitterUser { get; set; }
     }
 
-    public class FppShow
+    public class FppMonitorSettings
     {
         public bool PostOffline { get; set; }
+        public int RefreshInterval { get; set; }
+    }
+
+    public class FalconPiPlayerSettings
+    {
+        [Required]
+        public string FalconUri { get; set; }
     }
 }

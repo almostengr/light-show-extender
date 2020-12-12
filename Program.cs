@@ -1,27 +1,27 @@
-﻿using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using static Almostengr.FalconPiMonitor.Logger;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Almostengr.FalconPiMonitor
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            LogMessage(string.Concat("ENVIRONMENT: ", env));
-
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", true, true)
-                // .AddJsonFile($"appsettings.{env}.json", true, true)
-                .AddEnvironmentVariables();
-
-            var config = builder.Build();
-            AppSettings cfg = config.Get<AppSettings>();
-
-            FppMonitor fppMonitor = new FppMonitor(cfg);
-            await fppMonitor.RunMonitor();
+            CreateHostBuilder(args).Build().Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(
+                    builder => new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", true, true)
+                    .AddEnvironmentVariables()
+                )
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<FppMonitorService>();
+                })
+                ;
     }
 }
