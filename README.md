@@ -108,8 +108,8 @@ the at (@) symbol.
 assigned or static IP address, then I would recommend using the hostname.
 * "Temperature" should be the threshold that has to be reached before a high temperature alert is triggered.
 In warmer climates, you will want to set this value higher to prevent false alerts.
-Per the Raspberry Pi documentation, 60 to 65 s
-degrees Celsius is close to the upper operating limit of the Pi. This value needs to be in degrees Celsius.
+Per the Raspberry Pi documentation, 60 to 65
+degrees Celsius is close to the safe upper operating limit of the Pi. This value needs to be in degrees Celsius.
 
 ## Twitter Examples
 
