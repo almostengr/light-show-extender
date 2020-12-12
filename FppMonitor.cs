@@ -10,16 +10,29 @@ namespace Almostengr.FalconPiMonitor
 {
     public class FppMonitor
     {
-        private readonly FalconApi FalconApi = new FalconApi();
-        private bool AlertedNextShowtime = false;
-        private readonly TwitterApi TwitterApi = new TwitterApi();
+        private FalconApi FalconApi {get; set;}
+        private TwitterApi TwitterApi { get; set; }
         private bool TemperatureAlarm { get; set; }
+        private double TemperatureThreshold { get; set; }
+        private string AlarmAccount { get; set; }
+        private bool PostOffline { get; set; }
+
+        public FppMonitor(AppSettings settings)
+        {
+            AlarmAccount = settings.AlarmSettings.AlarmUser;
+            TemperatureThreshold = settings.AlarmSettings.Temperature;
+            PostOffline = settings.FppShow.PostOffline;
+            TwitterApi = new TwitterApi(settings.TwitterSettings.ConsumerKey, settings.TwitterSettings.ConsumerSecret,
+                settings.TwitterSettings.AccessToken, settings.TwitterSettings.AccessSecret);
+            FalconApi = new FalconApi(settings.FalconPiSettings.FalconUri);
+        }
 
         public async Task RunMonitor()
         {
             string previousSong = "";
 
             LogMessage("Monitoring show");
+            LogMessage("Exit program by pressing Ctrl+C");
 
             while (true)
             {
@@ -38,13 +51,10 @@ namespace Almostengr.FalconPiMonitor
                         falconStatusMediaMeta.Format.Tags.Title = falconStatus.Current_Song_NotFile;
                     }
 
-                    // if (falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline") == false)
-                    // {
-                        previousSong = await PostCurrentSong(
-                            previousSong, falconStatusMediaMeta.Format.Tags.Title,
-                            falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
-                            falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
-                    // }
+                    previousSong = await PostCurrentSong(
+                        previousSong, falconStatusMediaMeta.Format.Tags.Title,
+                        falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
+                        falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
 
                     await TemperatureCheck(falconStatus.Sensors);
                 }
@@ -81,7 +91,7 @@ namespace Almostengr.FalconPiMonitor
                 return prevSongTitle;
             }
 
-            if (showOffline)
+            if (showOffline && PostOffline == false)
             {
                 LogMessage("Show is offline. Not posting song");
                 return currSongTitle;
@@ -91,22 +101,22 @@ namespace Almostengr.FalconPiMonitor
 
             string tweet = "Playing ";
 
-            if (currSongTitle != null && currSongTitle != "Unknown" && currSongTitle != "")
+            if (string.IsNullOrEmpty(currSongTitle) == false)
             {
                 tweet = string.Concat(tweet, "\"", currSongTitle, "\"");
             }
             else
             {
-                LogMessage("Not posting song as it does not have title.");
+                LogMessage("Not tweeting song as it does not have title.");
                 return prevSongTitle;
             }
 
-            if (songArtist != null && songArtist != "")
+            if (string.IsNullOrEmpty(songArtist) == false)
             {
                 tweet = string.Concat(tweet, " by ", songArtist);
             }
 
-            if (songAlbum != null && songAlbum != "")
+            if (string.IsNullOrEmpty(songAlbum) == false)
             {
                 tweet = string.Concat(tweet, " (", songAlbum, ")");
             }
@@ -123,44 +133,45 @@ namespace Almostengr.FalconPiMonitor
             return currSongTitle;
         }
 
-        private void CheckSchedulerStatus()
-        {
+        // private void CheckSchedulerStatus()
+        // {
+        // }
 
-        }
-
-        private void NextShowTime(FalconStatusCurrentPlayList currentPlayList,
-            FalconStatusNextPlaylist nextPlaylist)
-        {
-            int currentHour = DateTime.Now.Hour;
-
-            if (currentPlayList.Playlist == "Offline" && AlertedNextShowtime == false &&
-                (currentHour == 13 || currentHour == 16))
-            {
-                string tweet = string.Concat("Next showtime is ", nextPlaylist.Start_Time);
-                AlertedNextShowtime = true;
-            }
-            else if (currentHour != 13 && currentHour != 16)
-            {
-                AlertedNextShowtime = false;
-            }
-        }
+        // private void NextShowTime(FalconStatusCurrentPlayList currentPlayList,
+        //     FalconStatusNextPlaylist nextPlaylist)
+        // {
+        //     int currentHour = DateTime.Now.Hour;
+        //     if (currentPlayList.Playlist == "Offline" && AlertedNextShowtime == false &&
+        //         (currentHour == 13 || currentHour == 16))
+        //     {
+        //         string tweet = string.Concat("Next showtime is ", nextPlaylist.Start_Time);
+        //         AlertedNextShowtime = true;
+        //     }
+        //     else if (currentHour != 13 && currentHour != 16)
+        //     {
+        //         AlertedNextShowtime = false;
+        //     }
+        // }
 
         private async Task TemperatureCheck(IList<FalconStatusSensor> sensors)
         {
-            double tempThreshold = 55.0;
+            if (Double.IsNegative(TemperatureThreshold) || Double.IsNaN(TemperatureThreshold))
+            {
+                return;
+            }
 
             foreach (var sensor in sensors)
             {
                 if (sensor.ValueType.ToLower() == "temperature")
                 {
-                    if (sensor.Value >= tempThreshold && TemperatureAlarm == false)
+                    if (sensor.Value >= TemperatureThreshold && TemperatureAlarm == false)
                     {
                         await TwitterApi.PostTweet(
-                            string.Concat("@almostengr High temperature alert! ", sensor.Value, "C, ",
+                            string.Concat(AlarmAccount, " High temperature alert! ", sensor.Value, "C, ",
                                 sensor.DegreesCToF(), "F"));
                         TemperatureAlarm = true;
                     }
-                    else if (sensor.Value < tempThreshold)
+                    else if (sensor.Value < TemperatureThreshold)
                     {
                         TemperatureAlarm = false;
                     }
