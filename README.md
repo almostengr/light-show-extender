@@ -83,6 +83,7 @@ the following:
         "ConsumerSecret": "qJz6nDw2T7",
         "AccessToken": "KBiEB6jn28",
         "AccessSecret": "8nftJzHOAI",
+        "Testing": false
     },
     "AlarmSettings": {
         "TwitterUser": "@XrGOEz2Wc7",

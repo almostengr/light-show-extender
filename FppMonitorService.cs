@@ -118,11 +118,14 @@ namespace Almostengr.FalconPiMonitor
                 tweetText = tweetText.Substring(0, 280);
             }
 
-#if RELEASE
-                var tweet = await _twitterClient.Tweets.PublishTweetAsync(tweetText);
-#endif
+            string prefix = "TEST TWEET";
+            if (_appSettings.TwitterSettings.Testing == false)
+            {
+                await _twitterClient.Tweets.PublishTweetAsync(tweetText);
+                prefix = "TWEETED";
+            }
 
-            _logger.LogInformation("TWEETED: {tweetText}", tweetText);
+            _logger.LogInformation(string.Concat(prefix, ": ", tweetText));
         }
 
         #endregion

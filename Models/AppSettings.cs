@@ -21,6 +21,23 @@ namespace Almostengr.FalconPiMonitor.Models
         public string AccessToken { get; set; }
         [Required]
         public string AccessSecret { get; set; }
+
+        private bool _testing;
+        public bool Testing
+        {
+            get { return _testing; }
+            set { _testing = SetTesting(value); }
+        }
+
+        private bool SetTesting(bool? value)
+        {
+            if (value == null)
+            {
+                return false;
+            }
+
+            return (bool)value;
+        }
     }
 
     public class AlarmSettings
