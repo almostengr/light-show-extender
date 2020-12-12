@@ -19,15 +19,8 @@ namespace Almostengr.FalconPiMonitor
         private HttpClient _httpClient;
         private readonly IConfiguration _config;
         private AppSettings _appSettings;
-        private TwitterClient twitterClient;
-        private string _falconPiUri;
-        private bool TemperatureAlarm { get; set; }
-
-        private string FalconPiUri
-        {
-            get { return _falconPiUri; }
-            set { _falconPiUri = SetFalconPiUri(value); }
-        }
+        private TwitterClient _twitterClient;
+        private bool _temperatureAlarm { get; set; }
 
         public FppMonitorService(ILogger<FppMonitorService> logger, IConfiguration configuration)
         {
@@ -41,21 +34,18 @@ namespace Almostengr.FalconPiMonitor
             ConfigurationBinder.Bind(_config, _appSettings);
 
             _httpClient = new HttpClient();
-            twitterClient = new TwitterClient(
+            _twitterClient = new TwitterClient(
                 _appSettings.TwitterSettings.ConsumerKey,
                 _appSettings.TwitterSettings.ConsumerSecret,
                 _appSettings.TwitterSettings.AccessToken,
                 _appSettings.TwitterSettings.AccessSecret);
-
-            FalconPiUri = _appSettings.FalconPiPlayerSettings.FalconUri;
 
             return base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // _logger.LogInformation("Starting service");
-            _logger.LogInformation("Exit program by pressing Ctrl+C");
+            _logger.LogInformation("Starting service. Exit program by pressing Ctrl+C");
 
             string previousSong = "";
 
@@ -68,8 +58,8 @@ namespace Almostengr.FalconPiMonitor
                         await GetTwitterUsername();
                     }
 
-                    FalconStatus falconStatus = await GetCurrentStatus();
-                    FalconStatusMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
+                    FalconFppdStatus falconStatus = await GetCurrentStatus();
+                    FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
 
                     if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)
                     {
@@ -78,26 +68,27 @@ namespace Almostengr.FalconPiMonitor
 
                     previousSong = await PostCurrentSong(
                         previousSong, falconStatusMediaMeta.Format.Tags.Title,
-                        falconStatusMediaMeta.Format.Tags.Artist, falconStatusMediaMeta.Format.Tags.Album,
+                        falconStatusMediaMeta.Format.Tags.Artist,
+                        falconStatusMediaMeta.Format.Tags.Album,
                         falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
 
                     await TemperatureCheck(falconStatus.Sensors);
                 }
                 catch (NullReferenceException ex)
                 {
-                    _logger.LogInformation(string.Concat("Null Exception occurred: ", ex.Message));
+                    _logger.LogError(string.Concat("Null Exception occurred: ", ex.Message));
                 }
                 catch (SocketException ex)
                 {
-                    _logger.LogInformation(string.Concat("Socket Exception occurred: ", ex.Message));
+                    _logger.LogError(string.Concat("Socket Exception occurred: ", ex.Message));
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogInformation(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
+                    _logger.LogError(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogInformation(string.Concat("Exception occurred: ", ex.Message));
+                    _logger.LogError(string.Concat("Exception occurred: ", ex.Message));
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(_appSettings.FppMonitorSettings.RefreshInterval));
@@ -115,7 +106,7 @@ namespace Almostengr.FalconPiMonitor
 
         private async Task GetTwitterUsername()
         {
-            var user = await twitterClient.Users.GetAuthenticatedUserAsync();
+            var user = await _twitterClient.Users.GetAuthenticatedUserAsync();
             _logger.LogInformation("Connected to Twitter as {user}", user);
         }
 
@@ -128,7 +119,7 @@ namespace Almostengr.FalconPiMonitor
             }
 
 #if RELEASE
-                var tweet = await twitterClient.Tweets.PublishTweetAsync(tweetText);
+                var tweet = await _twitterClient.Tweets.PublishTweetAsync(tweetText);
 #endif
 
             _logger.LogInformation("TWEETED: {tweetText}", tweetText);
@@ -139,28 +130,14 @@ namespace Almostengr.FalconPiMonitor
 
         #region FalconPiPlayer
 
-        private string SetFalconPiUri(string uri)
+        public async Task<FalconFppdStatus> GetCurrentStatus()
         {
-            uri = uri.ToLower().Replace("api/", "").Replace("api", "");
-
-            if (uri.StartsWith("http://") == false && uri.StartsWith("https://") == false)
-            {
-                uri = string.Concat("http://", uri);
-            }
-
-            uri = string.Concat(uri, "/api/");
-            uri = uri.Replace("//api/", "/api/");
-
-            return uri;
-        }
-
-        public async Task<FalconStatus> GetCurrentStatus()
-        {
-            HttpResponseMessage response = await _httpClient.GetAsync(string.Concat(FalconPiUri, "fppd/status"));
+            HttpResponseMessage response = await _httpClient.GetAsync(
+                string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "fppd/status"));
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<FalconStatus>(response.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<FalconFppdStatus>(response.Content.ReadAsStringAsync().Result);
             }
             else
             {
@@ -168,13 +145,14 @@ namespace Almostengr.FalconPiMonitor
             }
         }
 
-        public async Task<FalconStatusMediaMeta> GetCurrentSongMetaData(string songFileName)
+        public async Task<FalconMediaMeta> GetCurrentSongMetaData(string songFileName)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(string.Concat(FalconPiUri, "media/", songFileName, "/meta"));
+            HttpResponseMessage response = await _httpClient.GetAsync(
+                string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "media/", songFileName, "/meta"));
 
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<FalconStatusMediaMeta>(response.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<FalconMediaMeta>(response.Content.ReadAsStringAsync().Result);
             }
             else
             {
@@ -253,9 +231,9 @@ namespace Almostengr.FalconPiMonitor
         //     }
         // }
 
-        private async Task TemperatureCheck(IList<FalconStatusSensor> sensors)
+        private async Task TemperatureCheck(IList<FalconFppdStatusSensor> sensors)
         {
-            if (Double.IsNegative(_appSettings.AlarmSettings.Temperature) || Double.IsNaN(_appSettings.AlarmSettings.Temperature))
+            if (Double.IsNegative(_appSettings.AlarmSettings.TempThreshold) || Double.IsNaN(_appSettings.AlarmSettings.TempThreshold))
             {
                 return;
             }
@@ -267,22 +245,22 @@ namespace Almostengr.FalconPiMonitor
                     string tempAlert = string.Concat(sensor.Value.ToString(), "C, ", sensor.DegreesCToF(), "F");
                     string preText = null;
 
-                    if (sensor.Value >= _appSettings.AlarmSettings.Temperature && TemperatureAlarm == false)
+                    if (sensor.Value >= _appSettings.AlarmSettings.TempThreshold && _temperatureAlarm == false)
                     {
-                        TemperatureAlarm = true;
+                        _temperatureAlarm = true;
                         preText = "High temperature alert";
                         _logger.LogCritical(tempAlert);
                     }
-                    else if (sensor.Value < _appSettings.AlarmSettings.Temperature && TemperatureAlarm == true)
+                    else if (sensor.Value < _appSettings.AlarmSettings.TempThreshold && _temperatureAlarm == true)
                     {
-                        TemperatureAlarm = false;
+                        _temperatureAlarm = false;
                         preText = "Temperature below threshold";
                         _logger.LogWarning(tempAlert);
                     }
 
                     if (string.IsNullOrEmpty(preText) == false)
                     {
-                        await PostTweet(string.Concat(_appSettings.AlarmSettings.TwitterUser, " ", 
+                        await PostTweet(string.Concat(_appSettings.AlarmSettings.TwitterUser, " ",
                             preText, " ", tempAlert));
                     }
 

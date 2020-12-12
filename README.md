@@ -40,8 +40,7 @@ See [Example appsettings.json File](#example-appsettingsjson-file) and
 * Once the Pi has come back online, check the log file to confirm that the monitor has started. 
 You should see output similar to the below at the beginning of the log file.
 ```
-Starting service
-Exit program by pressing Ctrl+C
+Starting service. Exit program by pressing Ctrl+C
 Connected to Twitter as hpchristmas
 ```
 
@@ -74,9 +73,9 @@ the following:
 {
     "Logging": {
         "LogLevel": {
-        "Default": "Information",
-        "Microsoft": "Warning",
-        "Microsoft.Hosting.Lifetime": "Information"
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
         }
     },
     "TwitterSettings": {
@@ -87,7 +86,7 @@ the following:
     },
     "AlarmSettings": {
         "TwitterUser": "@XrGOEz2Wc7",
-        "Temperature": 55.0
+        "TempThreshold": 55.0
     },
     "FppMonitorSettings":{
         "PostOffline": false,
@@ -105,11 +104,11 @@ the following:
 there is an issue with the show (e.g. Raspberry Pi having high CPU temperature). Value needs to include 
 the at (@) symbol.
 * "FalconUri" should be the hostname or IP address to your Falcon Pi Player. If your FPP does not have an 
-assigned or static IP address, then I would recommend using the hostname.
-* "Temperature" should be the threshold that has to be reached before a high temperature alert is triggered.
+assigned or static IP address, then it is recommended to use the hostname.
+* "TempThreshold" should be the threshold that has to be reached before a high temperature alert is triggered.
 In warmer climates, you will want to set this value higher to prevent false alerts.
-Per the Raspberry Pi documentation, 60 to 65
-degrees Celsius is close to the safe upper operating limit of the Pi. This value needs to be in degrees Celsius.
+ This value needs to be in degrees Celsius. Per the Raspberry Pi documentation, 60 to 65
+degrees Celsius is close to the safe upper operating limit of the Pi.
 
 ## Twitter Examples
 
