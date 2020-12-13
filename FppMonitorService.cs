@@ -55,24 +55,24 @@ namespace Almostengr.FalconPiMonitor
                 {
                     if (previousSong == "")
                     {
-                        await GetTwitterUsername();
+                        await GetTwitterUsernameAsync();
                     }
 
-                    FalconFppdStatus falconStatus = await GetCurrentStatus();
-                    FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
+                    FalconFppdStatus falconStatus = await GetCurrentStatusAsync();
+                    FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaDataAsync(falconStatus.Current_Song);
 
                     if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)
                     {
                         falconStatusMediaMeta.Format.Tags.Title = falconStatus.Current_Song_NotFile;
                     }
 
-                    previousSong = await PostCurrentSong(
+                    previousSong = await PostCurrentSongAsync(
                         previousSong, falconStatusMediaMeta.Format.Tags.Title,
                         falconStatusMediaMeta.Format.Tags.Artist,
                         falconStatusMediaMeta.Format.Tags.Album,
                         falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
 
-                    await TemperatureCheck(falconStatus.Sensors);
+                    await TemperatureCheckAsync(falconStatus.Sensors);
                 }
                 catch (NullReferenceException ex)
                 {
@@ -104,13 +104,13 @@ namespace Almostengr.FalconPiMonitor
 
         #region Twitter
 
-        private async Task GetTwitterUsername()
+        private async Task GetTwitterUsernameAsync()
         {
             var user = await _twitterClient.Users.GetAuthenticatedUserAsync();
             _logger.LogInformation("Connected to Twitter as {user}", user);
         }
 
-        private async Task PostTweet(string tweetText)
+        private async Task PostTweetAsync(string tweetText)
         {
             if (tweetText.Length > 280)
             {
@@ -133,7 +133,7 @@ namespace Almostengr.FalconPiMonitor
 
         #region FalconPiPlayer
 
-        public async Task<FalconFppdStatus> GetCurrentStatus()
+        public async Task<FalconFppdStatus> GetCurrentStatusAsync()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "fppd/status"));
@@ -148,7 +148,7 @@ namespace Almostengr.FalconPiMonitor
             }
         }
 
-        public async Task<FalconMediaMeta> GetCurrentSongMetaData(string songFileName)
+        public async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string songFileName)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "media/", songFileName, "/meta"));
@@ -166,7 +166,7 @@ namespace Almostengr.FalconPiMonitor
         #endregion
 
 
-        private async Task<string> PostCurrentSong(string prevSongTitle, string currSongTitle,
+        private async Task<string> PostCurrentSongAsync(string prevSongTitle, string currSongTitle,
             string songArtist = null, string songAlbum = null, bool showOffline = false)
         {
             if (prevSongTitle == currSongTitle)
@@ -209,7 +209,7 @@ namespace Almostengr.FalconPiMonitor
                 tweet = string.Concat(tweet, " [Offline]");
             }
 
-            await PostTweet(tweet);
+            await PostTweetAsync(tweet);
 
             return currSongTitle;
         }
@@ -234,7 +234,7 @@ namespace Almostengr.FalconPiMonitor
         //     }
         // }
 
-        private async Task TemperatureCheck(IList<FalconFppdStatusSensor> sensors)
+        private async Task TemperatureCheckAsync(IList<FalconFppdStatusSensor> sensors)
         {
             if (Double.IsNegative(_appSettings.AlarmSettings.TempThreshold) || Double.IsNaN(_appSettings.AlarmSettings.TempThreshold))
             {
@@ -263,7 +263,7 @@ namespace Almostengr.FalconPiMonitor
 
                     if (string.IsNullOrEmpty(preText) == false)
                     {
-                        await PostTweet(string.Concat(_appSettings.AlarmSettings.TwitterUser, " ",
+                        await PostTweetAsync(string.Concat(_appSettings.AlarmSettings.TwitterUser, " ",
                             preText, " ", tempAlert));
                     }
 
