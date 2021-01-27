@@ -112,7 +112,7 @@ degrees Celsius is close to the safe upper operating limit of the Pi.
 
 ## Twitter Examples
 
-Follow my Christmas Light Show account [@hpchristmas](https://twitter.com/hpchristmas) to see what this 
+Follow my Christmas Light Show account [@hplightshow](https://twitter.com/hplightshow) to see what this 
 application can do.
 
 ## Known Bugs
