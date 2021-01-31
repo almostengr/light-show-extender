@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tweetinvi;
 
-namespace Almostengr.FalconPiMonitor
+namespace Almostengr.FalconPiMonitor.Services
 {
     public class FppMonitorService : BackgroundService
     {
@@ -35,10 +35,10 @@ namespace Almostengr.FalconPiMonitor
 
             _httpClient = new HttpClient();
             _twitterClient = new TwitterClient(
-                _appSettings.TwitterSettings.ConsumerKey,
-                _appSettings.TwitterSettings.ConsumerSecret,
-                _appSettings.TwitterSettings.AccessToken,
-                _appSettings.TwitterSettings.AccessSecret);
+                _appSettings.Twitter.ConsumerKey,
+                _appSettings.Twitter.ConsumerSecret,
+                _appSettings.Twitter.AccessToken,
+                _appSettings.Twitter.AccessSecret);
 
             return base.StartAsync(cancellationToken);
         }
@@ -91,7 +91,7 @@ namespace Almostengr.FalconPiMonitor
                     _logger.LogError(string.Concat("Exception occurred: ", ex.Message));
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(_appSettings.FppMonitorSettings.RefreshInterval));
+                await Task.Delay(TimeSpan.FromSeconds(_appSettings.FppMonitor.RefreshInterval));
             }
         } // end executeasync
 
@@ -133,7 +133,7 @@ namespace Almostengr.FalconPiMonitor
         public async Task<FalconFppdStatus> GetCurrentStatus()
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
-                string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "fppd/status"));
+                string.Concat(_appSettings.FalconPiPlayer.FalconUri, "fppd/status"));
 
             if (response.IsSuccessStatusCode)
             {
@@ -148,7 +148,7 @@ namespace Almostengr.FalconPiMonitor
         public async Task<FalconMediaMeta> GetCurrentSongMetaData(string songFileName)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
-                string.Concat(_appSettings.FalconPiPlayerSettings.FalconUri, "media/", songFileName, "/meta"));
+                string.Concat(_appSettings.FalconPiPlayer.FalconUri, "media/", songFileName, "/meta"));
 
             if (response.IsSuccessStatusCode)
             {
@@ -171,7 +171,7 @@ namespace Almostengr.FalconPiMonitor
                 return prevSongTitle;
             }
 
-            if (showOffline && _appSettings.FppMonitorSettings.PostOffline == false)
+            if (showOffline && _appSettings.FppMonitor.PostOffline == false)
             {
                 _logger.LogInformation($"Show is offline. Not posting song \"{currSongTitle}\"");
                 return currSongTitle;
@@ -233,7 +233,7 @@ namespace Almostengr.FalconPiMonitor
 
         private async Task TemperatureCheck(IList<FalconFppdStatusSensor> sensors)
         {
-            if (Double.IsNegative(_appSettings.AlarmSettings.TempThreshold) || Double.IsNaN(_appSettings.AlarmSettings.TempThreshold))
+            if (Double.IsNegative(_appSettings.Alarm.TempThreshold) || Double.IsNaN(_appSettings.Alarm.TempThreshold))
             {
                 return;
             }
@@ -245,13 +245,13 @@ namespace Almostengr.FalconPiMonitor
                     string tempAlert = string.Concat(sensor.Value.ToString(), "C, ", sensor.DegreesCToF(), "F");
                     string preText = null;
 
-                    if (sensor.Value >= _appSettings.AlarmSettings.TempThreshold && _temperatureAlarm == false)
+                    if (sensor.Value >= _appSettings.Alarm.TempThreshold && _temperatureAlarm == false)
                     {
                         _temperatureAlarm = true;
                         preText = "High temperature alert";
                         _logger.LogCritical(tempAlert);
                     }
-                    else if (sensor.Value < _appSettings.AlarmSettings.TempThreshold && _temperatureAlarm == true)
+                    else if (sensor.Value < _appSettings.Alarm.TempThreshold && _temperatureAlarm == true)
                     {
                         _temperatureAlarm = false;
                         preText = "Temperature below threshold";
@@ -260,7 +260,7 @@ namespace Almostengr.FalconPiMonitor
 
                     if (string.IsNullOrEmpty(preText) == false)
                     {
-                        await PostTweet(string.Concat(_appSettings.AlarmSettings.TwitterUser, " ",
+                        await PostTweet(string.Concat(_appSettings.Alarm.TwitterUser, " ",
                             preText, " ", tempAlert));
                     }
 

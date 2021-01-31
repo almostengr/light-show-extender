@@ -5,13 +5,13 @@ namespace Almostengr.FalconPiMonitor.Models
     public class AppSettings
     {
         [Required]
-        public TwitterSettings TwitterSettings { get; set; }
-        public AlarmSettings AlarmSettings { get; set; }
-        public FppMonitorSettings FppMonitorSettings { get; set; }
-        public FalconPiPlayerSettings FalconPiPlayerSettings { get; set; }
+        public Twitter Twitter { get; set; }
+        public Alarm Alarm { get; set; }
+        public FppMonitor FppMonitor { get; set; }
+        public FalconPiPlayer FalconPiPlayer { get; set; }
     }
 
-    public class TwitterSettings
+    public class Twitter
     {
         [Required]
         public string ConsumerSecret { get; set; }
@@ -23,7 +23,7 @@ namespace Almostengr.FalconPiMonitor.Models
         public string AccessSecret { get; set; }
     }
 
-    public class AlarmSettings
+    public class Alarm
     {
         [Required]
         private double _tempThreshold;
@@ -44,7 +44,7 @@ namespace Almostengr.FalconPiMonitor.Models
         }
     }
 
-    public class FppMonitorSettings
+    public class FppMonitor
     {
         public bool PostOffline { get; set; }
 
@@ -65,7 +65,7 @@ namespace Almostengr.FalconPiMonitor.Models
         }
     }
 
-    public class FalconPiPlayerSettings
+    public class FalconPiPlayer
     {
         private string _falconPiUri;
         [Required]

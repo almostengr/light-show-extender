@@ -1,3 +1,4 @@
+using Almostengr.FalconPiMonitor.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +25,11 @@ namespace Almostengr.FalconPiMonitor
                 )
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<FppMonitorService>();
+                    // services.AddHostedService<FppMonitorService>();
+                    services.AddHostedService<FppVitalsService>();
+                    services.AddHostedService<FppCurrentSongService>();
+                    // services.AddHostedService<FppWeatherService>();
+                    // services.AddHostedServices<FppTwitterRepliesService>();
                 })
                 ;
     }
