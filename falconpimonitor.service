@@ -1,0 +1,13 @@
+[Unit]
+Description=Falcon Pi Monitor
+After=network.target
+Documentation=https://github.com/almostengr/falconpimonitor
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/lib/falconpimonitor/falconpimonitor
+User=<iamuser>
+
+[Install]
+WantedBy=multi-user.target

@@ -9,5 +9,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="3.1.11"/>
     <Content Remove="appsettings.json"/>
     <Content Include="README.md" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="falconpimonitor.service" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
