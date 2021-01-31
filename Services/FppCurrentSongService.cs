@@ -29,7 +29,6 @@ namespace Almostengr.FalconPiMonitor.Services
                         await GetTwitterUsername();
                     }
 
-                    // FalconFppdStatus falconStatus = await GetCurrentStatus();
                     FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
 
                     if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)
@@ -66,7 +65,6 @@ namespace Almostengr.FalconPiMonitor.Services
 
                 await Task.Delay(TimeSpan.FromSeconds(AppSettings.FppMonitor.RefreshInterval));
             }
-            // return base.ExecuteAsync(stoppingToken);
         }
 
         private async Task<FalconMediaMeta> GetCurrentSongMetaData(string songFileName)
@@ -132,6 +130,5 @@ namespace Almostengr.FalconPiMonitor.Services
             return currSongTitle;
         }
 
-
-    }
+    } // end class
 }

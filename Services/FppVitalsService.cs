@@ -24,14 +24,11 @@ namespace Almostengr.FalconPiMonitor.Services
 
                 await Task.Delay(TimeSpan.FromMinutes(5));
             }
-
-            // return base.ExecuteAsync(stoppingToken);
         }
 
         private async Task TemperatureCheck(IList<FalconFppdStatusSensor> sensors)
         {
-            if (Double.IsNegative(AppSettings.Alarm.TempThreshold) ||
-                    Double.IsNaN(AppSettings.Alarm.TempThreshold))
+            if (Double.IsNegative(AppSettings.Alarm.TempThreshold) || Double.IsNaN(AppSettings.Alarm.TempThreshold))
             {
                 return;
             }
@@ -66,5 +63,6 @@ namespace Almostengr.FalconPiMonitor.Services
                 }
             }
         }
-    }
+
+    } // end class
 }
