@@ -85,7 +85,7 @@ namespace Almostengr.FalconPiMonitor.Services
                 return prevSongTitle;
             }
 
-            if (showOffline && AppSettings.FppMonitor.PostOffline == false)
+            if (showOffline)
             {
                 logger.LogInformation($"Show is offline. Not posting song \"{currSongTitle}\"");
                 return currSongTitle;
@@ -114,11 +114,6 @@ namespace Almostengr.FalconPiMonitor.Services
             }
 
             tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());
-
-            if (showOffline)
-            {
-                tweet = string.Concat(tweet, " [Offline]");
-            }
 
             await PostTweet(tweet);
 

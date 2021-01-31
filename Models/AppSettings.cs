@@ -48,8 +48,6 @@ namespace Almostengr.FalconPiMonitor.Models
 
     public class FppMonitor
     {
-        public bool PostOffline { get; set; }
-
         [Required]
         private int _refreshInterval;
         public int RefreshInterval

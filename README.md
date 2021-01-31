@@ -89,7 +89,6 @@ the following:
         "TempThreshold": 55.0
     },
     "FppMonitorSettings":{
-        "PostOffline": false,
         "RefreshInterval": 15
     },
     "FalconPiPlayerSettings":{
@@ -114,6 +113,13 @@ degrees Celsius is close to the safe upper operating limit of the Pi.
 
 Follow my Christmas Light Show account [@hplightshow](https://twitter.com/hplightshow) to see what this 
 application can do.
+
+## Offline Show
+
+If you have music that plays when the lights are not running, then you can use an offline playlist. Any playlist
+with the word "offline" in the name, will not have the song information posted to Twitter. This does not 
+disable the Vitals Monitor. Thus if the CPU temperature reached the threshold, you will still 
+receive notifications.
 
 ## Known Bugs
 
