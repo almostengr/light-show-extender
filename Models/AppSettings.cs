@@ -21,6 +21,8 @@ namespace Almostengr.FalconPiMonitor.Models
         public string AccessToken { get; set; }
         [Required]
         public string AccessSecret { get; set; }
+        [Required]
+        public bool TestModeEnabled { get; set; }
     }
 
     public class Alarm
@@ -48,6 +50,7 @@ namespace Almostengr.FalconPiMonitor.Models
     {
         public bool PostOffline { get; set; }
 
+        [Required]
         private int _refreshInterval;
         public int RefreshInterval
         {
@@ -57,9 +60,9 @@ namespace Almostengr.FalconPiMonitor.Models
 
         private int SetRefreshInterval(int? interval)
         {
-            if (interval == null || interval < 0)
+            if (interval == null || interval < 5)
             {
-                interval = 15;
+                interval = 10;
             }
             return (int)interval;
         }
@@ -67,6 +70,7 @@ namespace Almostengr.FalconPiMonitor.Models
 
     public class FalconPiPlayer
     {
+        [Required]
         private string _falconPiUri;
         [Required]
         public string FalconUri

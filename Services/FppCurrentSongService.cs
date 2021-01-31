@@ -24,11 +24,6 @@ namespace Almostengr.FalconPiMonitor.Services
             {
                 try
                 {
-                    if (previousSong == "")
-                    {
-                        await GetTwitterUsername();
-                    }
-
                     FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
 
                     if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)

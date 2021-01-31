@@ -41,20 +41,19 @@ namespace Almostengr.FalconPiMonitor.Services
                 AppSettings.Twitter.ConsumerSecret,
                 AppSettings.Twitter.AccessToken,
                 AppSettings.Twitter.AccessSecret);
-                
+
             return base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await GetTwitterUsername();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 falconStatus = await GetCurrentStatus();
-
                 await Task.Delay(TimeSpan.FromSeconds(ExecuteDelay));
             }
-
-            // return base.ExecuteAsync(stoppingToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
@@ -68,7 +67,7 @@ namespace Almostengr.FalconPiMonitor.Services
         public async Task GetTwitterUsername()
         {
             var user = await TwitterClient.Users.GetAuthenticatedUserAsync();
-            logger.LogInformation("Connected to Twitter as {user}", user);
+            logger.LogInformation("Connected to Twitter as {user}", user.ScreenName);
         }
 
         public async Task PostTweet(string tweetText)
@@ -79,16 +78,20 @@ namespace Almostengr.FalconPiMonitor.Services
                 tweetText = tweetText.Substring(0, 280);
             }
 
-#if Release
-            var tweet = await _twitterClient.Tweets.PublishTweetAsync(tweetText);
-#endif
-
-            logger.LogInformation("TWEETED: {tweetText}", tweetText);
+            if (AppSettings.Twitter.TestModeEnabled == false)
+            {
+                var tweet = await TwitterClient.Tweets.PublishTweetAsync(tweetText);
+                logger.LogInformation("TWEETED: {tweetText}", tweetText);
+            }
+            else
+            {
+                logger.LogInformation("TWEETED [Test Mode]: {tweetText}", tweetText);
+            }
         }
 
         public async Task<FalconFppdStatus> GetCurrentStatus()
         {
-            HttpResponseMessage response = 
+            HttpResponseMessage response =
                 await HttpClient.GetAsync(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
 
             if (response.IsSuccessStatusCode)
