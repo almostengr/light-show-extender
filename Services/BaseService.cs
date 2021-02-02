@@ -49,7 +49,6 @@ namespace Almostengr.FalconPiMonitor.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 // do nothing
-                logger.LogDebug("base service");
             }
         }
 

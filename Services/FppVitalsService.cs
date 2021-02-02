@@ -23,8 +23,6 @@ namespace Almostengr.FalconPiMonitor.Services
             {
                 try
                 {
-                    logger.LogDebug("vitals service");
-                    
                     FalconFppdStatus falconStatus = await GetCurrentStatus();
                     await CheckSensors(falconStatus.Sensors);
 
