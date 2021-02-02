@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,14 +17,13 @@ namespace Almostengr.FalconPiMonitor.Services
         public AppSettings AppSettings;
         public HttpClient HttpClient;
         public TwitterClient TwitterClient;
-        public FalconFppdStatus falconStatus;
-        public int ExecuteDelay;
+        public int ExecuteDelaySeconds = 5;
 
         public BaseService(ILogger<BaseService> logger, IConfiguration configuration)
         {
             this.logger = logger;
-            config = configuration;
-            AppSettings = new AppSettings();
+            this.config = configuration;
+            this.AppSettings = new AppSettings();
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -34,7 +32,6 @@ namespace Almostengr.FalconPiMonitor.Services
 
             ConfigurationBinder.Bind(config, AppSettings);
 
-            ExecuteDelay = AppSettings.FppMonitor.RefreshInterval;
             HttpClient = new HttpClient();
             TwitterClient = new TwitterClient(
                 AppSettings.Twitter.ConsumerKey,
@@ -51,8 +48,8 @@ namespace Almostengr.FalconPiMonitor.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                falconStatus = await GetCurrentStatus();
-                await Task.Delay(TimeSpan.FromSeconds(ExecuteDelay));
+                // do nothing
+                logger.LogDebug("base service");
             }
         }
 
@@ -70,7 +67,7 @@ namespace Almostengr.FalconPiMonitor.Services
             logger.LogInformation("Connected to Twitter as {user}", user.ScreenName);
         }
 
-        public async Task PostTweet(string tweetText)
+        public async Task PostTweet(string tweetText, bool sendTestTweet = false)
         {
             if (tweetText.Length > 280)
             {
@@ -78,7 +75,7 @@ namespace Almostengr.FalconPiMonitor.Services
                 tweetText = tweetText.Substring(0, 280);
             }
 
-            if (AppSettings.Twitter.TestModeEnabled == false)
+            if (sendTestTweet == false)
             {
                 var tweet = await TwitterClient.Tweets.PublishTweetAsync(tweetText);
                 logger.LogInformation("TWEETED: {tweetText}", tweetText);
@@ -101,6 +98,20 @@ namespace Almostengr.FalconPiMonitor.Services
             else
             {
                 throw new System.Exception(response.ReasonPhrase);
+            }
+        }
+
+        public bool IsTestingOrOfflinePlaylist(string playlistName)
+        {
+            playlistName = playlistName.ToLower();
+
+            if (playlistName.Contains("offline") || playlistName.Contains("test"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

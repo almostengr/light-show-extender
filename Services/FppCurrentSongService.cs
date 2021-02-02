@@ -24,6 +24,7 @@ namespace Almostengr.FalconPiMonitor.Services
             {
                 try
                 {
+                    FalconFppdStatus falconStatus = await GetCurrentStatus();
                     FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
 
                     if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)
@@ -35,26 +36,26 @@ namespace Almostengr.FalconPiMonitor.Services
                         previousSong, falconStatusMediaMeta.Format.Tags.Title,
                         falconStatusMediaMeta.Format.Tags.Artist,
                         falconStatusMediaMeta.Format.Tags.Album,
-                        falconStatus.Current_PlayList.Playlist.ToLower().Contains("offline"));
+                        falconStatus.Current_PlayList.Playlist);
                 }
                 catch (NullReferenceException ex)
                 {
-                    logger.LogError(string.Concat("Null Exception occurred. ", ex.Message));
+                    logger.LogError(string.Concat("Null Exception. ", ex.Message));
                     logger.LogDebug(ex, ex.Message);
                 }
                 catch (SocketException ex)
                 {
-                    logger.LogError(string.Concat("Socket Exception occurred. ", ex.Message));
+                    logger.LogError(string.Concat("Socket Exception. ", ex.Message));
                     logger.LogDebug(ex, ex.Message);
                 }
                 catch (HttpRequestException ex)
                 {
-                    logger.LogError(string.Concat("Are you connected to internet?", ex.Message));
+                    logger.LogError(string.Concat("Http Request Exception. Are you connected to internet? ", ex.Message));
                     logger.LogDebug(ex, ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(string.Concat("Exception occurred. ", ex.Message));
+                    logger.LogError(string.Concat("Generic Exception. ", ex.Message));
                     logger.LogDebug(ex, ex.Message);
                 }
 
@@ -78,8 +79,10 @@ namespace Almostengr.FalconPiMonitor.Services
         }
 
         private async Task<string> PostCurrentSong(string prevSongTitle, string currSongTitle,
-            string songArtist = null, string songAlbum = null, bool showOffline = false)
+            string songArtist = null, string songAlbum = null, string playlistName = "")
         {
+            bool showOffline = IsTestingOrOfflinePlaylist(playlistName);
+
             if (prevSongTitle == currSongTitle)
             {
                 return prevSongTitle;

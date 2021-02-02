@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
@@ -20,13 +21,35 @@ namespace Almostengr.FalconPiMonitor.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await TemperatureCheck(falconStatus.Sensors);
+                try
+                {
+                    logger.LogDebug("vitals service");
+                    
+                    FalconFppdStatus falconStatus = await GetCurrentStatus();
+                    await CheckSensors(falconStatus.Sensors);
 
-                await Task.Delay(TimeSpan.FromMinutes(5));
+                    // await Task.Delay(TimeSpan.FromMinutes(5));
+                    await Task.Delay(TimeSpan.FromSeconds(ExecuteDelaySeconds));
+                }
+                catch (NullReferenceException ex)
+                {
+                    logger.LogError(string.Concat("Null Exception. ", ex.Message));
+                    logger.LogDebug(ex, ex.Message);
+                }
+                catch (HttpRequestException ex)
+                {
+                    logger.LogError(string.Concat("Http Request Exception. Are you connected to internet? ", ex.Message));
+                    logger.LogDebug(ex, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(string.Concat("Unspecific Exception. ", ex.Message));
+                    logger.LogDebug(ex, string.Concat(ex.GetType().ToString(), " ", ex.Message));
+                }
             }
         }
 
-        private async Task TemperatureCheck(IList<FalconFppdStatusSensor> sensors)
+        private async Task CheckSensors(IList<FalconFppdStatusSensor> sensors)
         {
             if (Double.IsNegative(AppSettings.Alarm.TempThreshold) || Double.IsNaN(AppSettings.Alarm.TempThreshold))
             {
@@ -35,31 +58,30 @@ namespace Almostengr.FalconPiMonitor.Services
 
             foreach (var sensor in sensors)
             {
+                string preText = null;
+
                 if (sensor.ValueType.ToLower() == "temperature")
                 {
                     string tempAlert = string.Concat(sensor.Value.ToString(), "C, ", sensor.DegreesCToF(), "F");
-                    string preText = null;
 
                     if (sensor.Value >= AppSettings.Alarm.TempThreshold && _temperatureAlarm == false)
                     {
                         _temperatureAlarm = true;
-                        preText = "High temperature alert";
+                        preText = string.Concat("High temperature alert ", tempAlert);
                         logger.LogCritical(tempAlert);
                     }
                     else if (sensor.Value < AppSettings.Alarm.TempThreshold && _temperatureAlarm == true)
                     {
                         _temperatureAlarm = false;
-                        preText = "Temperature below threshold";
+                        preText = string.Concat("Temperature below threshold ", tempAlert);
                         logger.LogWarning(tempAlert);
                     }
+                } // end for
 
-                    if (string.IsNullOrEmpty(preText) == false)
-                    {
-                        await PostTweet(string.Concat(AppSettings.Alarm.TwitterUser, " ",
-                            preText, " ", tempAlert));
-                    }
-
-                    break;
+                // print message if there is an alert to report
+                if (string.IsNullOrEmpty(preText) == false)
+                {
+                    await PostTweet(string.Concat(AppSettings.Alarm.TwitterUser, " ", preText));
                 }
             }
         }
