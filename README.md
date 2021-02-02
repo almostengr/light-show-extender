@@ -47,22 +47,26 @@ Connected to Twitter as hpchristmas
 The "Connected to Twitter" message in the log file, confirms that your account has been properly configured
 and can post to Twitter.
 
-### Creating Cronjob
+### Installing System Service
 
-Create a cronjob that runs on reboot. On your FPP, open a SSH session. Once logged in, enter
+To configure the application to start automatically on startup, run the command from the application directory
 
 ```sh
-crontab -e
+./falconpimonitor --systemdon
 ```
 
-When the text editor opens, add the following to the bottom of the file. Change the directory to match 
-where you extracted the FP Monitor.
+A series of commands will run and the system service should show as being active. 
 
-```
-@reboot /home/fpp/fpmonitor/falconpimonitor > /home/fpp/media/logs/falconpimonitor.log 2>&1
+
+### Uninstalling System Service
+
+To remove the application from automatically starting, run the below command from the application directory
+
+```sh
+./falconpimonitor --systemoff
 ```
 
-Then save and exit the text editor.
+A series of commands will run and the system service should show as being inactive.
 
 ### Example appsettings.json File
 
@@ -117,7 +121,7 @@ application can do.
 ## Offline Show
 
 If you have music that plays when the lights are not running, then you can use an offline playlist. Any playlist
-with the word "offline" in the name, will not have the song information posted to Twitter. This does not 
+with the word "offline" or "test" in the name, will not have the song information posted to Twitter. This does not 
 disable the Vitals Monitor. Thus if the CPU temperature reached the threshold, you will still 
 receive notifications.
 
@@ -125,13 +129,8 @@ receive notifications.
 
 ### Exception on First Run
 
-An exception will occur in the log if the Wifi connection has not been established before the first run. Confirm
+An exception may show in the log if the Wifi connection has not been established before the first run. Confirm
 in the log that HttpRequestException is not repeating in the logs after 2 or 3 attempts.
-
-### Duplicate Log Entries
-
-Log entries are duplicated after project refactoring. Issue #11 has been opened to track the work on 
-this effort.
 
 ## Questions / Comments
 
