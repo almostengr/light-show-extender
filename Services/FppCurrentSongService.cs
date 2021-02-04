@@ -4,15 +4,16 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
+using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Almostengr.FalconPiMonitor.Services
 {
-    public class FppCurrentSongService : BaseService
+    public class FppCurrentSongService : FppBaseService
     {
-        public FppCurrentSongService(ILogger<BaseService> logger, IConfiguration configuration) : base(logger, configuration)
+        public FppCurrentSongService(ILogger<FppBaseService> logger, IConfiguration configuration) : base(logger, configuration)
         {
         }
 
@@ -37,7 +38,7 @@ namespace Almostengr.FalconPiMonitor.Services
                         previousSong, falconStatusMediaMeta.Format.Tags.Title,
                         falconStatusMediaMeta.Format.Tags.Artist,
                         falconStatusMediaMeta.Format.Tags.Album,
-                        falconStatus.Current_PlayList.Playlist);
+                        falconStatus.CurrentPlayList.Playlist);
                 }
                 catch (NullReferenceException ex)
                 {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Almostengr.FalconPiMonitor.Models
@@ -30,6 +31,7 @@ namespace Almostengr.FalconPiMonitor.Models
         public string StationId { get; set; }
         [Required]
         public string EmailAddress { get; set; }
+        public List<string> AlertTypes { get; set; }
     }
 
     public class Alarm

@@ -2,7 +2,7 @@ using System;
 
 namespace Almostengr.FalconPiMonitor.Models
 {
-    public class WeatherObservationCurrent
+    public class WeatherObservation
     {
         public Properties Properties { get; set; }
     }

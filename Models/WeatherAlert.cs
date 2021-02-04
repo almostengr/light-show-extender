@@ -14,16 +14,17 @@ namespace Almostengr.FalconPiMonitor.Models
     {
         [Required]
         [JsonPropertyName("Properties")]
-        public AlertProperties Properties {get;set;}
-
+        public AlertProperties Properties { get; set; }
     }
 
     public class AlertProperties
     {
         public string Id { get; set; }
-        public string Event {get;set;}
+        public string Event { get; set; }
         public DateTime Expires { get; set; }
         public DateTime Effective { get; set; }
-        public string Urgency {get;set;}
+        public string Urgency { get; set; }
+        public string Status { get; set; }
+        public string Headline { get; set; }
     }
 }

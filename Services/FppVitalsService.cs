@@ -4,14 +4,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
+using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiMonitor.Services
 {
-    public class FppVitalsService : BaseService
+    public class FppVitalsService : FppBaseService
     {
-        public FppVitalsService(ILogger<BaseService> logger, IConfiguration configuration) : base(logger, configuration)
+        public FppVitalsService(ILogger<FppVitalsService> logger, IConfiguration configuration) : base(logger, configuration)
         {
         }
 

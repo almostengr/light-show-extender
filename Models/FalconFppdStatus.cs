@@ -4,7 +4,7 @@ namespace Almostengr.FalconPiMonitor.Models
 {
     public class FalconFppdStatus
     {
-        public FalconFppdStatusCurrentPlayList Current_PlayList { get; set; }
+        public FalconFppdStatusCurrentPlayList CurrentPlayList { get; set; }
         public IList<FalconFppdStatusSensor> Sensors { get; set; }
         public string Current_Song { get; set; }
 

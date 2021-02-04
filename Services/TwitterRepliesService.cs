@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiMonitor.Services;
+using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -12,18 +12,10 @@ namespace Almostengr.FalconPiMonitor
         {
         }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            return base.StartAsync(cancellationToken);
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            return base.StopAsync(cancellationToken);
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // don't run if values are not set or action is disabled
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 Tweetinvi.Models.ITweet[] mentions = await TwitterClient.Timelines.GetMentionsTimelineAsync();
@@ -37,5 +29,6 @@ namespace Almostengr.FalconPiMonitor
                 }
             }
         }
+
     }
 }

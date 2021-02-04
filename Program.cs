@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.ConsoleCmd;
 using Almostengr.FalconPiMonitor.Services;
+using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +10,7 @@ namespace Almostengr.FalconPiMonitor
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             foreach (string argument in args)
             {
@@ -27,6 +29,11 @@ namespace Almostengr.FalconPiMonitor
                     case "--systemdoff":
                         UninstallSystemdConsoleCmd uninstallSystemdConsoleCmd = new UninstallSystemdConsoleCmd();
                         uninstallSystemdConsoleCmd.Run();
+                        break;
+
+                    case "--weather":
+                        WeatherAlertTypesConsoleCmd weatherAlertTypesConsoleCmd = new WeatherAlertTypesConsoleCmd();
+                        await weatherAlertTypesConsoleCmd.RunAsync();
                         break;
 
                     case "-h":
@@ -57,9 +64,9 @@ namespace Almostengr.FalconPiMonitor
                 )
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<BaseService>();
                     services.AddHostedService<FppCurrentSongService>();
                     services.AddHostedService<FppVitalsService>();
+                    services.AddHostedService<BaseService>();
                     // services.AddHostedService<WeatherService>();
                     // services.AddHostedService<TwitterRepliesService>();
                 });
