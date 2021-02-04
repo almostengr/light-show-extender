@@ -24,15 +24,16 @@ namespace Almostengr.FalconPiMonitor.Services
             {
                 try
                 {
-                    FalconFppdStatus falconStatus = await GetCurrentStatus();
-                    FalconMediaMeta falconStatusMediaMeta = await GetCurrentSongMetaData(falconStatus.Current_Song);
+                    FalconFppdStatus falconStatus = await GetCurrentStatusAsync();
+                    FalconMediaMeta falconStatusMediaMeta = 
+                        await GetCurrentSongMetaDataAsync(falconStatus.Current_Song);
 
-                    if (falconStatusMediaMeta.Format.Tags.Title == "" || falconStatusMediaMeta.Format.Tags.Title == null)
+                    if (string.IsNullOrEmpty(falconStatusMediaMeta.Format.Tags.Title))
                     {
                         falconStatusMediaMeta.Format.Tags.Title = falconStatus.Current_Song_NotFile;
                     }
 
-                    previousSong = await PostCurrentSong(
+                    previousSong = await PostCurrentSongAsync(
                         previousSong, falconStatusMediaMeta.Format.Tags.Title,
                         falconStatusMediaMeta.Format.Tags.Artist,
                         falconStatusMediaMeta.Format.Tags.Album,
@@ -40,45 +41,33 @@ namespace Almostengr.FalconPiMonitor.Services
                 }
                 catch (NullReferenceException ex)
                 {
-                    logger.LogError(string.Concat("Null Exception. ", ex.Message));
-                    logger.LogDebug(ex, ex.Message);
+                    ExceptionLogger(ex, string.Concat("Null exception ", ex.Message));
                 }
                 catch (SocketException ex)
                 {
-                    logger.LogError(string.Concat("Socket Exception. ", ex.Message));
-                    logger.LogDebug(ex, ex.Message);
+                    ExceptionLogger(ex, string.Concat("Socket Exception ", ex.Message));
                 }
                 catch (HttpRequestException ex)
                 {
-                    logger.LogError(string.Concat("Http Request Exception. Are you connected to internet? ", ex.Message));
-                    logger.LogDebug(ex, ex.Message);
+                    ExceptionLogger(ex, string.Concat("Http Request Exception. Are you connected to internet? ", ex.Message));
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(string.Concat("Generic Exception. ", ex.Message));
-                    logger.LogDebug(ex, ex.Message);
+                    ExceptionLogger(ex, string.Concat("Generic Exception. ", ex.Message));
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(AppSettings.FppMonitor.RefreshInterval));
             }
         }
 
-        private async Task<FalconMediaMeta> GetCurrentSongMetaData(string songFileName)
+        private async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string songFileName)
         {
-            HttpResponseMessage response = await HttpClient.GetAsync(
-                string.Concat(AppSettings.FalconPiPlayer.FalconUri, "media/", songFileName, "/meta"));
-
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<FalconMediaMeta>(response.Content.ReadAsStringAsync().Result);
-            }
-            else
-            {
-                throw new System.Exception(response.ReasonPhrase);
-            }
+            string url = string.Concat(AppSettings.FalconPiPlayer.FalconUri, "media/", songFileName, "/meta");
+            string responseString = await GetRequestAsync(url);
+            return JsonConvert.DeserializeObject<FalconMediaMeta>(responseString);
         }
 
-        private async Task<string> PostCurrentSong(string prevSongTitle, string currSongTitle,
+        private async Task<string> PostCurrentSongAsync(string prevSongTitle, string currSongTitle,
             string songArtist = null, string songAlbum = null, string playlistName = "")
         {
             bool showOffline = IsTestingOrOfflinePlaylist(playlistName);
@@ -98,7 +87,7 @@ namespace Almostengr.FalconPiMonitor.Services
 
             if (string.IsNullOrEmpty(currSongTitle) == false)
             {
-                tweet = string.Concat(tweet, "\"", currSongTitle, "\"");
+                tweet += string.Concat("\"", currSongTitle, "\"");
             }
             else
             {
@@ -106,19 +95,11 @@ namespace Almostengr.FalconPiMonitor.Services
                 return prevSongTitle;
             }
 
-            if (string.IsNullOrEmpty(songArtist) == false)
-            {
-                tweet = string.Concat(tweet, " by ", songArtist);
-            }
+            tweet += string.IsNullOrEmpty(songArtist) ? "" : string.Concat(" by ", songArtist);
+            tweet += string.IsNullOrEmpty(songAlbum) ? "" : string.Concat(" (", songAlbum, ")");
+            tweet += string.Concat(" at ", DateTime.Now.ToLongTimeString());
 
-            if (string.IsNullOrEmpty(songAlbum) == false)
-            {
-                tweet = string.Concat(tweet, " (", songAlbum, ")");
-            }
-
-            tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());
-
-            await PostTweet(tweet);
+            await PostTweetAsync(tweet);
 
             return currSongTitle;
         }
