@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiMonitor.Services
 {
-    public class BaseService : BackgroundService
+    public abstract class BaseService : BackgroundService
     {
         public readonly ILogger<BaseService> logger;
         public readonly IConfiguration config;
@@ -44,7 +45,7 @@ namespace Almostengr.FalconPiMonitor.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await GetTwitterUsername();
+            await GetTwitterUsernameAsync();
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -60,13 +61,13 @@ namespace Almostengr.FalconPiMonitor.Services
             return base.StopAsync(cancellationToken);
         }
 
-        public async Task GetTwitterUsername()
+        public async Task GetTwitterUsernameAsync()
         {
             var user = await TwitterClient.Users.GetAuthenticatedUserAsync();
             logger.LogInformation("Connected to Twitter as {user}", user.ScreenName);
         }
 
-        public async Task PostTweet(string tweetText, bool sendTestTweet = false)
+        public async Task PostTweetAsync(string tweetText, bool sendTestTweet = false)
         {
             if (tweetText.Length > 280)
             {
@@ -85,19 +86,11 @@ namespace Almostengr.FalconPiMonitor.Services
             }
         }
 
-        public async Task<FalconFppdStatus> GetCurrentStatus()
+        public async Task<FalconFppdStatus> GetCurrentStatusAsync()
         {
-            HttpResponseMessage response =
-                await HttpClient.GetAsync(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
-
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<FalconFppdStatus>(response.Content.ReadAsStringAsync().Result);
-            }
-            else
-            {
-                throw new System.Exception(response.ReasonPhrase);
-            }
+            string responseString =
+                await GetRequestAsync(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
+            return JsonConvert.DeserializeObject<FalconFppdStatus>(responseString);
         }
 
         public bool IsTestingOrOfflinePlaylist(string playlistName)
@@ -112,6 +105,26 @@ namespace Almostengr.FalconPiMonitor.Services
             {
                 return false;
             }
+        }
+
+        public async Task<string> GetRequestAsync(string url)
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                throw new System.Exception(response.ReasonPhrase);
+            }
+        }
+
+        public void ExceptionLogger(Exception ex, string message)
+        {
+            logger.LogError(string.Concat("Null Exception. ", ex.Message));
+            logger.LogDebug(ex, ex.Message);
         }
 
     } // end class
