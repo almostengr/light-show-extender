@@ -9,6 +9,7 @@ namespace Almostengr.FalconPiMonitor.Models
         public Alarm Alarm { get; set; }
         public FppMonitor FppMonitor { get; set; }
         public FalconPiPlayer FalconPiPlayer { get; set; }
+        public Weather Weather { get; set; }
     }
 
     public class Twitter
@@ -21,8 +22,14 @@ namespace Almostengr.FalconPiMonitor.Models
         public string AccessToken { get; set; }
         [Required]
         public string AccessSecret { get; set; }
+    }
+
+    public class Weather
+    {
         [Required]
-        public bool TestModeEnabled { get; set; }
+        public string StationId { get; set; }
+        [Required]
+        public string EmailAddress { get; set; }
     }
 
     public class Alarm
