@@ -2,7 +2,7 @@ using System;
 
 namespace Almostengr.FalconPiMonitor.ConsoleCmd
 {
-    public class BaseConsoleCmd
+    public abstract class BaseConsoleCmd
     {
         public string SystemdDirectory = "/lib/systemd/system";
         public string ServiceFilename = "falconpimonitor.service";

@@ -40,7 +40,7 @@ namespace Almostengr.FalconPiMonitor.ConsoleCmd
                         }
                     };
 
-                    Console.WriteLine($"{command}");
+                    ConsoleMessage($"{command}");
                     process.Start();
 
                     string result = process.StandardOutput.ReadToEnd();
