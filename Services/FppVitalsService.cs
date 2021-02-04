@@ -23,8 +23,8 @@ namespace Almostengr.FalconPiMonitor.Services
             {
                 try
                 {
-                    FalconFppdStatus falconStatus = await GetCurrentStatus();
-                    await CheckSensors(falconStatus.Sensors);
+                    FalconFppdStatus falconStatus = await GetCurrentStatusAsync();
+                    await CheckSensorsAsync(falconStatus.Sensors);
 
                     // await Task.Delay(TimeSpan.FromMinutes(5));
                     await Task.Delay(TimeSpan.FromSeconds(ExecuteDelaySeconds));
@@ -47,7 +47,7 @@ namespace Almostengr.FalconPiMonitor.Services
             }
         }
 
-        private async Task CheckSensors(IList<FalconFppdStatusSensor> sensors)
+        private async Task CheckSensorsAsync(IList<FalconFppdStatusSensor> sensors)
         {
             if (Double.IsNegative(AppSettings.Alarm.TempThreshold) || Double.IsNaN(AppSettings.Alarm.TempThreshold))
             {
@@ -79,7 +79,7 @@ namespace Almostengr.FalconPiMonitor.Services
                 // print message if there is an alert to report
                 if (string.IsNullOrEmpty(preText) == false)
                 {
-                    await PostTweet(string.Concat(AppSettings.Alarm.TwitterUser, " ", preText));
+                    await PostTweetAsync(string.Concat(AppSettings.Alarm.TwitterUser, " ", preText));
                 }
             }
         }
