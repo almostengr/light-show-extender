@@ -60,8 +60,8 @@ namespace Almostengr.FalconPiMonitor
                     services.AddHostedService<BaseService>();
                     services.AddHostedService<FppCurrentSongService>();
                     services.AddHostedService<FppVitalsService>();
-                    // services.AddHostedService<FppWeatherService>();
-                    // services.AddHostedServices<FppTwitterRepliesService>();
+                    // services.AddHostedService<WeatherService>();
+                    // services.AddHostedService<TwitterRepliesService>();
                 });
     }
 }
