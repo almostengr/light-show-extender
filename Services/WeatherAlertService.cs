@@ -12,8 +12,6 @@ namespace Almostengr.FalconPiMonitor.Services
 {
     public class WeatherAlertService : WeatherBaseService
     {
-        private List<string> _eventTypes;
-
         public WeatherAlertService(ILogger<WeatherAlertService> logger, IConfiguration configuration) : base(logger, configuration)
         {
         }

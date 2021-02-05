@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.ConsoleCmd;
 using Almostengr.FalconPiMonitor.Services;
@@ -12,9 +13,10 @@ namespace Almostengr.FalconPiMonitor
     {
         public static async Task Main(string[] args)
         {
-            foreach (string argument in args)
+            if (args.Length == 1)
             {
-                switch (argument)
+
+                switch (args[0])
                 {
                     case "--build":
                         BuildConsoleCmd buildConsoleCmd = new BuildConsoleCmd();
@@ -43,11 +45,20 @@ namespace Almostengr.FalconPiMonitor
                         helpConsoleCmd.Run();
                         break;
                 }
-            }
 
-            if (args.Length == 0)
+                Console.WriteLine("Press ENTER key to exit...");
+                Console.ReadLine();
+            }
+            else if (args.Length == 0)
             {
                 CreateHostBuilder(args).Build().Run();
+            }
+            else
+            {
+                Console.WriteLine("Too many arguments specified");
+                Console.WriteLine();
+                HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
+                helpConsoleCmd.Run();
             }
         }
 

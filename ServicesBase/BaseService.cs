@@ -15,10 +15,10 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
     {
         public readonly ILogger<BaseService> logger;
         public readonly IConfiguration config;
-        public AppSettings AppSettings;
-        public HttpClient HttpClient;
-        public TwitterClient TwitterClient;
-        public int ExecuteDelaySeconds = 5;
+        protected AppSettings AppSettings;
+        protected HttpClient HttpClient;
+        protected TwitterClient TwitterClient;
+        protected int ExecuteDelaySeconds = 10;
 
         public BaseService(ILogger<BaseService> logger, IConfiguration configuration)
         {
@@ -67,23 +67,32 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
             base.Dispose();
         }
 
-        public async Task GetTwitterUsernameAsync()
+        protected async Task GetTwitterUsernameAsync()
         {
             var user = await TwitterClient.Users.GetAuthenticatedUserAsync();
             logger.LogInformation("Connected to Twitter as {user}", user.ScreenName);
         }
 
-        public async Task PostTweetAsync(string tweetText, bool sendTestTweet = false)
+        protected async Task PostTweetAsync(string tweetText, bool testingTweet = false, bool isAlarm = false)
         {
-            if (tweetText.Length > 280)
+            if (isAlarm)
             {
-                logger.LogWarning("Tweet is too long. Truncating. BEFORE: {tweetText}", tweetText);
-                tweetText = tweetText.Substring(0, 280);
+                tweetText = string.Concat(AppSettings.Twitter.AlarmUsers, " ", tweetText);
             }
 
-            if (sendTestTweet == false)
+            int maxTweetLength = 280;
+            if (tweetText.Length > maxTweetLength)
             {
-                var tweet = await TwitterClient.Tweets.PublishTweetAsync(tweetText);
+                string tweetTextBefore = tweetText;
+                tweetText = tweetText.Substring(0, maxTweetLength);
+                logger.LogWarning("Tweet is too long. Truncating.");
+                logger.LogWarning("BEFORE: {tweetTextBefore}", tweetTextBefore);
+                logger.LogWarning("AFTER: {tweetText}", tweetText);
+            }
+
+            if (testingTweet == false)
+            {
+                await TwitterClient.Tweets.PublishTweetAsync(tweetText);
                 logger.LogInformation("TWEETED: {tweetText}", tweetText);
             }
             else
@@ -91,6 +100,7 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
                 logger.LogInformation("TWEETED [Test Mode]: {tweetText}", tweetText);
             }
         }
+
 
         // public async Task<string> GetRequestAsync(string url)
         // {
@@ -106,8 +116,9 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
         //     }
         // }
 
-        public async Task<T> GetRequestAsync<T>(string url) where T : class
+        protected async Task<T> GetRequestAsync<T>(string url) where T : class
         {
+            url = url.Replace("//", "/");
             HttpResponseMessage response = await HttpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
@@ -120,7 +131,7 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
             }
         }
 
-        public void ExceptionLogger<T>(T ex, string message = "") where T : Exception
+        protected void ExceptionLogger<T>(T ex, string message = "") where T : Exception
         {
             logger.LogError(string.Concat(message, " ", ex.Message));
             logger.LogDebug(ex, ex.Message);

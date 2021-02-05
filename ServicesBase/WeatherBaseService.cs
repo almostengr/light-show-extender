@@ -9,9 +9,9 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
 {
     public abstract class WeatherBaseService : BaseService
     {
-        public string WeatherApiUrl = "https://api.weather.gov";
-        public WeatherStation WeatherStation;
-        public WeatherZone WeatherZone;
+        protected string WeatherApiUrl = "https://api.weather.gov";
+        protected WeatherStation WeatherStation;
+        protected WeatherZone WeatherZone;
 
         public WeatherBaseService(ILogger<WeatherBaseService> logger, IConfiguration configuration) : base(logger, configuration)
         {

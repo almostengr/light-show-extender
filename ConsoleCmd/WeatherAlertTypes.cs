@@ -1,27 +1,51 @@
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Almostengr.FalconPiMonitor.Models;
 
 namespace Almostengr.FalconPiMonitor.ConsoleCmd
 {
-    public class WeatherAlertTypesConsoleCmd
+    public class WeatherAlertTypesConsoleCmd : BaseConsoleCmd
     {
-        private HttpClient _httpClient = new HttpClient();
-
         public async Task RunAsync()
         {
-            HttpResponseMessage httpResponseMessage = 
-                await _httpClient.GetAsync("https://api.weather.gov/alerts/types");
-            List<string> eventTypes = 
-                JsonConvert.DeserializeObject<List<string>>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            // string emailAddress = System.Configuration.ConfigurationManager.AppSettings.Get("Weather:EmailAddress");
 
-            foreach (var eventType in eventTypes){
-                Console.WriteLine(eventType);
+            // if (string.IsNullOrEmpty(emailAddress))
+            // {
+            //     Console.WriteLine("Email address needs to be provided in configuration file (appsettings.json)");
+            //     return;
+            // }
+
+            string alertTypeUrl = "https://api.weather.gov/alerts/types";
+
+            Console.WriteLine($"Getting the list of weather alert types from {alertTypeUrl}");
+            Console.WriteLine();
+
+            // HttpClient httpClient = new HttpClient();
+            // httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"(myweatherapp.com, {emailAddress})");
+
+            // HttpResponseMessage httpResponseMessage =
+            //     await httpClient.GetAsync("https://api.weather.gov/alerts/types");
+
+            // if (httpResponseMessage.IsSuccessStatusCode)
+            // {
+            // WeatherAlertTypes weatherAlertTypes =
+            //     JsonConvert.DeserializeObject<WeatherAlertTypes>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+
+            WeatherAlertTypes weatherAlertTypes = await GetRequestAsync<WeatherAlertTypes>(alertTypeUrl);
+            foreach (var alertType in weatherAlertTypes.EventTypes)
+            {
+                Console.WriteLine(alertType);
             }
 
-            _httpClient.Dispose();
+            // }
+            // else
+            // {
+            //     Console.WriteLine("Unable to get alert types");
+            //     Console.WriteLine(httpResponseMessage.ReasonPhrase);
+            // }
+
+            // httpClient.Dispose();
         }
     }
 }

@@ -19,14 +19,19 @@ namespace Almostengr.FalconPiMonitor.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string previousSong = "";
+            string masterInstance = 
+                AppSettings.FalconPiPlayers
+                    .Find(p => p.FalconPiPlayerMode.ToLower() == "master" ||
+                        p.FalconPiPlayerMode.ToLower() == "player")
+                    .Hostname;
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    FalconFppdStatus falconStatus = await GetCurrentStatusAsync();
+                    FalconFppdStatus falconStatus = await GetCurrentStatusAsync(masterInstance);
                     FalconMediaMeta falconStatusMediaMeta = 
-                        await GetCurrentSongMetaDataAsync(falconStatus.Current_Song);
+                        await GetCurrentSongMetaDataAsync(masterInstance, falconStatus.Current_Song);
 
                     if (string.IsNullOrEmpty(falconStatusMediaMeta.Format.Tags.Title))
                     {
@@ -34,7 +39,8 @@ namespace Almostengr.FalconPiMonitor.Services
                     }
 
                     previousSong = await PostCurrentSongAsync(
-                        previousSong, falconStatusMediaMeta.Format.Tags.Title,
+                        previousSong, 
+                        falconStatusMediaMeta.Format.Tags.Title,
                         falconStatusMediaMeta.Format.Tags.Artist,
                         falconStatusMediaMeta.Format.Tags.Album,
                         falconStatus.CurrentPlayList.Playlist);
@@ -60,13 +66,14 @@ namespace Almostengr.FalconPiMonitor.Services
                     ExceptionLogger<Exception>(ex);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(AppSettings.FppMonitor.RefreshInterval));
+                await Task.Delay(TimeSpan.FromSeconds(AppSettings.MonitorRefreshInterval));
             }
         }
 
-        private async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string songFileName)
+        private async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string masterFppUrl, string songFileName)
         {
-            string url = string.Concat(AppSettings.FalconPiPlayer.FalconUri, "media/", songFileName, "/meta");
+            // string url = string.Concat(AppSettings.FalconPiPlayers.Find(f => f.FalconPiPlayerMode.ToLower() == "master").FalconUrl, "media/", songFileName, "/meta");
+            string url = string.Concat(masterFppUrl, "/media/", songFileName, "/meta");
             return await GetRequestAsync<FalconMediaMeta>(url);
         }
 
@@ -88,13 +95,14 @@ namespace Almostengr.FalconPiMonitor.Services
 
             string tweet = "Playing ";
 
+
             if (string.IsNullOrEmpty(currSongTitle) == false)
             {
                 tweet += string.Concat("\"", currSongTitle, "\"");
             }
             else
             {
-                logger.LogInformation("Not tweeting song as it does not have title.");
+                logger.LogError("Not tweeting song as it does not have title.");
                 return prevSongTitle;
             }
 

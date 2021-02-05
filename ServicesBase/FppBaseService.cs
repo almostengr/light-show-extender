@@ -8,16 +8,23 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
 {
     public abstract class FppBaseService : BaseService
     {
+        public string masterFppUrl;
+
         public FppBaseService(ILogger<FppBaseService> logger, IConfiguration configuration) : base(logger, configuration)
         {
+            masterFppUrl = 
+                AppSettings.FalconPiPlayers.Find(f => f.FalconPiPlayerMode.ToLower() == "master").Hostname;
         }
 
-        public async Task<FalconFppdStatus> GetCurrentStatusAsync()
+        protected async Task<FalconFppdStatus> GetCurrentStatusAsync(string fppHostname)
         {
-            return await GetRequestAsync<FalconFppdStatus>(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
+            // string responseString =
+            //     await GetRequestAsync(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
+            // return JsonConvert.DeserializeObject<FalconFppdStatus>(responseString);
+            return await GetRequestAsync<FalconFppdStatus>(string.Concat(fppHostname, "fppd/status"));
         }
 
-        public bool IsTestingOrOfflinePlaylist(string playlistName)
+        protected bool IsTestingOrOfflinePlaylist(string playlistName)
         {
             playlistName = playlistName.ToLower();
 

@@ -7,8 +7,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.11"/>
     <PackageReference Include="TweetinviAPI" Version="5.0.3"/>
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="3.1.11"/>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="*"/>
     <Content Remove="appsettings.json"/>
     <Content Include="README.md" CopyToPublishDirectory="PreserveNewest"/>
-    <Content Include="falconpimonitor.service" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="falconpimonitor.service" CopyToPublishDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

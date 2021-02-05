@@ -7,10 +7,27 @@ namespace Almostengr.FalconPiMonitor.Models
     {
         [Required]
         public Twitter Twitter { get; set; }
-        public Alarm Alarm { get; set; }
-        public FppMonitor FppMonitor { get; set; }
-        public FalconPiPlayer FalconPiPlayer { get; set; }
+        // public Alarm Alarm { get; set; }
+        // public FppMonitor FppMonitor { get; set; }
+
+        [Required]
+        private int _monitorRefreshInterval;
+        public int MonitorRefreshInterval
+        {
+            get { return _monitorRefreshInterval; }
+            set { _monitorRefreshInterval = SetRefreshInterval(value); }
+        }
+        public List<FalconPiPlayer> FalconPiPlayers { get; set; }
         public Weather Weather { get; set; }
+        
+        private int SetRefreshInterval(int? interval)
+        {
+            if (interval == null || interval < 5)
+            {
+                interval = 10;
+            }
+            return (int)interval;
+        }
     }
 
     public class Twitter
@@ -23,6 +40,8 @@ namespace Almostengr.FalconPiMonitor.Models
         public string AccessToken { get; set; }
         [Required]
         public string AccessSecret { get; set; }
+        [Required]
+        public List<string> AlarmUsers { get; set; }
     }
 
     public class Weather
@@ -31,62 +50,60 @@ namespace Almostengr.FalconPiMonitor.Models
         public string StationId { get; set; }
         [Required]
         public string EmailAddress { get; set; }
+        [Required]
+        public string WebsiteUrl { get; set; }
         public List<string> AlertTypes { get; set; }
+        public double MaxTemperature { get; set; }
+        public double MinTemperature { get; set; }
+        public bool AlertTriggerShutdown { get; set; }
     }
 
-    public class Alarm
-    {
-        [Required]
-        private double _tempThreshold;
-        public double TempThreshold
-        {
-            get { return _tempThreshold; }
-            set { _tempThreshold = SetTempThreshold(value); }
-        }
-        public string TwitterUser { get; set; }
+    // public class Alarm
+    // {
+        // [Required]
+        // private double _tempThreshold;
+        // public double TempThreshold
+        // {
+        //     get { return _tempThreshold; }
+        //     set { _tempThreshold = SetTempThreshold(value); }
+        // }
+        // // public string TwitterUser { get; set; }
 
-        private double SetTempThreshold(double? threshold)
-        {
-            if (threshold == null || threshold < 0)
-            {
-                threshold = 55.0;
-            }
-            return (double)threshold;
-        }
-    }
+        // private double SetTempThreshold(double? threshold)
+        // {
+        //     if (threshold == null || threshold < 0)
+        //     {
+        //         threshold = 55.0;
+        //     }
+        //     return (double)threshold;
+        // }
+    // }
 
-    public class FppMonitor
-    {
-        [Required]
-        private int _refreshInterval;
-        public int RefreshInterval
-        {
-            get { return _refreshInterval; }
-            set { _refreshInterval = SetRefreshInterval(value); }
-        }
-
-        private int SetRefreshInterval(int? interval)
-        {
-            if (interval == null || interval < 5)
-            {
-                interval = 10;
-            }
-            return (int)interval;
-        }
-    }
+    // public class FppMonitor
+    // {
+    // }
 
     public class FalconPiPlayer
     {
         [Required]
-        private string _falconPiUri;
+        private string _hostname;
         [Required]
-        public string FalconUri
+        public string Hostname
         {
-            get { return _falconPiUri; }
-            set { _falconPiUri = SetFalconPiUri(value); }
+            get { return _hostname; }
+            set { _hostname = SetFalconPiHostname(value); }
         }
+        [Required]
+        private double _maxCpuTemperature;
+        public double MaxCpuTemperature
+        {
+            get { return _maxCpuTemperature; }
+            set { _maxCpuTemperature = SetMaxCpuTemperature(value); }
+        }
+        // public FalconPiPlayerMode FalconPiPlayerMode { get; set; }
+        public string FalconPiPlayerMode { get; set; }
 
-        private string SetFalconPiUri(string uri)
+        private string SetFalconPiHostname(string uri)
         {
             uri = uri.ToLower().Replace("api/", "").Replace("api", "");
 
@@ -99,6 +116,15 @@ namespace Almostengr.FalconPiMonitor.Models
             uri = uri.Replace("//api/", "/api/");
 
             return uri;
+        }
+
+        private double SetMaxCpuTemperature(double? threshold)
+        {
+            if (threshold == null || threshold < 0)
+            {
+                threshold = 55.0;
+            }
+            return (double)threshold;
         }
     }
 }
