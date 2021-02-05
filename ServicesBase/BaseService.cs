@@ -6,6 +6,7 @@ using Almostengr.FalconPiMonitor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Tweetinvi;
 
 namespace Almostengr.FalconPiMonitor.ServicesBase
@@ -56,8 +57,14 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
         {
             logger.LogInformation("Shutting down");
 
-            HttpClient.Dispose();
+            // HttpClient.Dispose();
             return base.StopAsync(cancellationToken);
+        }
+
+        public override void Dispose()
+        {
+            HttpClient.Dispose();
+            base.Dispose();
         }
 
         public async Task GetTwitterUsernameAsync()
@@ -85,13 +92,27 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
             }
         }
 
-        public async Task<string> GetRequestAsync(string url)
+        // public async Task<string> GetRequestAsync(string url)
+        // {
+        //     HttpResponseMessage response = await HttpClient.GetAsync(url);
+
+        //     if (response.IsSuccessStatusCode)
+        //     {
+        //         return response.Content.ReadAsStringAsync().Result;
+        //     }
+        //     else
+        //     {
+        //         throw new System.Exception(response.ReasonPhrase);
+        //     }
+        // }
+
+        public async Task<T> GetRequestAsync<T>(string url) where T : class
         {
             HttpResponseMessage response = await HttpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
             {
-                return response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result);
             }
             else
             {
@@ -99,11 +120,17 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
             }
         }
 
-        public void ExceptionLogger(Exception ex, string message)
+        public void ExceptionLogger<T>(T ex, string message = "") where T : Exception
         {
-            logger.LogError(string.Concat("Null Exception. ", ex.Message));
+            logger.LogError(string.Concat(message, " ", ex.Message));
             logger.LogDebug(ex, ex.Message);
         }
+
+        // public void ExceptionLogger(Exception ex, string message)
+        // {
+        //     logger.LogError(string.Concat("Null Exception. ", ex.Message));
+        //     logger.LogDebug(ex, ex.Message);
+        // }
 
     } // end class
 }

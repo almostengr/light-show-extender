@@ -7,7 +7,6 @@ using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Almostengr.FalconPiMonitor.Services
 {
@@ -42,19 +41,23 @@ namespace Almostengr.FalconPiMonitor.Services
                 }
                 catch (NullReferenceException ex)
                 {
-                    ExceptionLogger(ex, string.Concat("Null exception ", ex.Message));
+                    // ExceptionLogger(ex, string.Concat("Null exception ", ex.Message));
+                    ExceptionLogger<NullReferenceException>(ex);
                 }
                 catch (SocketException ex)
                 {
-                    ExceptionLogger(ex, string.Concat("Socket Exception ", ex.Message));
+                    // ExceptionLogger(ex, string.Concat("Socket Exception ", ex.Message));
+                    ExceptionLogger<SocketException>(ex);
                 }
                 catch (HttpRequestException ex)
                 {
-                    ExceptionLogger(ex, string.Concat("Http Request Exception. Are you connected to internet? ", ex.Message));
+                    // ExceptionLogger(ex, string.Concat("Http Request Exception. Are you connected to internet? ", ex.Message));
+                    ExceptionLogger<HttpRequestException>(ex, "Are you connected to internet?");
                 }
                 catch (Exception ex)
                 {
-                    ExceptionLogger(ex, string.Concat("Generic Exception. ", ex.Message));
+                    // ExceptionLogger(ex, string.Concat("Generic Exception. ", ex.Message));
+                    ExceptionLogger<Exception>(ex);
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(AppSettings.FppMonitor.RefreshInterval));
@@ -64,8 +67,7 @@ namespace Almostengr.FalconPiMonitor.Services
         private async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string songFileName)
         {
             string url = string.Concat(AppSettings.FalconPiPlayer.FalconUri, "media/", songFileName, "/meta");
-            string responseString = await GetRequestAsync(url);
-            return JsonConvert.DeserializeObject<FalconMediaMeta>(responseString);
+            return await GetRequestAsync<FalconMediaMeta>(url);
         }
 
         private async Task<string> PostCurrentSongAsync(string prevSongTitle, string currSongTitle,

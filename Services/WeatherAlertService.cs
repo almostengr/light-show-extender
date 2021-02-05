@@ -38,8 +38,9 @@ namespace Almostengr.FalconPiMonitor.Services
         private async Task<WeatherAlerts> GetCurrentWeatherAlertsAsync(WeatherZone weatherZone)
         {
             string url = string.Concat(WeatherApiUrl, $"/alerts/active/zone/${weatherZone.Properties.Id}");
-            string responseString = await GetRequestAsync(url);
-            return JsonConvert.DeserializeObject<WeatherAlerts>(responseString);
+            // string responseString = await GetRequestAsync(url);
+            // return JsonConvert.DeserializeObject<WeatherAlerts>(responseString);
+            return await GetRequestAsync<WeatherAlerts>(url);
         }
 
     }

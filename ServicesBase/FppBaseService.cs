@@ -14,9 +14,7 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
 
         public async Task<FalconFppdStatus> GetCurrentStatusAsync()
         {
-            string responseString =
-                await GetRequestAsync(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
-            return JsonConvert.DeserializeObject<FalconFppdStatus>(responseString);
+            return await GetRequestAsync<FalconFppdStatus>(string.Concat(AppSettings.FalconPiPlayer.FalconUri, "fppd/status"));
         }
 
         public bool IsTestingOrOfflinePlaylist(string playlistName)

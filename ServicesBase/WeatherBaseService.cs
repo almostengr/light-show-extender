@@ -20,20 +20,13 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             WeatherStation = await GetStationByIdAsync(AppSettings.Weather.StationId);
-            WeatherZone = await GetZoneByStationAsync(WeatherStation);
-        }
-
-        private async Task<WeatherZone> GetZoneByStationAsync(WeatherStation weatherStation)
-        {
-            string responseString = await GetRequestAsync(weatherStation.Properties.Forecast);
-            return JsonConvert.DeserializeObject<WeatherZone>(responseString);
+            WeatherZone = await GetRequestAsync<WeatherZone>(WeatherStation.Properties.Forecast);
         }
 
         private async Task<WeatherStation> GetStationByIdAsync(string stationId)
         {
             string url = string.Concat(WeatherApiUrl, $"/stations/${stationId}");
-            string responseString = await GetRequestAsync(url);
-            return JsonConvert.DeserializeObject<WeatherStation>(responseString);
+            return await GetRequestAsync<WeatherStation>(url);
         }
 
     }

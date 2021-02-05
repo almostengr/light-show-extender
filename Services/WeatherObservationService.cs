@@ -17,6 +17,11 @@ namespace Almostengr.FalconPiMonitor.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            if (false)
+            {
+                await base.ExecuteAsync(stoppingToken);
+            }
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 logger.LogInformation("Getting latest weather observations");
@@ -32,8 +37,7 @@ namespace Almostengr.FalconPiMonitor.Services
         {
             string url =
                 string.Concat(WeatherApiUrl, $"/stations/{weatherStation.Properties.StationIdentifier}/observations/latest");
-            string responseString = await GetRequestAsync(url);
-            return JsonConvert.DeserializeObject<WeatherObservation>(responseString);
+            return await GetRequestAsync<WeatherObservation>(url);
         }
 
     }
