@@ -5,7 +5,6 @@ using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Almostengr.FalconPiMonitor.Services
 {
@@ -27,7 +26,14 @@ namespace Almostengr.FalconPiMonitor.Services
                 logger.LogInformation("Getting latest weather observations");
                 WeatherObservation weatherObservation = await GetCurrentObservationsAsync(WeatherStation);
 
-                // TODO CHECK THE OBSERVATION DATA AGAINST THE APP SETTINGS
+                if (weatherObservation.Properties.Temperature.Value >= AppSettings.Weather.MaxTemperature ||
+                    weatherObservation.Properties.WindGust.Value >= AppSettings.Weather.MaxWindSpeed ||
+                    weatherObservation.Properties.WindSpeed.Value >= AppSettings.Weather.MaxWindSpeed)
+                {
+                    logger.LogInformation("Weather observation alert. Stopping show gracefully.");
+                    string result  = await GetRequestAsync<string>("/api/playlists/stopgracefully");
+                    await PostTweetAsync("Weather observation alert. Stopping show gracefully.", false, true);
+                }
 
                 await Task.Delay(TimeSpan.FromHours(1));
             }

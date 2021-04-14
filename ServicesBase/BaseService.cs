@@ -15,8 +15,8 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
     {
         public readonly ILogger<BaseService> logger;
         public readonly IConfiguration config;
-        protected AppSettings AppSettings;
-        protected HttpClient HttpClient;
+        public readonly AppSettings AppSettings;
+        public HttpClient HttpClient;
         protected TwitterClient TwitterClient;
         protected int ExecuteDelaySeconds = 10;
 
@@ -57,7 +57,7 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
         {
             logger.LogInformation("Shutting down");
 
-            // HttpClient.Dispose();
+            HttpClient.Dispose();
             return base.StopAsync(cancellationToken);
         }
 

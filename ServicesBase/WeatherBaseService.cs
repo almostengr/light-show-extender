@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Almostengr.FalconPiMonitor.ServicesBase
 {
@@ -27,6 +26,16 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
         {
             string url = string.Concat(WeatherApiUrl, $"/stations/${stationId}");
             return await GetRequestAsync<WeatherStation>(url);
+        }
+
+        protected async Task ShutDownShowWeatherAsync()
+        {
+            logger.LogInformation("Weather observation alert. Stopping show gracefully.");
+            string result = await GetRequestAsync<string>("/api/playlists/stopgracefully");
+            await PostTweetAsync("Weather observation alert. Stopping show gracefully.", false, true);
+
+            // /api/playlist/:PlaylistName/start	
+            // await GetRequestAsync<string>(t
         }
 
     }

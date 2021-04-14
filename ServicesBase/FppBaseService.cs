@@ -2,18 +2,18 @@ using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Almostengr.FalconPiMonitor.ServicesBase
 {
     public abstract class FppBaseService : BaseService
     {
-        public string masterFppUrl;
+        public string masterFppInstance {get; private set;}
 
         public FppBaseService(ILogger<FppBaseService> logger, IConfiguration configuration) : base(logger, configuration)
         {
-            masterFppUrl = 
-                AppSettings.FalconPiPlayers.Find(f => f.FalconPiPlayerMode.ToLower() == "master").Hostname;
+            // masterFppUrl = 
+            //     AppSettings.FalconPiPlayers.Find(f => f.FalconPiPlayerMode.ToLower() == "master").Hostname;
+            masterFppInstance = GetMasterOrStandaloneInstance();
         }
 
         protected async Task<FalconFppdStatus> GetCurrentStatusAsync(string fppHostname)
@@ -36,6 +36,19 @@ namespace Almostengr.FalconPiMonitor.ServicesBase
             {
                 return false;
             }
+        }
+
+        protected string GetMasterOrStandaloneInstance()
+        {
+            return AppSettings.FalconPiPlayers
+                    .Find(p => p.FalconPiPlayerMode.ToLower() == "master" ||
+                        p.FalconPiPlayerMode.ToLower() == "player")
+                    .Hostname;
+        }
+
+        public async Task StopShowGracefully()
+        {
+            
         }
 
     } // end class

@@ -12,8 +12,13 @@ namespace Almostengr.FalconPiMonitor.Services
 {
     public class FppCurrentSongService : FppBaseService
     {
+        private readonly ILogger<FppBaseService> _logger;
+        private readonly IConfiguration _configuration;
+
         public FppCurrentSongService(ILogger<FppBaseService> logger, IConfiguration configuration) : base(logger, configuration)
         {
+            _logger = logger;
+            _configuration = configuration;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

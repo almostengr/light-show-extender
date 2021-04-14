@@ -19,7 +19,7 @@ namespace Almostengr.FalconPiMonitor.Models
         }
         public List<FalconPiPlayer> FalconPiPlayers { get; set; }
         public Weather Weather { get; set; }
-        
+
         private int SetRefreshInterval(int? interval)
         {
             if (interval == null || interval < 5)
@@ -56,27 +56,28 @@ namespace Almostengr.FalconPiMonitor.Models
         public double MaxTemperature { get; set; }
         public double MinTemperature { get; set; }
         public bool AlertTriggerShutdown { get; set; }
+        public double MaxWindSpeed { get; set; }
     }
 
     // public class Alarm
     // {
-        // [Required]
-        // private double _tempThreshold;
-        // public double TempThreshold
-        // {
-        //     get { return _tempThreshold; }
-        //     set { _tempThreshold = SetTempThreshold(value); }
-        // }
-        // // public string TwitterUser { get; set; }
+    // [Required]
+    // private double _tempThreshold;
+    // public double TempThreshold
+    // {
+    //     get { return _tempThreshold; }
+    //     set { _tempThreshold = SetTempThreshold(value); }
+    // }
+    // // public string TwitterUser { get; set; }
 
-        // private double SetTempThreshold(double? threshold)
-        // {
-        //     if (threshold == null || threshold < 0)
-        //     {
-        //         threshold = 55.0;
-        //     }
-        //     return (double)threshold;
-        // }
+    // private double SetTempThreshold(double? threshold)
+    // {
+    //     if (threshold == null || threshold < 0)
+    //     {
+    //         threshold = 55.0;
+    //     }
+    //     return (double)threshold;
+    // }
     // }
 
     // public class FppMonitor

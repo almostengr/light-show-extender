@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiMonitor.ServicesBase;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Almostengr.FalconPiMonitor.Services
 {
@@ -26,6 +24,7 @@ namespace Almostengr.FalconPiMonitor.Services
                 WeatherAlerts weatherAlerts = await GetCurrentWeatherAlertsAsync(WeatherZone);
 
                 // TODO CHECK THE ALERTS AGAINST THE SETTINGS
+                // AppSettings.Weather.AlertTypes.FindAll(a => a.)
 
                 // TODO IF ALERT MATCHES SETTING, THEN SHUT DOWN SHOW AND SEND TWEET
 

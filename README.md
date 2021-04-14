@@ -1,4 +1,4 @@
-# Falcon Pi Monitor
+# Falcon Pi Twitter
 
 This project is designed for Falcon Pi Player to provide updates via Twitter on the light show that 
 you are running. Those updates include posting the current song and providing alerts when problems
@@ -6,131 +6,8 @@ are detected.
 
 This application is ONLY designed to run on Falcon Pi Players that are installed on Raspberry Pi.
 
-## How Does It Work
-
-### Tweeting Song Information
-
-This application calls the Falcon Pi Player API to get the meta data for the song that is current playing. 
-Then it uses that information to compose a tweet. If the song that is playing does not have ID3 tag 
-information entered, then will not display part or all of the song data. If you need to add the song 
-meta data to the file, you can use a program like Audacity to do so.
-
-### Tweeting Temperature Alerts
-
-The application calls the Falcon Pi Player API to get the current temperature of the Raspberry Pi. 
-If it is above the threshold that is specified in the appsettings.json file, then it will send a tweet
-that mentions the users specified in the appsettings.json file a message to let them know if the 
-current temperature. When the temperature drops below the threshold, then another tweet is sent.
-
-## Installation Instructions
-
-* Download the latest release that is available in zip or tar format.
-* Copy the archive file to your Raspberry Pi.
-* Extract the archive file contents. Ideally extract them to a folder in the /home/fpp directory.
-* Create a [Twitter Developer account](https://developer.twitter.com/). 
-* Once approved, create a project. 
-Within that project, create Consumer Key (aka API Key), Consumer Secret (aka API Secret), Access Token and Access Secret.
-Also within that project, update the App Permissions to "Read and Write". By default, permissions are "Read".
-* Copy appsettings.template.json to appsettings.json.
-* Add the key, secrets, and token that you got from your Twitter developer account to the appsettings.json file.
-See [Example appsettings.json File](#example-appsettingsjson-file) and 
-[About appsettings.json File](#about-appsettingsjson-file) for explainations and details.
-* Create a cronjob that will run the automation on startup. See [Creating Cronjob](#creating-cronjob) for explaination.
-* Reboot your Raspberry Pi
-* Once the Pi has come back online, check the log file to confirm that the monitor has started. 
-You should see output similar to the below at the beginning of the log file.
-```
-Starting service. Exit program by pressing Ctrl+C
-Connected to Twitter as hpchristmas
-```
-
-The "Connected to Twitter" message in the log file, confirms that your account has been properly configured
-and can post to Twitter.
-
-### Installing System Service
-
-To configure the application to start automatically on startup, run the command from the application directory
-
-```sh
-./falconpimonitor --systemdon
-```
-
-A series of commands will run and the system service should show as being active. 
-
-
-### Uninstalling System Service
-
-To remove the application from automatically starting, run the below command from the application directory
-
-```sh
-./falconpimonitor --systemoff
-```
-
-A series of commands will run and the system service should show as being inactive.
-
-### Example appsettings.json File
-
-Once you have added the Twitter key, token, and secrets to the appsettings.json file, it should look like 
-the following: 
-
-```json
-{
-    "Logging": {
-        "LogLevel": {
-            "Default": "Information",
-            "Microsoft": "Warning",
-            "Microsoft.Hosting.Lifetime": "Information"
-        }
-    },
-    "TwitterSettings": {
-        "ConsumerKey": "8W4tZQ6xp7",
-        "ConsumerSecret": "qJz6nDw2T7",
-        "AccessToken": "KBiEB6jn28",
-        "AccessSecret": "8nftJzHOAI",
-    },
-    "AlarmSettings": {
-        "TwitterUser": "@XrGOEz2Wc7",
-        "TempThreshold": 55.0
-    },
-    "FppMonitorSettings":{
-        "RefreshInterval": 15
-    },
-    "FalconPiPlayerSettings":{
-        "FalconUri": "http://falconpi/"
-    }
-}
-```
-
-### About appsettings.json File
-
-* "TwitterUser" should be the name of the Twitter account that can be mentioned if 
-there is an issue with the show (e.g. Raspberry Pi having high CPU temperature). Value needs to include 
-the at (@) symbol.
-* "FalconUri" should be the hostname or IP address to your Falcon Pi Player. If your FPP does not have an 
-assigned or static IP address, then it is recommended to use the hostname.
-* "TempThreshold" should be the threshold that has to be reached before a high temperature alert is triggered.
-In warmer climates, you will want to set this value higher to prevent false alerts.
- This value needs to be in degrees Celsius. Per the Raspberry Pi documentation, 60 to 65
-degrees Celsius is close to the safe upper operating limit of the Pi.
-
-## Twitter Examples
-
-Follow my Christmas Light Show account [@hplightshow](https://twitter.com/hplightshow) to see what this 
-application can do.
-
-## Offline Show
-
-If you have music that plays when the lights are not running, then you can use an offline playlist. Any playlist
-with the word "offline" or "test" in the name, will not have the song information posted to Twitter. This does not 
-disable the Vitals Monitor. Thus if the CPU temperature reached the threshold, you will still 
-receive notifications.
-
-## Known Bugs
-
-### Exception on First Run
-
-An exception may show in the log if the Wifi connection has not been established before the first run. Confirm
-in the log that HttpRequestException is not repeating in the logs after 2 or 3 attempts.
+For more information about this project, visit the 
+<a href="https://thealmostengineer.com/fppmonitor" target="_blank">project page</a>.
 
 ## Questions / Comments
 

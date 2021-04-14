@@ -38,20 +38,22 @@ namespace Almostengr.FalconPiMonitor
                         await weatherAlertTypesConsoleCmd.RunAsync();
                         break;
 
+                    case "--service":
+                        break;
+
                     case "-h":
                     case "--help":
-                    default:
                         HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
                         helpConsoleCmd.Run();
+                        break;
+                        
+                    default:
+                        CreateHostBuilder(args).Build().Run();
                         break;
                 }
 
                 Console.WriteLine("Press ENTER key to exit...");
                 Console.ReadLine();
-            }
-            else if (args.Length == 0)
-            {
-                CreateHostBuilder(args).Build().Run();
             }
             else
             {

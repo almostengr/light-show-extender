@@ -8,7 +8,7 @@ namespace Almostengr.FalconPiMonitor.ConsoleCmd
     public abstract class BaseConsoleCmd
     {
         public string SystemdDirectory = "/lib/systemd/system";
-        public string ServiceFilename = "falconpimonitor.service";
+        public string ServiceFilename = "fppmonitorf.service";
         public string AppDirectory =
             System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private HttpClient _httpClient = null;

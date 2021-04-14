@@ -1,12 +1,12 @@
 [Unit]
-Description=Falcon Pi Monitor
+Description=Falcon Pi Player Monitor
 After=network.target
-Documentation=https://github.com/almostengr/falconpimonitor
+Documentation=https://thealmostengineer.com/fppmonitor
 
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/lib/falconpimonitor/falconpimonitor
+ExecStart=/usr/lib/fpptwitter/fppmonitor
 User=<iamuser>
 
 [Install]
