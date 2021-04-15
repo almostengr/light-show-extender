@@ -4,10 +4,11 @@ namespace Almostengr.FalconPiMonitor.Models
 {
     public class FalconFppdStatus
     {
-        public FalconFppdStatusCurrentPlayList CurrentPlayList { get; set; }
+        public FalconFppdStatusCurrentPlayList Current_PlayList { get; set; }
         public List<FalconFppdStatusSensor> Sensors { get; set; }
         public string Current_Song { get; set; }
-        public string Mode_Name { get; set; }
+        public FalconFppdStatusNextPlaylist FalconFppdStatusNextPlaylist { get; set; }
+        public string Status_Name { get; set; }
 
         public string Current_Song_NotFile
         {
@@ -19,6 +20,12 @@ namespace Almostengr.FalconPiMonitor.Models
             return Current_Song.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
                     .Replace("_", " ").Replace("-", " ");
         }
+    }
+
+    public class FalconFppdStatusNextPlaylist
+    {
+        public string Playlist { get; set; }
+        public string Start_Time { get; set; }
     }
 
     public class FalconFppdStatusSensor

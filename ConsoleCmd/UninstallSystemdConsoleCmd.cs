@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Almostengr.FalconPiMonitor.ConsoleCmd
 {
-    public class UninstallSystemdConsoleCmd : BaseConsoleCmd
+    public class UninstallSystemdConsoleCmd : BaseConsoleCmd, IConsoleCmd
     {
         public void Run()
         {

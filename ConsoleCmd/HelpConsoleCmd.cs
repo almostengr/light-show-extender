@@ -2,7 +2,7 @@ using System;
 
 namespace Almostengr.FalconPiMonitor.ConsoleCmd
 {
-    public class HelpConsoleCmd
+    public class HelpConsoleCmd : IConsoleCmd
     {
         public void Run()
         {

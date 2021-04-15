@@ -1,13 +1,14 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.ConsoleCmd;
-using Almostengr.FalconPiMonitor.Services;
-using Almostengr.FalconPiMonitor.ServicesBase;
+using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Tweetinvi;
 
-namespace Almostengr.FalconPiMonitor
+namespace Almostengr.FalconPiTwitter
 {
     public class Program
     {
@@ -18,11 +19,6 @@ namespace Almostengr.FalconPiMonitor
 
                 switch (args[0])
                 {
-                    case "--build":
-                        BuildConsoleCmd buildConsoleCmd = new BuildConsoleCmd();
-                        buildConsoleCmd.Run();
-                        break;
-
                     case "--systemdon":
                         InstallSystemdConsoleCmd installSystemdConsoleCmd = new InstallSystemdConsoleCmd();
                         installSystemdConsoleCmd.Run();
@@ -33,11 +29,6 @@ namespace Almostengr.FalconPiMonitor
                         uninstallSystemdConsoleCmd.Run();
                         break;
 
-                    case "--weather":
-                        WeatherAlertTypesConsoleCmd weatherAlertTypesConsoleCmd = new WeatherAlertTypesConsoleCmd();
-                        await weatherAlertTypesConsoleCmd.RunAsync();
-                        break;
-
                     case "--service":
                         break;
 
@@ -46,7 +37,7 @@ namespace Almostengr.FalconPiMonitor
                         HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
                         helpConsoleCmd.Run();
                         break;
-                        
+
                     default:
                         CreateHostBuilder(args).Build().Run();
                         break;
@@ -77,11 +68,16 @@ namespace Almostengr.FalconPiMonitor
                 )
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<FppCurrentSongService>();
-                    services.AddHostedService<FppVitalsService>();
-                    services.AddHostedService<BaseService>();
-                    // services.AddHostedService<WeatherService>();
-                    // services.AddHostedService<TwitterRepliesService>();
+                    services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
+                    // services.AddSingleton<ITwitterClient, TwitterClient>();
+                    services.AddSingleton<ITwitterClient>(tc =>
+                       new TwitterClient(
+                           "key",
+                           "secret",
+                           "accestoken",
+                           "accesssecret"
+                       ));
+                    services.AddSingleton<HttpClient>();
                 });
     }
 }

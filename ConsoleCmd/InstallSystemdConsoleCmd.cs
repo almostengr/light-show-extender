@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Almostengr.FalconPiMonitor.ConsoleCmd
 {
-    public class InstallSystemdConsoleCmd : BaseConsoleCmd
+    public class InstallSystemdConsoleCmd : BaseConsoleCmd, IConsoleCmd
     {
         public void Run()
         {
