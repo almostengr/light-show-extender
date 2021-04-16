@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Almostengr.FalconPiMonitor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,18 +12,14 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public abstract class BaseWorker : BackgroundService
     {
-        private readonly ILogger<BaseWorker> _logger;
-        private readonly IConfiguration _configuration;
-        private readonly HttpClient _httpClient;
-        private readonly ITwitterClient _twitterClient;
+        internal readonly HttpClient _httpClient;
+        private readonly AppSettings _appSettings;
 
-        public BaseWorker(ILogger<BaseWorker> logger, IConfiguration configuration, HttpClient httpClient,
+        public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, HttpClient httpClient,
             ITwitterClient twitterClient)
         {
-            _logger = logger;
-            _configuration = configuration;
             _httpClient = httpClient;
-            _twitterClient = twitterClient;
+            _appSettings = appSettings;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)

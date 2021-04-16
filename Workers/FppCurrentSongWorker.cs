@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -11,25 +10,23 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public class FppCurrentSongWorker : BaseWorker, IFppCurrentSongWorker
     {
-        public readonly ILogger<FppCurrentSongWorker> _logger;
-        public IConfiguration _configuration;
-        public readonly ITwitterClient _twitterClient;
-        public readonly HttpClient _httpClient;
+        private readonly ILogger<FppCurrentSongWorker> _logger;
+        private readonly ITwitterClient _twitterClient;
+        private readonly AppSettings _appSettings;
 
         public FppCurrentSongWorker(
-            ILogger<FppCurrentSongWorker> logger, IConfiguration configuration, HttpClient httpClient,
+            ILogger<FppCurrentSongWorker> logger, AppSettings appSettings, HttpClient httpClient,
             ITwitterClient twitterClient) :
-            base(logger, configuration, httpClient, twitterClient)
+            base(logger, appSettings, httpClient, twitterClient)
         {
             _logger = logger;
-            _configuration = configuration;
+            _appSettings = appSettings;
             _twitterClient = twitterClient;
-            _httpClient = httpClient;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _httpClient.BaseAddress = new Uri("");
+            _httpClient.BaseAddress = new Uri(_appSettings.FalconPiPlayerUrl);
             return base.StartAsync(cancellationToken);
         }
 
@@ -63,7 +60,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                         previousSong, falconMediaMeta.Format.Tags.Title,
                         falconMediaMeta.Format.Tags.Artist,
                         falconMediaMeta.Format.Tags.Album,
-                        falconFppdStatus.CurrentPlayList.Playlist);
+                        falconFppdStatus.Current_PlayList.Playlist);
 
                     await Task.Delay(TimeSpan.FromSeconds(15));
                 }
@@ -91,8 +88,10 @@ namespace Almostengr.FalconPiTwitter.Workers
                 return previousTitle;
             }
 
-            if (playlist.ToLower().Contains("offline") || playlist.ToLower().Contains("testing"))
+            playlist = playlist.ToLower();
+            if (playlist.Contains("offline") || playlist.Contains("testing"))
             {
+                _logger.LogInformation("Show is offline. Not posting song");
                 return currentTitle;
             }
 
@@ -122,6 +121,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             var tweetResult = await _twitterClient.Tweets.PublishTweetAsync(tweet);
 
+            _logger.LogInformation("Posted song update. Result " + tweetResult.Id);
             return currentTitle;
         }
 

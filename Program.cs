@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Almostengr.FalconPiMonitor.ConsoleCmd;
+using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,23 +62,26 @@ namespace Almostengr.FalconPiTwitter
                 .UseContentRoot(
                     System.IO.Path.GetDirectoryName(
                         System.Reflection.Assembly.GetExecutingAssembly().Location))
-                .ConfigureAppConfiguration(
-                    builder => new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddEnvironmentVariables()
-                )
+                // .ConfigureAppConfiguration(
+                //     builder => new ConfigurationBuilder()
+                //     .AddJsonFile("appsettings.json", true, true)
+                //     .AddEnvironmentVariables()
+                // )
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
-                    // services.AddSingleton<ITwitterClient, TwitterClient>();
+                    IConfiguration configuration = hostContext.Configuration;
+                    AppSettings appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
+                    services.AddSingleton(appSettings);
+
+                    services.AddHostedService<FppCurrentSongWorker>();
                     services.AddSingleton<ITwitterClient>(tc =>
                        new TwitterClient(
-                           "key",
-                           "secret",
-                           "accestoken",
-                           "accesssecret"
+                           appSettings.Twitter.ConsumerKey,
+                           appSettings.Twitter.ConsumerSecret,
+                           appSettings.Twitter.AccessToken,
+                           appSettings.Twitter.AccessSecret
                        ));
-                    services.AddSingleton<HttpClient>();
+                    services.AddScoped<HttpClient>();
                 });
     }
 }
