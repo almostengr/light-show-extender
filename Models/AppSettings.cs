@@ -6,6 +6,7 @@ namespace Almostengr.FalconPiMonitor.Models
     {
         public Twitter Twitter { get; set; }
         public Alarm Alarm { get; set; }
+        public bool MonitorOnly { get; set; } = false;
 
         private IList<string> _falconPiPlayerUrls { get; set; }
         public IList<string> FalconPiPlayerUrls

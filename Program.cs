@@ -68,7 +68,7 @@ namespace Almostengr.FalconPiTwitter
                     AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
                     services.AddSingleton(appSettings);
 
-                    services.AddSingleton<ITwitterClient, TwitterClient>(tc => 
+                    services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
                         new TwitterClient(
                             appSettings.Twitter.ConsumerKey,
                             appSettings.Twitter.ConsumerSecret,
@@ -77,7 +77,11 @@ namespace Almostengr.FalconPiTwitter
                         ));
 
                     // services.AddHostedService<FppVitalsWorker>();
-                    services.AddHostedService<FppCurrentSongWorker>();
+
+                    if (appSettings.MonitorOnly == false)
+                    {
+                        services.AddHostedService<FppCurrentSongWorker>();
+                    }
                 });
     }
 }
