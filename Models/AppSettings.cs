@@ -1,93 +1,66 @@
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Almostengr.FalconPiMonitor.Models
 {
     public class AppSettings
     {
-        [Required]
-        public TwitterSettings TwitterSettings { get; set; }
-        public AlarmSettings AlarmSettings { get; set; }
-        public FppMonitorSettings FppMonitorSettings { get; set; }
-        public FalconPiPlayerSettings FalconPiPlayerSettings { get; set; }
-    }
+        public Twitter Twitter { get; set; }
+        public Alarm Alarm { get; set; }
+        public bool MonitorOnly { get; set; } = false;
 
-    public class TwitterSettings
-    {
-        [Required]
-        public string ConsumerSecret { get; set; }
-        [Required]
-        public string ConsumerKey { get; set; }
-        [Required]
-        public string AccessToken { get; set; }
-        [Required]
-        public string AccessSecret { get; set; }
-    }
-
-    public class AlarmSettings
-    {
-        [Required]
-        private double _tempThreshold;
-        public double TempThreshold
+        private IList<string> _falconPiPlayerUrls { get; set; }
+        public IList<string> FalconPiPlayerUrls
         {
-            get { return _tempThreshold; }
-            set { _tempThreshold = SetTempThreshold(value); }
+            get { return _falconPiPlayerUrls; }
+            set { _falconPiPlayerUrls = SetFalconPiRemotesHostname(value); }
         }
-        public string TwitterUser { get; set; }
 
-        private double SetTempThreshold(double? threshold)
+        private IList<string> SetFalconPiRemotesHostname(IList<string> remoteHosts)
         {
-            if (threshold == null || threshold < 0)
+            for (int i = 0; i < remoteHosts.Count; i++)
             {
-                threshold = 55.0;
+                remoteHosts[i] = SetFalconPiHostname(remoteHosts[i]);
             }
-            return (double)threshold;
-        }
-    }
-
-    public class FppMonitorSettings
-    {
-        public bool PostOffline { get; set; }
-
-        private int _refreshInterval;
-        public int RefreshInterval
-        {
-            get { return _refreshInterval; }
-            set { _refreshInterval = SetRefreshInterval(value); }
+            return remoteHosts;
         }
 
-        private int SetRefreshInterval(int? interval)
+        private string SetFalconPiHostname(string uri)
         {
-            if (interval == null || interval < 0)
-            {
-                interval = 15;
-            }
-            return (int)interval;
-        }
-    }
-
-    public class FalconPiPlayerSettings
-    {
-        private string _falconPiUri;
-        [Required]
-        public string FalconUri
-        {
-            get { return _falconPiUri; }
-            set { _falconPiUri = SetFalconPiUri(value); }
-        }
-
-        private string SetFalconPiUri(string uri)
-        {
-            uri = uri.ToLower().Replace("api/", "").Replace("api", "");
-
             if (uri.StartsWith("http://") == false && uri.StartsWith("https://") == false)
             {
                 uri = string.Concat("http://", uri);
             }
 
-            uri = string.Concat(uri, "/api/");
-            uri = uri.Replace("//api/", "/api/");
+            uri = uri.Replace("/api/", "/");
 
             return uri;
         }
     }
+
+    public class Alarm
+    {
+        public string TwitterAlarmUser { get; set; }
+        private double _maxTemperature { get; set; }
+        public double MaxTemperature
+        {
+            get { return _maxTemperature; }
+            set { _maxTemperature = value > 0.0 ? value : 60.0; }
+        }
+
+        private int _maxAlarms;
+        public int MaxAlarms
+        {
+            get { return _maxAlarms; }
+            set { _maxAlarms = value > 0 ? value : 5; }
+        }
+    }
+
+    public class Twitter
+    {
+        public string ConsumerSecret { get; set; }
+        public string ConsumerKey { get; set; }
+        public string AccessToken { get; set; }
+        public string AccessSecret { get; set; }
+    }
+
 }
