@@ -1,23 +1,27 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Almostengr.FalconPiMonitor.Models
 {
     public class AppSettings
     {
-        [Required]
         public Twitter Twitter { get; set; }
+        public Alarm Alarm { get; set; }
 
-        [Required]
-        private string _falconPiPlayerUrl { get; set; }
-        public string FalconPiPlayerUrl
+        private IList<string> _falconPiPlayerUrls { get; set; }
+        public IList<string> FalconPiPlayerUrls
         {
-            get { return _falconPiPlayerUrl; }
-            set { _falconPiPlayerUrl = SetFalconPiHostname(value); }
+            get { return _falconPiPlayerUrls; }
+            set { _falconPiPlayerUrls = SetFalconPiRemotesHostname(value); }
         }
 
-        IList<string> FalconPiRemotes { get; set; }
-        public Alarm Alarm { get; set; }
+        private IList<string> SetFalconPiRemotesHostname(IList<string> remoteHosts)
+        {
+            for (int i = 0; i < remoteHosts.Count; i++)
+            {
+                remoteHosts[i] = SetFalconPiHostname(remoteHosts[i]);
+            }
+            return remoteHosts;
+        }
 
         private string SetFalconPiHostname(string uri)
         {
@@ -26,8 +30,7 @@ namespace Almostengr.FalconPiMonitor.Models
                 uri = string.Concat("http://", uri);
             }
 
-            uri = uri.Contains("/api") ? uri : string.Concat(uri, "/api");
-            uri = uri.Replace("//api/", "/api/");
+            uri = uri.Replace("/api/", "/");
 
             return uri;
         }
@@ -40,35 +43,16 @@ namespace Almostengr.FalconPiMonitor.Models
         public double MaxTemperature
         {
             get { return _maxTemperature; }
-            set { _maxTemperature = value > 0.0 ? value : 55.0; }
+            set { _maxTemperature = value > 0.0 ? value : 60.0; }
         }
     }
 
     public class Twitter
     {
-        [Required]
         public string ConsumerSecret { get; set; }
-        [Required]
         public string ConsumerKey { get; set; }
-        [Required]
         public string AccessToken { get; set; }
-        [Required]
         public string AccessSecret { get; set; }
-        public List<string> AlarmUsers { get; set; }
     }
 
-    // public class Weather
-    // {
-    //     [Required]
-    //     public string StationId { get; set; }
-    //     [Required]
-    //     public string EmailAddress { get; set; }
-    //     [Required]
-    //     public string WebsiteUrl { get; set; }
-    //     public List<string> AlertTypes { get; set; }
-    //     public double MaxTemperature { get; set; }
-    //     public double MinTemperature { get; set; }
-    //     public bool AlertTriggerShutdown { get; set; }
-    //     public double MaxWindSpeed { get; set; }
-    // }
 }

@@ -7,8 +7,6 @@ namespace Almostengr.FalconPiMonitor.Models
         public FalconFppdStatusCurrentPlayList Current_PlayList { get; set; }
         public List<FalconFppdStatusSensor> Sensors { get; set; }
         public string Current_Song { get; set; }
-        public FalconFppdStatusNextPlaylist FalconFppdStatusNextPlaylist { get; set; }
-        public string Status_Name { get; set; }
 
         public string Current_Song_NotFile
         {
@@ -22,16 +20,11 @@ namespace Almostengr.FalconPiMonitor.Models
         }
     }
 
-    public class FalconFppdStatusNextPlaylist
-    {
-        public string Playlist { get; set; }
-        public string Start_Time { get; set; }
-    }
-
     public class FalconFppdStatusSensor
     {
         public double Value { get; set; }
         public string ValueType { get; set; }
+        public string Label { get; set; }
 
         public double DegreesCToF()
         {

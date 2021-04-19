@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,14 +13,13 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public abstract class BaseWorker : BackgroundService
     {
-        internal readonly HttpClient _httpClient;
         private readonly AppSettings _appSettings;
+        private readonly ITwitterClient _twitterClient;
 
-        public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, HttpClient httpClient,
-            ITwitterClient twitterClient)
+        public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
         {
-            _httpClient = httpClient;
             _appSettings = appSettings;
+            _twitterClient = twitterClient;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -27,10 +27,14 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        public async Task<T> GetAsync<T>(string route) where T : class
+        internal virtual async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
         {
+            return await HttpGetAsync<FalconFppdStatus>(httpClient, "api/fppd/status");
+        }
 
-            HttpResponseMessage response = await _httpClient.GetAsync(route);
+        internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : class
+        {
+            HttpResponseMessage response = await httpClient.GetAsync(route);
 
             if (response.IsSuccessStatusCode)
             {
