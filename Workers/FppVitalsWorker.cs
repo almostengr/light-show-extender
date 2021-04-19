@@ -15,8 +15,9 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ILogger<BaseWorker> _logger;
         private readonly ITwitterClient _twitterClient;
         private HttpClient _httpClient;
+        private int _alarmCount = 0;
 
-        public FppVitalsWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
+        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
              : base(logger, appSettings, twitterClient)
         {
             _appSettings = appSettings;
@@ -39,48 +40,82 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            bool tempAlarmActive = false;
+            int previousHour = 0;
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                previousHour = ResetAlarmCount(previousHour);
+
                 foreach (var host in _appSettings.FalconPiPlayerUrls)
                 {
-                    _httpClient.BaseAddress = new Uri(host);
-                    FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
+                    try
+                    {
+                        _logger.LogInformation("Checking vitals for " + host);
 
-                    tempAlarmActive = await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors, tempAlarmActive);
+                        _httpClient.BaseAddress = new Uri(host);
+                        FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
+
+                        _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
+                    }
+                    catch (NullReferenceException ex)
+                    {
+                        _logger.LogError(string.Concat("Null Exception occurred: ", ex.Message));
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        _logger.LogError(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message);
+                    }
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(5));
             }
         }
 
-        private async Task<bool> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors, bool tempAlarmActive)
+        public int ResetAlarmCount(int previousHour)
+        {
+            int currentHour = DateTime.Now.Hour;
+
+            if (previousHour != currentHour && _alarmCount > 0)
+            {
+                _logger.LogInformation("Alarm count has been reset. " + _alarmCount + " alarms occurred in the last hour.");
+                _alarmCount = 0;
+            }
+            
+            return currentHour;
+        }
+
+        public async Task<int> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors)
         {
             foreach (var sensor in sensors)
             {
-                if (sensor.Label.ToLower() == "cpu" && sensor.ValueType.ToLower() == "temperature" &&
-                    sensor.Value > _appSettings.Alarm.MaxTemperature && tempAlarmActive == false)
+                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Alarm.MaxTemperature)
                 {
                     string alarmMessage =
                         $"Temperature warning! Threshold: {_appSettings.Alarm.MaxTemperature}, Actual: {sensor.Value}";
                     await TweetAlarmAsync(alarmMessage);
-                    return true;
+                    return 1;
                 }
             } // end for
-            return false;
+            return 0;
         }
 
         public async Task TweetAlarmAsync(string alarmMessage)
         {
             _logger.LogWarning(alarmMessage);
 
-            alarmMessage = string.IsNullOrEmpty(_appSettings.Alarm.TwitterAlarmUser) ?
-                alarmMessage :
-                string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage);
+            if (_alarmCount <= _appSettings.Alarm.MaxAlarms || _appSettings.Alarm.MaxAlarms == 0)
+            {
+                alarmMessage = string.IsNullOrEmpty(_appSettings.Alarm.TwitterAlarmUser) ?
+                    alarmMessage :
+                    string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage, " TEST");
 
-            var result = await _twitterClient.Tweets.PublishTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
-            _logger.LogInformation("Tweet result: " + result);
+                var result = await _twitterClient.Tweets.PublishTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
+                _logger.LogInformation("Tweet result: " + result.CreatedAt);
+            }
         }
 
     }

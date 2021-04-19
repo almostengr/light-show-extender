@@ -1,7 +1,4 @@
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Almostengr.FalconPiMonitor.ConsoleCmd;
 using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
@@ -76,7 +73,7 @@ namespace Almostengr.FalconPiTwitter
                             appSettings.Twitter.AccessSecret
                         ));
 
-                    // services.AddHostedService<FppVitalsWorker>();
+                    services.AddHostedService<FppVitalsWorker>();
 
                     if (appSettings.MonitorOnly == false)
                     {

@@ -46,6 +46,13 @@ namespace Almostengr.FalconPiMonitor.Models
             get { return _maxTemperature; }
             set { _maxTemperature = value > 0.0 ? value : 60.0; }
         }
+
+        private int _maxAlarms;
+        public int MaxAlarms
+        {
+            get { return _maxAlarms; }
+            set { _maxAlarms = value > 0 ? value : 5; }
+        }
     }
 
     public class Twitter
