@@ -111,7 +111,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 alarmMessage = string.IsNullOrEmpty(_appSettings.Alarm.TwitterAlarmUser) ?
                     alarmMessage :
-                    string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage, " TEST");
+                    string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage);
 
                 var result = await _twitterClient.Tweets.PublishTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
                 _logger.LogInformation("Tweet result: " + result.CreatedAt);
