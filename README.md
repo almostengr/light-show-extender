@@ -8,10 +8,12 @@ This application is designed to run on Falcon Pi Players that are installed on R
 possible to get it running on Beagle Bone Black devices.
 
 For more information about this project, visit the 
-<a href="https://thealmostengineer.com/fppmonitor" target="_blank">project page</a>.
+<a href="https://thealmostengineer.com/falconpitwitter" target="_blank">project page</a>.
 
 ## Questions / Comments
 
-Please file an Issue on the repo if you have questions, comments, or bug reports about this application.
+Please file an 
+[Issue on the repo](https://github.com/almostengr/falconpitwitter/issues)
+if you have questions, comments, or bug reports about this application.
 
 You can also reach out to the developer via Twitter [@almostengr](https://twitter.com/almostengr).
