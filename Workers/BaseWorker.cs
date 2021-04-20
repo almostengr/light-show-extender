@@ -13,11 +13,20 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly AppSettings _appSettings;
         private readonly ITwitterClient _twitterClient;
+        private readonly ILogger<BaseWorker> _logger;
 
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
         {
             _appSettings = appSettings;
             _twitterClient = twitterClient;
+            _logger = logger;
+        }
+
+        public override Task StartAsync(CancellationToken cancellationToken)
+        {
+            var user = _twitterClient.Users.GetAuthenticatedUserAsync();
+            _logger.LogInformation(string.Concat("Connected to twitter as ", user.Id));
+            return base.StartAsync(cancellationToken);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)

@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using Almostengr.FalconPiMonitor.ConsoleCmd;
 using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
@@ -10,50 +10,34 @@ namespace Almostengr.FalconPiTwitter
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            // if (args.Length == 1)
-            // {
+            foreach (var argument in args)
+            {
+                switch (argument)
+                {
+                    case "--systemdon":
+                        InstallSystemdConsoleCmd installSystemdConsoleCmd = new InstallSystemdConsoleCmd();
+                        installSystemdConsoleCmd.Run();
+                        break;
 
-            //     switch (args[0])
-            //     {
-            //         case "--systemdon":
-            //             InstallSystemdConsoleCmd installSystemdConsoleCmd = new InstallSystemdConsoleCmd();
-            //             installSystemdConsoleCmd.Run();
-            //             break;
+                    case "--systemdoff":
+                        UninstallSystemdConsoleCmd uninstallSystemdConsoleCmd = new UninstallSystemdConsoleCmd();
+                        uninstallSystemdConsoleCmd.Run();
+                        break;
 
-            //         case "--systemdoff":
-            //             UninstallSystemdConsoleCmd uninstallSystemdConsoleCmd = new UninstallSystemdConsoleCmd();
-            //             uninstallSystemdConsoleCmd.Run();
-            //             break;
+                    case "-h":
+                    case "--help":
+                        HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
+                        helpConsoleCmd.Run();
+                        break;
 
-            //         case "--service":
-            //             CreateHostBuilder(args).Build().Run();
-            //             break;
-
-            //         case "-h":
-            //         case "--help":
-            //             HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
-            //             helpConsoleCmd.Run();
-            //             break;
-
-            //         default:
-            //             CreateHostBuilder(args).Build().Run();
-            //             break;
-            //     }
-
-            //     Console.WriteLine("Press ENTER key to exit...");
-            //     Console.ReadLine();
-            // }
-            // else
-            // {
-            //     Console.WriteLine("Too many arguments specified");
-            //     Console.WriteLine();
-            //     HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
-            //     helpConsoleCmd.Run();
-            // }
-
-            CreateHostBuilder(args).Build().Run();
+                    default:
+                        CreateHostBuilder(args).Build().Run();
+                        break;
+                }
+                // break; // prevents from ending up in loop
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

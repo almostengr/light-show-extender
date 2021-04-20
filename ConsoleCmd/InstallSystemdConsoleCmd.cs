@@ -55,6 +55,9 @@ namespace Almostengr.FalconPiMonitor.ConsoleCmd
             {
                 Console.WriteLine(ex.Message);
             }
+
+            Console.WriteLine("Press ENTER key to exit...");
+            Console.ReadLine();
         }
     }
 }
