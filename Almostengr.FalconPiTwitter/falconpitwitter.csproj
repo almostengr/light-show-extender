@@ -10,8 +10,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="*"/>
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.14"/>
     <Content Remove="appsettings.json"/>
-    <Content Include="README.md" CopyToPublishDirectory="PreserveNewest"/>
-    <Content Include="apsettings.template.json" CopyToPublishDirectory="PreserveNewest"/>
-    <Content Include="falconpitwitter.service" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="../README.md" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="../falconpitwitter.service" CopyToPublishDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>
