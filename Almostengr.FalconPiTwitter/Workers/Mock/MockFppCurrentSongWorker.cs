@@ -13,6 +13,7 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly ILogger<MockFppCurrentSongWorker> _logger;
         private readonly AppSettings _appsettings;
+        private readonly Random random = new Random();
 
         public MockFppCurrentSongWorker(
             ILogger<MockFppCurrentSongWorker> logger,
@@ -68,7 +69,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
-        private static Random random = new Random();
         private static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

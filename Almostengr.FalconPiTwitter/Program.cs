@@ -40,14 +40,11 @@ namespace Almostengr.FalconPiTwitter
                         ));
 
                     services.AddSingleton<IFppVitalsWorker, FppVitalsWorker>();
-                    // services.AddSingleton<IFppVitalsWorker, MockFppVitalsWorker>();
 
                     if (appSettings.MonitorOnly == false)
                     {
                         services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
                         services.AddSingleton<ITwitterWorker, TwitterWorker>();
-                        // services.AddSingleton<IFppCurrentSongWorker, MockFppCurrentSongWorker>();
-                        // services.AddSingleton<ITwitterWorker, MockTwitterWorker>();
                     }
                 });
 
