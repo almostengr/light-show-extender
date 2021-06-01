@@ -36,6 +36,7 @@ namespace Almostengr.FalconPiTwitter
                     if (appSettings.MonitorOnly == false)
                     {
                         services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
+                        services.AddSingleton<ITwitterWorker, TwitterWorker>();
                     }
                 });
     }
