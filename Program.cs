@@ -1,4 +1,3 @@
-using Almostengr.FalconPiMonitor.ConsoleCmd;
 using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
@@ -12,32 +11,7 @@ namespace Almostengr.FalconPiTwitter
     {
         public static void Main(string[] args)
         {
-            foreach (var argument in args)
-            {
-                switch (argument)
-                {
-                    case "--systemdon":
-                        InstallSystemdConsoleCmd installSystemdConsoleCmd = new InstallSystemdConsoleCmd();
-                        installSystemdConsoleCmd.Run();
-                        break;
-
-                    case "--systemdoff":
-                        UninstallSystemdConsoleCmd uninstallSystemdConsoleCmd = new UninstallSystemdConsoleCmd();
-                        uninstallSystemdConsoleCmd.Run();
-                        break;
-
-                    case "-h":
-                    case "--help":
-                        HelpConsoleCmd helpConsoleCmd = new HelpConsoleCmd();
-                        helpConsoleCmd.Run();
-                        break;
-
-                    default:
-                        CreateHostBuilder(args).Build().Run();
-                        break;
-                }
-                // break; // prevents from ending up in loop
-            }
+            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -57,11 +31,11 @@ namespace Almostengr.FalconPiTwitter
                             appSettings.Twitter.AccessSecret
                         ));
 
-                    services.AddHostedService<FppVitalsWorker>();
+                    // services.AddHostedService<FppVitalsWorker>();
 
                     if (appSettings.MonitorOnly == false)
                     {
-                        services.AddHostedService<FppCurrentSongWorker>();
+                        services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
                     }
                 });
     }
