@@ -87,7 +87,7 @@ namespace Almostengr.FalconPiTwitter.Workers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        internal override async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
+        public override async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
         {
             FalconFppdStatus falconFppdStatus = new FalconFppdStatus();
             falconFppdStatus.Current_Song = RandomString(25);

@@ -9,7 +9,7 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public abstract class BaseWorker : BackgroundService
+    public abstract class BaseWorker : BackgroundService, IBaseWorker
     {
         private readonly AppSettings _appSettings;
         private readonly ITwitterClient _twitterClient;
@@ -34,12 +34,12 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        internal virtual async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
+        public virtual async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
         {
             return await HttpGetAsync<FalconFppdStatus>(httpClient, "api/fppd/status");
         }
 
-        internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : class
+        public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : class
         {
             HttpResponseMessage response = await httpClient.GetAsync(route);
 

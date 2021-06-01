@@ -3,7 +3,7 @@ using Almostengr.FalconPiMonitor.Models;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public interface IFppCurrentSongWorker
+    public interface IFppCurrentSongWorker : IBaseWorker
     {
         Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string album, string playlist);
         Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string currentSong);

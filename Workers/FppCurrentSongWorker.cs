@@ -14,32 +14,17 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ILogger<FppCurrentSongWorker> _logger;
         private readonly ITwitterClient _twitterClient;
         private readonly AppSettings _appSettings;
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
-        public FppCurrentSongWorker(
-            ILogger<FppCurrentSongWorker> logger,
-            AppSettings appSettings,
-            ITwitterClient twitterClient
-            ) :
+        public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
         {
             _logger = logger;
             _appSettings = appSettings;
             _twitterClient = twitterClient;
-        }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Starting Fpp current song worker");
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(_appSettings.FalconPiPlayerUrls[0]);
-            return base.StartAsync(cancellationToken);
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Stopping Fpp current song worker");
-            return base.StopAsync(cancellationToken);
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -57,7 +42,8 @@ namespace Almostengr.FalconPiTwitter.Workers
                         throw new FppCurrentSongException();
                     }
 
-                    FalconMediaMeta falconMediaMeta = await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
+                    FalconMediaMeta falconMediaMeta = 
+                        await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
                     falconMediaMeta.Format.Tags.Title =
                         GetSongTitle(falconFppdStatus.Current_Song_NotFile, falconMediaMeta.Format.Tags.Title);
@@ -82,7 +68,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.Message);
+                    _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(15));

@@ -12,10 +12,10 @@ namespace Almostengr.FalconPiMonitor.Models
         public IList<string> FalconPiPlayerUrls
         {
             get { return _falconPiPlayerUrls; }
-            set { _falconPiPlayerUrls = SetFalconPiRemotesHostname(value); }
+            set { _falconPiPlayerUrls = SetFalconPiPlayerHostnames(value); }
         }
 
-        private IList<string> SetFalconPiRemotesHostname(IList<string> remoteHosts)
+        private IList<string> SetFalconPiPlayerHostnames(IList<string> remoteHosts)
         {
             for (int i = 0; i < remoteHosts.Count; i++)
             {
@@ -40,6 +40,7 @@ namespace Almostengr.FalconPiMonitor.Models
     public class Alarm
     {
         public string TwitterAlarmUser { get; set; }
+
         private double _maxTemperature { get; set; }
         public double MaxTemperature
         {
@@ -51,7 +52,7 @@ namespace Almostengr.FalconPiMonitor.Models
         public int MaxAlarms
         {
             get { return _maxAlarms; }
-            set { _maxAlarms = value > 0 ? value : 5; }
+            set { _maxAlarms = value > 0 ? value : 3; }
         }
     }
 

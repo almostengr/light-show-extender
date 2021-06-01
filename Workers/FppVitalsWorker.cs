@@ -12,9 +12,9 @@ namespace Almostengr.FalconPiTwitter.Workers
     public class FppVitalsWorker : BaseWorker, IFppVitalsWorker
     {
         private readonly AppSettings _appSettings;
-        private readonly ILogger<BaseWorker> _logger;
+        private readonly ILogger<FppVitalsWorker> _logger;
         private readonly ITwitterClient _twitterClient;
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private int _alarmCount = 0;
 
         public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
@@ -23,19 +23,8 @@ namespace Almostengr.FalconPiTwitter.Workers
             _appSettings = appSettings;
             _logger = logger;
             _twitterClient = twitterClient;
-        }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Monitoring vitals of FPP instances");
             _httpClient = new HttpClient();
-            return base.StartAsync(cancellationToken);
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Done monitoring vitals of FPP instances");
-            return base.StopAsync(cancellationToken);
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -67,7 +56,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex.Message);
+                        _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
                     }
                 }
 
@@ -84,7 +73,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 _logger.LogInformation("Alarm count has been reset. " + _alarmCount + " alarms occurred in the last hour.");
                 _alarmCount = 0;
             }
-            
+
             return currentHour;
         }
 
@@ -118,5 +107,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
+        public override void Dispose()
+        {
+            _httpClient.Dispose();
+            base.Dispose();
+        }
     }
 }

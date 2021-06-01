@@ -1,3 +1,4 @@
+using System;
 using Almostengr.FalconPiMonitor.Models;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,14 @@ namespace Almostengr.FalconPiTwitter
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            if (args.Length > 0)
+            {
+                ShowHelp();
+            }
+            else
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -39,5 +47,13 @@ namespace Almostengr.FalconPiTwitter
                         services.AddSingleton<ITwitterWorker, TwitterWorker>();
                     }
                 });
+
+        private static void ShowHelp()
+        {
+            Console.WriteLine("Falcon Pi Monitor Help");
+            Console.WriteLine();
+            Console.WriteLine("For more information about this program,");
+            Console.WriteLine("visit https://thealmostengineer.com/falconpitwitter");
+        }
     }
 }
