@@ -9,30 +9,19 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class MockFppCurrentSongWorker : BaseWorker, IFppCurrentSongWorker
+    public class MockFppCurrentSongWorker : MockBaseWorker, IFppCurrentSongWorker
     {
         private readonly ILogger<MockFppCurrentSongWorker> _logger;
         private readonly AppSettings _appsettings;
-        private HttpClient _httpClient;
-        private ITwitterClient _twitterClient;
 
         public MockFppCurrentSongWorker(
             ILogger<MockFppCurrentSongWorker> logger,
             AppSettings appSettings,
             ITwitterClient twitterClient) :
-            base(logger, appSettings, twitterClient)
+            base(logger)
         {
             _logger = logger;
             _appsettings = appSettings;
-            _twitterClient = twitterClient;
-        }
-
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Starting Fpp current song worker");
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://localhost");
-            return base.StartAsync(cancellationToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
