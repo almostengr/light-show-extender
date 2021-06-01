@@ -7,13 +7,16 @@ are detected.
 This application is designed to run on Falcon Pi Players that are installed on Raspberry Pi. However, it is
 possible to get it running on Beagle Bone Black devices.
 
+## Problem
+
+I wanted a way for viewers of my Christmas light show to be able to find out the song information 
+about the show.  In addition, I wnated to have an online presence for the show. 
+
+## Solution
+
+I created this Falcon PI Twitter applicatoin that will monitor the Falcon Pi Player that runs my 
+Christmas light show. This monitor gets the status ando ther information based on the Falcon Pi Player
+via the FPP API. 
+
 For more information about this project, visit the 
 <a href="https://thealmostengineer.com/falconpitwitter" target="_blank">project page</a>.
-
-## Questions / Comments
-
-Please file an 
-[Issue on the repo](https://github.com/almostengr/falconpitwitter/issues)
-if you have questions, comments, or bug reports about this application.
-
-You can also reach out to the developer via Twitter [@almostengr](https://twitter.com/almostengr).
