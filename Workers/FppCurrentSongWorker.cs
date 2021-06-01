@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiMonitor.Models;
+using Almostengr.FalconPiTwitter.Models;
 using Almostengr.FalconPiTwitter.Exceptions;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;

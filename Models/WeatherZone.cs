@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Almostengr.FalconPiMonitor.Models
+namespace Almostengr.FalconPiTwitter.Models
 {
     public class WeatherZone
     {

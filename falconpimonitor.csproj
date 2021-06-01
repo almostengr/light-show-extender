@@ -12,6 +12,6 @@
     <Content Remove="appsettings.json"/>
     <Content Include="README.md" CopyToPublishDirectory="PreserveNewest"/>
     <Content Include="apsettings.template.json" CopyToPublishDirectory="PreserveNewest"/>
-    <Content Include="falconpimonitor.service" CopyToPublishDirectory="PreserveNewest"/>
+    <Content Include="falconpitwitter.service" CopyToPublishDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 using System;
 
-namespace Almostengr.FalconPiMonitor.Models
+namespace Almostengr.FalconPiTwitter.Models
 {
     public class WeatherObservation
     {
