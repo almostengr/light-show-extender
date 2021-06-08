@@ -13,7 +13,7 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly ILogger<MockFppCurrentSongWorker> _logger;
         private readonly AppSettings _appsettings;
-        private readonly Random random = new Random();
+        private readonly Random _random = new Random();
 
         public MockFppCurrentSongWorker(
             ILogger<MockFppCurrentSongWorker> logger,
@@ -69,11 +69,11 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
-        private static string RandomString(int length)
+        private string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+              .Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 
         public override async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
