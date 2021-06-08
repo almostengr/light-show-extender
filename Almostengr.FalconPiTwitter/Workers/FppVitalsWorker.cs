@@ -35,8 +35,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 previousHour = ResetAlarmCount(previousHour);
 
-                foreach (var host in _appSettings.FalconPiPlayerUrls)
-                {
+                // foreach (var host in _appSettings.FalconPiPlayerUrls)
+                // {
+                    string host = "https://localhost";
+                    
                     try
                     {
                         _logger.LogInformation("Checking vitals for " + host);
@@ -58,7 +60,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     {
                         _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
                     }
-                }
+                // }
 
                 await Task.Delay(TimeSpan.FromMinutes(5));
             }

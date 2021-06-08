@@ -8,12 +8,12 @@ namespace Almostengr.FalconPiTwitter.Models
         public Alarm Alarm { get; set; }
         public bool MonitorOnly { get; set; } = false;
 
-        private IList<string> _falconPiPlayerUrls { get; set; }
-        public IList<string> FalconPiPlayerUrls
-        {
-            get { return _falconPiPlayerUrls; }
-            set { _falconPiPlayerUrls = SetFalconPiPlayerHostnames(value); }
-        }
+        // private IList<string> _falconPiPlayerUrls { get; set; }
+        // public IList<string> FalconPiPlayerUrls
+        // {
+        //     get { return _falconPiPlayerUrls; }
+        //     set { _falconPiPlayerUrls = SetFalconPiPlayerHostnames(value); }
+        // }
 
         private IList<string> SetFalconPiPlayerHostnames(IList<string> remoteHosts)
         {

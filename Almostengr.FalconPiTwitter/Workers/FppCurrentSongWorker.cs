@@ -24,7 +24,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _twitterClient = twitterClient;
 
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(_appSettings.FalconPiPlayerUrls[0]);
+            _httpClient.BaseAddress = new Uri("http://localhost");
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
