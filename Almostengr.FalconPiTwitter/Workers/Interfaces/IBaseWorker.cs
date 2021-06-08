@@ -8,7 +8,7 @@ namespace Almostengr.FalconPiTwitter.Workers
     public interface IBaseWorker
     {
         Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient);
-        Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : class;
+        Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase;
         Task StartAsync(CancellationToken cancellationToken);
     }
 }

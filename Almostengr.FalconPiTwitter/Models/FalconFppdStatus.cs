@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Almostengr.FalconPiTwitter.Models
 {
-    public class FalconFppdStatus
+    public class FalconFppdStatus : ModelBase
     {
         public FalconFppdStatusCurrentPlayList Current_PlayList { get; set; }
         public List<FalconFppdStatusSensor> Sensors { get; set; }

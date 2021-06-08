@@ -39,7 +39,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             return await HttpGetAsync<FalconFppdStatus>(httpClient, "api/fppd/status");
         }
 
-        public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : class
+        public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase
         {
             HttpResponseMessage response = await httpClient.GetAsync(route);
 

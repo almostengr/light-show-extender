@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Almostengr.FalconPiTwitter.Models
 {
-    public class WeatherAlerts
+    public class WeatherAlerts : ModelBase
     {
         public List<Features> Features { get; set; }
     }

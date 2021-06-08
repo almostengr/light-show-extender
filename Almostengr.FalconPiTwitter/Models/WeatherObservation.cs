@@ -2,7 +2,7 @@ using System;
 
 namespace Almostengr.FalconPiTwitter.Models
 {
-    public class WeatherObservation
+    public class WeatherObservation : ModelBase
     {
         public Properties Properties { get; set; }
     }

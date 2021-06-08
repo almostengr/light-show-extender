@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Almostengr.FalconPiTwitter.Models
 {
-    public class WeatherStation
+    public class WeatherStation : ModelBase
     {
         [JsonPropertyName("Properties")]
         public StationProperties Properties { get; set; }

@@ -21,7 +21,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        public Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : class
+        public Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase
         {
             throw new System.NotImplementedException();
         }
