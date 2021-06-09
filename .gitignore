@@ -442,5 +442,6 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 
 ## additional files
-appsettings.json
+*appsettings*.json
+!*appsettings.template.json
 fpmonitor
