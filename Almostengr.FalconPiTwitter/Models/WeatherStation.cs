@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Almostengr.FalconPiTwitter.Models
+namespace Almostengr.FalconPiMonitor.Models
 {
-    public class WeatherStation : ModelBase
+    public class WeatherStation
     {
         [JsonPropertyName("Properties")]
         public StationProperties Properties { get; set; }

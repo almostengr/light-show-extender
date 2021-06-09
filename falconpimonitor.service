@@ -1,0 +1,13 @@
+[Unit]
+Description=Falcon Pi Player Monitor
+After=network.target
+Documentation=https://thealmostengineer.com/fppmonitor
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/lib/fpptwitter/fppmonitor
+User=<iamuser>
+
+[Install]
+WantedBy=multi-user.target

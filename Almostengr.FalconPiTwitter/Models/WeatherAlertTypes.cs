@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Almostengr.FalconPiTwitter.Models
+namespace Almostengr.FalconPiMonitor.Models
 {
-    public class WeatherAlertTypes : ModelBase
+    public class WeatherAlertTypes
     {
         public List<string> EventTypes { get; set; }
     }

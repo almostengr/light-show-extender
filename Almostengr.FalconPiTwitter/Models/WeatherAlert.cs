@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Almostengr.FalconPiTwitter.Models
+namespace Almostengr.FalconPiMonitor.Models
 {
-    public class WeatherAlerts : ModelBase
+    public class WeatherAlerts
     {
         public List<Features> Features { get; set; }
     }
