@@ -26,11 +26,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             throw new System.NotImplementedException();

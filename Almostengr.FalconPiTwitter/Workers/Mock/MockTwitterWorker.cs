@@ -1,7 +1,5 @@
-using System.Net.Http;
-using System.Threading;
+using System;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Workers
@@ -15,15 +13,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             _logger = logger;
         }
 
-        public Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
+        public async Task LikeMentionedTweets()
         {
-            throw new System.NotImplementedException();
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            _logger.LogInformation("Multiple tweets liked");
         }
-
-        public Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase
-        {
-            throw new System.NotImplementedException();
-        }
-
     }
 }

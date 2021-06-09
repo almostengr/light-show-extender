@@ -25,16 +25,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    var mentions = await _twitterClient.Timelines.GetMentionsTimelineAsync();
-
-                    foreach (var mention in mentions)
-                    {
-                        if (mention.Favorited == false)
-                        {
-                            await mention.FavoriteAsync();
-                            _logger.LogInformation("Favorited tweet: " + mention.Id);
-                        }
-                    }
+                    await LikeMentionedTweets();
                 }
                 catch (Exception ex)
                 {
@@ -45,5 +36,18 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
+        public async Task LikeMentionedTweets()
+        {
+            var mentions = await _twitterClient.Timelines.GetMentionsTimelineAsync();
+
+            foreach (var mention in mentions)
+            {
+                if (mention.Favorited == false)
+                {
+                    await mention.FavoriteAsync();
+                    _logger.LogInformation("Favorited tweet: " + mention.Id);
+                }
+            }
+        }
     }
 }
