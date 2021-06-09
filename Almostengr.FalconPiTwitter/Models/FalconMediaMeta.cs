@@ -1,6 +1,6 @@
-namespace Almostengr.FalconPiMonitor.Models
+namespace Almostengr.FalconPiTwitter.Models
 {
-    public class FalconMediaMeta
+    public class FalconMediaMeta : ModelBase
     {
         public FalconMediaMetaFormat Format { get; set; }
     }

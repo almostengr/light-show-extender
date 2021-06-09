@@ -1,0 +1,13 @@
+[Unit]
+Description=Falcon Pi Twitter
+After=network.target
+Documentation=https://thealmostengineer.com/falconpitwitter
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/home/fpp/falconpitwitter
+User=fpp
+
+[Install]
+WantedBy=multi-user.target

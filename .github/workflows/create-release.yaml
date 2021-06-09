@@ -1,0 +1,97 @@
+name: Publish
+# on:
+#   release:
+#     types: [published]
+
+jobs:
+  release:
+    name: Release
+    strategy:
+      matrix:
+        kind: ['linux']
+        include:
+          - kind: linux
+            os: ubuntu-latest
+            target: linux-arm
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Package Files
+        shell: bash
+        run: |
+          # Define some variables for things we need
+          tag=$(git describe --tags --abbrev=0)
+          release_name="App-$tag-${{ matrix.target }}"
+
+          # Build everything
+          dotnet publish Almostengr.FalconPiTwitter/falconpitwitter.csproj --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
+
+          # Pack files
+          if [ "${{ matrix.target }}" == "win-x64" ]; then
+            7z a -tzip "${release_name}.zip" "./${release_name}/*"
+          else
+            tar czvf "${release_name}.tar.gz" "$release_name"
+          fi
+
+          # Delete output directory
+          rm -r "$release_name"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+        name: my-artifact
+        path: "./Almostengr.FalconPiTwitter"
+
+
+
+
+# name: .NET Core
+# # on:
+# #   push:
+# #     branches: [ main ]
+# #   pull_request:
+# #     branches: [ main ]
+
+# on:
+#   release:
+#     types: [published]
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout GitHub actions
+#       uses: actions/checkout@v2
+
+#     - name: Setup .NET Core
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         # dotnet-version: 5.0.x
+#         dotnet-version: 3.1.x
+
+#     # - name: Install dependencies
+#     #   run: dotnet restore "./Almostengr.FalconPiTwitter"
+
+#     - name: Build code
+#       run: dotnet build "./Almostengr.FalconPiTwitter" --configuration Release
+#       # run: dotnet build "./Almostengr.FalconPiTwitter" --configuration Release --no-restore
+
+#     # - name: Test code
+#     #   run: dotnet test "./myApp" --no-restore --verbosity normal
+
+#     - name: Publish application
+#       run: dotnet publish "./Almostengr.FalconPiTwitter" -c Release -o myApp -r linux-arm
+
+#     - name: Upload Artifacts
+#       uses: actions/upload-artifact@v2
+#       with:
+#        name: my-artifact
+#        path: "./Almostengr.FalconPiTwitter"

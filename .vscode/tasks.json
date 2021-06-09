@@ -12,8 +12,8 @@
                 "\"",
                 "cp",
                 "-p",
-                "${workspaceRoot}/appsettings.json",
-                "${workspaceRoot}/bin/Debug/netcoreapp3.1/",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Debug/netcoreapp3.1/",
                 "&&",
                 "dotnet",
                 "build",
@@ -30,6 +30,34 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "Clean Release Project",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "clean",
+                "-c",
+                "Release",
+            ],
+            "group": "none"
+        },
+        {
+            "label": "Publish Release",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "-r",
+                "linux-arm",
+                "-c",
+                "Release",
+                "-o",
+                "release",
+                "*sln"
+            ],
+            "group": "none",
+            "dependsOn": ["Clean Release Project"]
+        },
+        {
             "label": "Create Release",
             "command": "/bin/bash",
             "type": "shell",
@@ -37,22 +65,30 @@
                 "-c",
                 "\"",
                 "dotnet",
+                "clean",
+                "-c",
+                "debug",
+                "&&",
+                "dotnet",
                 "publish",
+                "--self-contained",
                 "-r",
                 "linux-arm",
                 "-c",
                 "Release",
-                "-o",
-                "${workspaceRoot}/fpmonitor",
+                // "-o",
+                // "${workspaceRoot}/fpmonitor",
                 "&&",
                 "tar",
                 "-cf",
-                "package/falconpimonitor.tar",
-                "fpmonitor/*",
+                "package/FalconPiTwitter.tar",
+                // "fpmonitor/*",
+                "${workspaceRoot}/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
                 "&&",
                 "zip",
-                "package/falconpimonitor.zip",
-                "fpmonitor/*",
+                "package/FalconPiTwitter.zip",
+                // "fpmonitor/*",
+                "${workspaceRoot}/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
                 "&&",
                 "git",
                 "tag",
@@ -61,27 +97,21 @@
                 "-1",
                 "\""
             ],
-            "group": "build"
+            "group": "none",
+            "dependsOn": ["Publish Release"]
         },
         {
             "label": "Deploy Local",
-            "command": "/bin/bash",
+            "command": "scp",
             "type": "shell",
             "args": [
-                "-c",
-                "\"",
-                "scp",
                 "-p",
-                "${workspaceRoot}/appsettings.json",
-                "fpp@falconpi://home/fpp/fpmonitor/appsettings.json",
-                "&&",
-                "scp",
-                "-pr",
-                "${workspaceRoot}/bin/Release/netcoreapp3.1/linux-arm/*",
+                "${workspaceRoot}/release/*",
+                "${workspaceRoot}/falconpitwitter.service",
                 "fpp@falconpi://home/fpp/fpmonitor",
-                "\""
             ],
-            "group": "build"
+            "group": "none",
+            "dependsOn": ["Publish Release"]
         }
     ]
 }

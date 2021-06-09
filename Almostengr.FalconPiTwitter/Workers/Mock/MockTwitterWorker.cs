@@ -1,0 +1,22 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
+namespace Almostengr.FalconPiTwitter.Workers
+{
+    public class MockTwitterWorker : MockBaseWorker, ITwitterWorker
+    {
+        private readonly ILogger<MockTwitterWorker> _logger;
+
+        public MockTwitterWorker(ILogger<MockTwitterWorker> logger) : base(logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task LikeMentionedTweets()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            _logger.LogInformation("Multiple tweets liked");
+        }
+    }
+}
