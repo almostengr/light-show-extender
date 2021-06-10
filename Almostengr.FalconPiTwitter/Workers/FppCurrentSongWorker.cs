@@ -87,7 +87,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 return previousTitle;
             }
 
-            playlist = playlist.ToLower();
+            playlist = playlist.ToLower(); // remove case sensitivity before comparing
             if (playlist.Contains("offline") || playlist.Contains("testing"))
             {
                 _logger.LogInformation("Show is offline. Not posting song");
@@ -126,6 +126,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             if (string.IsNullOrEmpty(currentSong))
             {
+                _logger.LogWarning("No song provided");
                 return new FalconMediaMeta();
             }
 
