@@ -1,3 +1,5 @@
+using System;
+
 namespace Almostengr.FalconPiTwitter.Models
 {
     public class AppSettings
@@ -5,18 +7,6 @@ namespace Almostengr.FalconPiTwitter.Models
         public Twitter Twitter { get; set; }
         public Alarm Alarm { get; set; }
         public bool MonitorOnly { get; set; } = false;
-
-        // private string SetFalconPiHostname(string uri)
-        // {
-        //     if (uri.StartsWith("http://") == false && uri.StartsWith("https://") == false)
-        //     {
-        //         uri = string.Concat("http://", uri);
-        //     }
-
-        //     uri = uri.Replace("/api/", "/");
-
-        //     return uri;
-        // }
     }
 
     public class Alarm

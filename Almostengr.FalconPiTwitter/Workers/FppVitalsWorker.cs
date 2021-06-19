@@ -25,6 +25,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _twitterClient = twitterClient;
 
             _httpClient = new HttpClient();
+            _httpClient.BaseAddress = HostUri;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,13 +36,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 previousHour = ResetAlarmCount(previousHour);
 
-                string host = "https://localhost";
-
                 try
                 {
-                    _logger.LogInformation("Checking vitals for " + host);
+                    _logger.LogInformation("Checking vitals for " + HostUri);
 
-                    _httpClient.BaseAddress = new Uri(host);
                     FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
 
                     _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
@@ -101,8 +99,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     alarmMessage :
                     string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage);
 
-                var result = await _twitterClient.Tweets.PublishTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
-                _logger.LogInformation("Tweet result: " + result.CreatedAt);
+                await PostTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
             }
         }
 

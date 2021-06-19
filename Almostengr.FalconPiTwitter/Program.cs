@@ -39,12 +39,13 @@ namespace Almostengr.FalconPiTwitter
                             appSettings.Twitter.AccessSecret
                         ));
 
-                    services.AddSingleton<IFppVitalsWorker, FppVitalsWorker>();
+                    services.AddHostedService<FppVitalsWorker>();
 
                     if (appSettings.MonitorOnly == false)
                     {
-                        services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
-                        services.AddSingleton<ITwitterWorker, TwitterWorker>();
+                        services.AddHostedService<FppCurrentSongWorker>();
+                        services.AddHostedService<TwitterWorker>();
+                        services.AddHostedService<CountdownWorker>();
                     }
                 });
 
