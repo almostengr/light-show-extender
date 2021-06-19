@@ -17,8 +17,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         private DateTime currentDate = DateTime.Now;
         private const string ChristmasHashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
         private const string NewYearHashTags = "#HappyNewYear #NewYear";
-
-        private readonly DateTime newYearDate; 
+        private readonly DateTime newYearDate;
         private readonly DateTime christmasDate;
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
@@ -31,7 +30,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
 
-            newYearDate = new DateTime(currentDate.Year+1, 01, 01, 00, 00, 00);
+            newYearDate = new DateTime(currentDate.Year + 1, 01, 01, 00, 00, 00);
             christmasDate = new DateTime(currentDate.Year, 12, 25, 00, 00, 00);
         }
 
@@ -47,7 +46,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     int waitHours = random.Next(1, 12);
                     _logger.LogInformation("Waiting " + waitHours + " hours");
                     await Task.Delay(TimeSpan.FromHours(waitHours));
-                    
+
                     TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
                     FalconFppdStatus status = await GetCurrentStatusAsync(_httpClient);
@@ -63,10 +62,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                         tweetString += DaysUntilChristmas();
                         tweetString += DaysUntilNewYear();
 
-                        if (tweetString.Length > 0)
-                        {
-                            await PostTweetAsync(tweetString);
-                        }
+                        await PostTweetAsync(tweetString);
                     }
                 }
                 catch (Exception ex)

@@ -59,6 +59,12 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public async Task<bool> PostTweetAsync(string tweet)
         {
+            if (string.IsNullOrEmpty(tweet))
+            {
+                _logger.LogWarning("Nothing to tweet.");
+                return false;
+            }
+
             tweet = tweet.Trim();
 
             // trim the tweet between words if it is too long
