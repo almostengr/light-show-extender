@@ -17,6 +17,9 @@ namespace Almostengr.FalconPiTwitter.Workers
         private DateTime currentDate = DateTime.Now;
         private const string hashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
 
+        private readonly DateTime newYearDate; 
+        private readonly DateTime christmasDate;
+
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
         {
@@ -26,6 +29,9 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
+
+            newYearDate = new DateTime(currentDate.Year+1, 01, 01, 00, 00, 00);
+            christmasDate = new DateTime(currentDate.Year, 12, 25, 00, 00, 00);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,8 +58,9 @@ namespace Almostengr.FalconPiTwitter.Workers
                     {
                         string tweetString = string.Empty;
 
-                        tweetString += DaysUntilChristmas();
                         tweetString += DaysUntilLightShow(status.Next_Playlist.Start_Time);
+                        tweetString += DaysUntilChristmas();
+                        tweetString += DaysUntilNewYear();
 
                         if (tweetString.Length > 0)
                         {
@@ -87,12 +94,21 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private string DaysUntilChristmas()
         {
-            DateTime christmasDate = new DateTime(currentDate.Year, 12, 25, 00, 00, 00);
-
             if (currentDate <= christmasDate)
             {
                 string dayDiff = CalculateTimeBetween(currentDate, christmasDate);
                 return $"There are {dayDiff} until Christmas. ";
+            }
+
+            return string.Empty;
+        }
+
+        private string DaysUntilNewYear()
+        {
+            if (currentDate <= newYearDate && currentDate >= christmasDate)
+            {
+                string dayDiff = CalculateTimeBetween(currentDate, newYearDate);
+                return $"There are {dayDiff} until New Years. ";
             }
 
             return string.Empty;
