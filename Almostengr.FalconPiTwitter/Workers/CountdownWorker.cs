@@ -10,15 +10,15 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public class CountdownWorker : BaseWorker, ICountdownWorker
     {
-        private ILogger<CountdownWorker> _logger;
-        private ITwitterClient _twitterClient;
-        private AppSettings _appSettings;
-        private HttpClient _httpClient;
-        private DateTime currentDate = DateTime.Now;
-        private const string ChristmasHashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
-        private const string NewYearHashTags = "#HappyNewYear #NewYear";
-        private readonly DateTime newYearDate;
-        private readonly DateTime christmasDate;
+        private readonly ILogger<CountdownWorker> _logger;
+        private readonly ITwitterClient _twitterClient;
+        private readonly AppSettings _appSettings;
+        private readonly HttpClient _httpClient;
+        private DateTime _currentDate;
+        private const string _christmasHashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
+        private const string _newYearHashTags = "#HappyNewYear #NewYear";
+        private readonly DateTime _newYearDate;
+        private readonly DateTime _christmasDate;
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
@@ -30,8 +30,8 @@ namespace Almostengr.FalconPiTwitter.Workers
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
 
-            newYearDate = new DateTime(currentDate.Year + 1, 01, 01, 00, 00, 00);
-            christmasDate = new DateTime(currentDate.Year, 12, 25, 00, 00, 00);
+            _newYearDate = new DateTime(_currentDate.Year + 1, 01, 01, 00, 00, 00);
+            _christmasDate = new DateTime(_currentDate.Year, 12, 25, 00, 00, 00);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -47,11 +47,15 @@ namespace Almostengr.FalconPiTwitter.Workers
                     _logger.LogInformation("Waiting " + waitHours + " hours");
                     await Task.Delay(TimeSpan.FromHours(waitHours));
 
+                    _currentDate = DateTime.Now;
+
                     TimeSpan currentTime = DateTime.Now.TimeOfDay;
 
                     FalconFppdStatus status = await GetCurrentStatusAsync(_httpClient);
 
                     bool isOfflinePlaylist = IsNextPlaylistOffline(status.Next_Playlist.Playlist);
+
+                    // TODO only tweet if show is offline or no playlist is active
 
                     // if during non-show and daytime hours then tweet
                     if (currentTime.Hours >= 7 && currentTime.Hours <= 16 && isOfflinePlaylist == false)
@@ -88,10 +92,10 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private string DaysUntilChristmas()
         {
-            if (currentDate <= christmasDate)
+            if (_currentDate <= _christmasDate)
             {
-                string dayDiff = CalculateTimeBetween(currentDate, christmasDate);
-                return $"There are {dayDiff} until Christmas. " + ChristmasHashTags;
+                string dayDiff = CalculateTimeBetween(_currentDate, _christmasDate);
+                return $"There are {dayDiff} until Christmas. " + _christmasHashTags;
             }
 
             return string.Empty;
@@ -99,10 +103,10 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private string DaysUntilNewYear()
         {
-            if (currentDate <= newYearDate && currentDate >= christmasDate)
+            if (_currentDate <= _newYearDate && _currentDate >= _christmasDate)
             {
-                string dayDiff = CalculateTimeBetween(currentDate, newYearDate);
-                return $"There are {dayDiff} until New Years. " + NewYearHashTags;
+                string dayDiff = CalculateTimeBetween(_currentDate, _newYearDate);
+                return $"There are {dayDiff} until New Years. " + _newYearHashTags;
             }
 
             return string.Empty;
@@ -116,9 +120,9 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             DateTime showStartDate = DateTime.Parse(nextPlaylistDateTime);
 
-            if (currentDate <= showStartDate.AddHours(-36))
+            if (_currentDate <= showStartDate.AddHours(-36))
             {
-                string dayDiff = CalculateTimeBetween(currentDate, showStartDate);
+                string dayDiff = CalculateTimeBetween(_currentDate, showStartDate);
                 return $"There are {dayDiff} until the light show. ";
             }
 

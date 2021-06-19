@@ -16,7 +16,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<BaseWorker> _logger;
 
-        internal readonly Uri HostUri = new Uri("http://localhost/");
+        internal readonly Uri HostUri;
         internal const int TweetMaxLength = 280;
 
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
@@ -24,6 +24,8 @@ namespace Almostengr.FalconPiTwitter.Workers
             _appSettings = appSettings;
             _twitterClient = twitterClient;
             _logger = logger;
+
+            HostUri = new Uri("http://localhost/");
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
