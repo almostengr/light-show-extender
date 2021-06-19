@@ -10,5 +10,6 @@ namespace Almostengr.FalconPiTwitter.Workers
         Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient);
         Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase;
         Task StartAsync(CancellationToken cancellationToken);
+        Task<bool> PostTweetAsync(string tweet);
     }
 }

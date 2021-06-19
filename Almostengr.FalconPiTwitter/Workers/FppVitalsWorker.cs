@@ -25,6 +25,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _twitterClient = twitterClient;
 
             _httpClient = new HttpClient();
+            _httpClient.BaseAddress = HostUri;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,32 +36,26 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 previousHour = ResetAlarmCount(previousHour);
 
-                // foreach (var host in _appSettings.FalconPiPlayerUrls)
-                // {
-                    string host = "https://localhost";
-                    
-                    try
-                    {
-                        _logger.LogInformation("Checking vitals for " + host);
+                try
+                {
+                    _logger.LogInformation("Checking vitals for " + HostUri);
 
-                        _httpClient.BaseAddress = new Uri(host);
-                        FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
+                    FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
 
-                        _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
-                    }
-                    catch (NullReferenceException ex)
-                    {
-                        _logger.LogError(string.Concat("Null Exception occurred: ", ex.Message));
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        _logger.LogError(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
-                    }
-                // }
+                    _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
+                }
+                catch (NullReferenceException ex)
+                {
+                    _logger.LogError(ex, string.Concat("Null Exception occurred. ", ex.Message));
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, string.Concat("Are you connected to internet? HttpRequest Exception occured. ", ex.Message));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
 
                 await Task.Delay(TimeSpan.FromMinutes(5));
             }
@@ -104,8 +99,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     alarmMessage :
                     string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage);
 
-                var result = await _twitterClient.Tweets.PublishTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
-                _logger.LogInformation("Tweet result: " + result.CreatedAt);
+                await PostTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
             }
         }
 

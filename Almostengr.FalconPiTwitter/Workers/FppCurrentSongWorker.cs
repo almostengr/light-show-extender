@@ -24,7 +24,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _twitterClient = twitterClient;
 
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://localhost");
+            _httpClient.BaseAddress = HostUri;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -42,7 +42,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                         throw new FppCurrentSongException();
                     }
 
-                    FalconMediaMeta falconMediaMeta = 
+                    FalconMediaMeta falconMediaMeta =
                         await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
                     falconMediaMeta.Format.Tags.Title =
@@ -79,7 +79,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger.LogInformation("Preparing to post current song");
 
-            int tweetLimit = 266; // 280 - 14;
+            int tweetLimit = TweetMaxLength - 14; // 280 - 14;
 
             if (previousTitle == currentTitle)
             {
@@ -87,7 +87,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 return previousTitle;
             }
 
-            playlist = playlist.ToLower();
+            playlist = playlist.ToLower(); // remove case sensitivity before comparing
             if (playlist.Contains("offline") || playlist.Contains("testing"))
             {
                 _logger.LogInformation("Show is offline. Not posting song");
@@ -114,9 +114,8 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());
 
-            var tweetResult = await _twitterClient.Tweets.PublishTweetAsync(tweet);
+            await PostTweetAsync(tweet);
 
-            _logger.LogInformation("Posted song update. Result " + tweetResult.Id);
             return currentTitle;
         }
 
@@ -126,6 +125,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             if (string.IsNullOrEmpty(currentSong))
             {
+                _logger.LogWarning("No song provided");
                 return new FalconMediaMeta();
             }
 

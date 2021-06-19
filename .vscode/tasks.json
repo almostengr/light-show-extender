@@ -62,43 +62,29 @@
             "command": "/bin/bash",
             "type": "shell",
             "args": [
-                "-c",
-                "\"",
-                "dotnet",
                 "clean",
                 "-c",
-                "debug",
-                "&&",
-                "dotnet",
+                "Release",
+            ],
+            "group": "none"
+        },
+        {
+            "label": "Publish Release",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
                 "publish",
                 "--self-contained",
                 "-r",
                 "linux-arm",
                 "-c",
                 "Release",
-                // "-o",
-                // "${workspaceRoot}/fpmonitor",
-                "&&",
-                "tar",
-                "-cf",
-                "package/FalconPiTwitter.tar",
-                // "fpmonitor/*",
-                "${workspaceRoot}/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
-                "&&",
-                "zip",
-                "package/FalconPiTwitter.zip",
-                // "fpmonitor/*",
-                "${workspaceRoot}/bin/RELEASE/netcoreapp3.1/linux-arm/publish/*",
-                "&&",
-                "git",
-                "tag",
-                "|",
-                "tail",
-                "-1",
-                "\""
+                "-o",
+                "release",
+                "*sln"
             ],
             "group": "none",
-            "dependsOn": ["Publish Release"]
+            "dependsOn": ["Clean Release Project"]
         },
         {
             "label": "Deploy Local",
@@ -106,9 +92,10 @@
             "type": "shell",
             "args": [
                 "-p",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
                 "${workspaceRoot}/release/*",
                 "${workspaceRoot}/falconpitwitter.service",
-                "fpp@falconpi://home/fpp/fpmonitor",
+                "fpp@falconpi://home/fpp/falconpitwitter",
             ],
             "group": "none",
             "dependsOn": ["Publish Release"]

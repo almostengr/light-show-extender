@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Almostengr.FalconPiTwitter.Models
 {
     public class AppSettings
@@ -7,34 +5,6 @@ namespace Almostengr.FalconPiTwitter.Models
         public Twitter Twitter { get; set; }
         public Alarm Alarm { get; set; }
         public bool MonitorOnly { get; set; } = false;
-
-        // private IList<string> _falconPiPlayerUrls { get; set; }
-        // public IList<string> FalconPiPlayerUrls
-        // {
-        //     get { return _falconPiPlayerUrls; }
-        //     set { _falconPiPlayerUrls = SetFalconPiPlayerHostnames(value); }
-        // }
-
-        private IList<string> SetFalconPiPlayerHostnames(IList<string> remoteHosts)
-        {
-            for (int i = 0; i < remoteHosts.Count; i++)
-            {
-                remoteHosts[i] = SetFalconPiHostname(remoteHosts[i]);
-            }
-            return remoteHosts;
-        }
-
-        private string SetFalconPiHostname(string uri)
-        {
-            if (uri.StartsWith("http://") == false && uri.StartsWith("https://") == false)
-            {
-                uri = string.Concat("http://", uri);
-            }
-
-            uri = uri.Replace("/api/", "/");
-
-            return uri;
-        }
     }
 
     public class Alarm

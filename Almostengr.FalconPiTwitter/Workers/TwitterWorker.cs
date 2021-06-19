@@ -25,19 +25,20 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    await LikeMentionedTweets();
+                    await LikeMentionedTweetsAsync();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
+                    _logger.LogError(ex, ex.Message);
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(15));
             }
         }
 
-        public async Task LikeMentionedTweets()
+        public async Task LikeMentionedTweetsAsync()
         {
+            _logger.LogInformation("Checking for mentioned tweets");
             var mentions = await _twitterClient.Timelines.GetMentionsTimelineAsync();
 
             foreach (var mention in mentions)

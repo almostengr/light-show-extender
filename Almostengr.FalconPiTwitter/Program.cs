@@ -25,6 +25,9 @@ namespace Almostengr.FalconPiTwitter
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSystemd()
+                .UseContentRoot(
+                    System.IO.Path.GetDirectoryName(
+                        System.Reflection.Assembly.GetExecutingAssembly().Location))
                 .ConfigureServices((hostContext, services) =>
                 {
                     IConfiguration configuration = hostContext.Configuration;
@@ -39,12 +42,13 @@ namespace Almostengr.FalconPiTwitter
                             appSettings.Twitter.AccessSecret
                         ));
 
-                    services.AddSingleton<IFppVitalsWorker, FppVitalsWorker>();
+                    services.AddHostedService<FppVitalsWorker>();
 
                     if (appSettings.MonitorOnly == false)
                     {
-                        services.AddSingleton<IFppCurrentSongWorker, FppCurrentSongWorker>();
-                        services.AddSingleton<ITwitterWorker, TwitterWorker>();
+                        services.AddHostedService<FppCurrentSongWorker>();
+                        services.AddHostedService<TwitterWorker>();
+                        services.AddHostedService<CountdownWorker>();
                     }
                 });
 

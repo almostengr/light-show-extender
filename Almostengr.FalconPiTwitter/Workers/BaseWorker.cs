@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,17 +16,22 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<BaseWorker> _logger;
 
+        internal readonly Uri HostUri;
+        internal const int TweetMaxLength = 280;
+
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
         {
             _appSettings = appSettings;
             _twitterClient = twitterClient;
             _logger = logger;
+
+            HostUri = new Uri("http://localhost/");
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            var user = _twitterClient.Users.GetAuthenticatedUserAsync();
-            _logger.LogInformation(string.Concat("Connected to twitter as ", user.Id));
+            var response = _twitterClient.Users.GetAuthenticatedUserAsync();
+            _logger.LogInformation(string.Concat("Connected to twitter as ", response.Result.Name));
             return base.StartAsync(cancellationToken);
         }
 
@@ -51,6 +57,35 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 throw new System.Exception(response.ReasonPhrase);
             }
+        }
+
+        public async Task<bool> PostTweetAsync(string tweet)
+        {
+            if (string.IsNullOrEmpty(tweet))
+            {
+                _logger.LogWarning("Nothing to tweet.");
+                return false;
+            }
+
+            tweet = tweet.Trim();
+
+            // trim the tweet between words if it is too long
+            while(tweet.Length > TweetMaxLength)
+            {
+                tweet = tweet.Substring(0, tweet.LastIndexOf(" "));
+            }
+
+            _logger.LogInformation("Tweeting: " + tweet);
+
+#if RELEASE
+            var response = await _twitterClient.Tweets.PublishTweetAsync(tweet);
+            _logger.LogInformation("Sent tweet at: " + response.CreatedAt.ToString());
+            return response.CreatedBy.Name.Length > 0 ? true : false;
+#else
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            _logger.LogInformation("Sent testing tweet");
+            return true;
+#endif
         }
 
     }
