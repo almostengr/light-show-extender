@@ -15,7 +15,8 @@ namespace Almostengr.FalconPiTwitter.Workers
         private AppSettings _appSettings;
         private HttpClient _httpClient;
         private DateTime currentDate = DateTime.Now;
-        private const string hashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
+        private const string ChristmasHashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
+        private const string NewYearHashTags = "#HappyNewYear #NewYear";
 
         private readonly DateTime newYearDate; 
         private readonly DateTime christmasDate;
@@ -64,9 +65,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                         if (tweetString.Length > 0)
                         {
-                            tweetString += hashTags;
-                            tweetString = tweetString.Trim();
-                            
                             await PostTweetAsync(tweetString);
                         }
                     }
@@ -97,7 +95,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (currentDate <= christmasDate)
             {
                 string dayDiff = CalculateTimeBetween(currentDate, christmasDate);
-                return $"There are {dayDiff} until Christmas. ";
+                return $"There are {dayDiff} until Christmas. " + ChristmasHashTags;
             }
 
             return string.Empty;
@@ -108,7 +106,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (currentDate <= newYearDate && currentDate >= christmasDate)
             {
                 string dayDiff = CalculateTimeBetween(currentDate, newYearDate);
-                return $"There are {dayDiff} until New Years. ";
+                return $"There are {dayDiff} until New Years. " + NewYearHashTags;
             }
 
             return string.Empty;

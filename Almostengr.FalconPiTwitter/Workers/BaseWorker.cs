@@ -59,6 +59,8 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public async Task<bool> PostTweetAsync(string tweet)
         {
+            tweet = tweet.Trim();
+
             // trim the tweet between words if it is too long
             while(tweet.Length > TweetMaxLength)
             {
