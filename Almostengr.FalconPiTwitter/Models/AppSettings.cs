@@ -1,5 +1,3 @@
-using System;
-
 namespace Almostengr.FalconPiTwitter.Models
 {
     public class AppSettings
