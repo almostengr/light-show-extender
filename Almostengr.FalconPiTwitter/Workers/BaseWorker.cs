@@ -16,7 +16,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<BaseWorker> _logger;
 
-        internal readonly Uri HostUri = new Uri("http://falconpi/");
+        internal readonly Uri HostUri = new Uri("http://localhost/");
         internal const int TweetMaxLength = 280;
 
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
