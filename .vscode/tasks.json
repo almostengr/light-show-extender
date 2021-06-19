@@ -58,6 +58,35 @@
             "dependsOn": ["Clean Release Project"]
         },
         {
+            "label": "Create Release",
+            "command": "/bin/bash",
+            "type": "shell",
+            "args": [
+                "clean",
+                "-c",
+                "Release",
+            ],
+            "group": "none"
+        },
+        {
+            "label": "Publish Release",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "--self-contained",
+                "-r",
+                "linux-arm",
+                "-c",
+                "Release",
+                "-o",
+                "release",
+                "*sln"
+            ],
+            "group": "none",
+            "dependsOn": ["Clean Release Project"]
+        },
+        {
             "label": "Deploy Local",
             "command": "scp",
             "type": "shell",
