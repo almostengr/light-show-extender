@@ -46,15 +46,15 @@ namespace Almostengr.FalconPiTwitter.Workers
                 }
                 catch (NullReferenceException ex)
                 {
-                    _logger.LogError(string.Concat("Null Exception occurred: ", ex.Message));
+                    _logger.LogError(ex, string.Concat("Null Exception occurred. ", ex.Message));
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
+                    _logger.LogError(ex, string.Concat("Are you connected to internet? HttpRequest Exception occured. ", ex.Message));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
+                    _logger.LogError(ex, ex.Message);
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(5));
