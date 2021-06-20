@@ -14,7 +14,6 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
-        private DateTime _currentDate;
         private const string _christmasHashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
         private const string _newYearHashTags = "#HappyNewYear #NewYear";
 
@@ -32,39 +31,33 @@ namespace Almostengr.FalconPiTwitter.Workers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Starting countdown worker");
-            Random random = new Random();
             DateTime newYearDate;
             DateTime christmasDate;
+            DateTime currentDateTime;
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                newYearDate = new DateTime(_currentDate.Year + 1, 01, 01, 00, 00, 00);
-                christmasDate = new DateTime(_currentDate.Year, 12, 25, 00, 00, 00);
-
                 try
                 {
-                    int waitHours = random.Next(1, 12);
-                    _logger.LogInformation("Waiting " + waitHours + " hours");
-                    await Task.Delay(TimeSpan.FromHours(waitHours));
+                    await WaitBeforeContinue();
 
-                    _currentDate = DateTime.Now;
-
-                    TimeSpan currentTime = DateTime.Now.TimeOfDay;
+                    currentDateTime = DateTime.Now;
+                    newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
+                    christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
 
                     FalconFppdStatus status = await GetCurrentStatusAsync(_httpClient);
 
-                    bool isOfflinePlaylist = IsNextPlaylistOffline(status.Next_Playlist.Playlist);
-
-                    // TODO only tweet if show is offline or no playlist is active
-
-                    // if during non-show
-                    if (isOfflinePlaylist == false)
+                    // if during offline playlist or no active playlist
+                    if (string.IsNullOrEmpty(status.Current_PlayList.Playlist) ||
+                        status.Current_PlayList.Playlist.ToLower().Contains("offline"))
                     {
+                        _logger.LogInformation("Show is idle or offline");
+
                         string tweetString = string.Empty;
 
-                        tweetString += DaysUntilLightShow(status.Next_Playlist.Start_Time);
-                        tweetString += DaysUntilChristmas(christmasDate);
-                        tweetString += DaysUntilNewYear(christmasDate, newYearDate);
+                        tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
+                        tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
+                        tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
 
                         await PostTweetAsync(tweetString);
                     }
@@ -77,42 +70,37 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
-        private bool IsNextPlaylistOffline(string playlistName)
+        private async Task WaitBeforeContinue()
         {
-            playlistName = playlistName.ToLower();
-
-            if (playlistName.Contains("offline") || playlistName.Contains("test"))
-            {
-                _logger.LogInformation("Next scheduled playlist is offline. Not including in countdown");
-                return true;
-            }
-
-            return false;
+            Random random = new Random();
+            int waitHours = random.Next(1, 12);
+            _logger.LogInformation("Waiting " + waitHours + " hours");
+            await Task.Delay(TimeSpan.FromHours(waitHours));
         }
 
-        private string DaysUntilChristmas(DateTime christmasdate)
+        private string DaysUntilChristmas(DateTime curDateTime, DateTime christmasdate)
         {
-            if (_currentDate <= christmasdate)
+            if (curDateTime <= christmasdate)
             {
-                string dayDiff = CalculateTimeBetween(_currentDate, christmasdate);
+                string dayDiff = CalculateTimeBetween(curDateTime, christmasdate);
                 return $"There are {dayDiff} until Christmas. " + _christmasHashTags;
             }
 
             return string.Empty;
         }
 
-        private string DaysUntilNewYear(DateTime christmasDate, DateTime newYearDate)
+        private string DaysUntilNewYear(DateTime curDateTime, DateTime christmasDate, DateTime newYearDate)
         {
-            if (_currentDate <= newYearDate && _currentDate >= christmasDate)
+            if (curDateTime <= newYearDate && curDateTime >= christmasDate)
             {
-                string dayDiff = CalculateTimeBetween(_currentDate, newYearDate);
+                string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
                 return $"There are {dayDiff} until New Years. " + _newYearHashTags;
             }
 
             return string.Empty;
         }
 
-        private string DaysUntilLightShow(string start_Time)
+        private string DaysUntilLightShow(DateTime curDateTime, string start_Time)
         {
             string nextPlaylistDateTime = start_Time.Substring(0, start_Time.IndexOf(" - "));
 
@@ -120,9 +108,9 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             DateTime showStartDate = DateTime.Parse(nextPlaylistDateTime);
 
-            if (_currentDate <= showStartDate.AddHours(-36))
+            if (curDateTime <= showStartDate.AddHours(-36))
             {
-                string dayDiff = CalculateTimeBetween(_currentDate, showStartDate);
+                string dayDiff = CalculateTimeBetween(curDateTime, showStartDate);
                 return $"There are {dayDiff} until the light show. ";
             }
 
