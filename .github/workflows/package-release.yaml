@@ -1,9 +1,9 @@
 name: Package Release
 
-# on:
-#   push:
-#     branches:
-#       main
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   package-release:
@@ -16,7 +16,7 @@ jobs:
       name: Setup .NET Core
       with:
         dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel
-    
+
     - name: Publish Release
       # run: dotnet run --project Almostengr.FalconPiTwitter/Almostengr.FalconPiTwitter.csproj
       run: dotnet publish -r linux-arm -c Release -o latestrelease *sln
@@ -24,8 +24,5 @@ jobs:
     - name: Package files in tar
       run: tar -cf release/falconpitwitter.tar latestrelease/*
 
-    - name: Package files in zip
-      run: zip release/falconpitwitter.zip latestrelease/*
-
-    - name: Save release files
-      run: bash scripts/ghcommit.sh
+    - name: Commit release files
+      run: bash scripts/release.sh
