@@ -28,7 +28,9 @@ jobs:
 
     - run: rm -rf latestrelease 
 
-    - run: git add -f release/
+    - run: git add fptrelease/
 
     - name: Commit release files
       run: bash scripts/release.sh
+
+    - run: 

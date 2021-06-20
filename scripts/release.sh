@@ -14,14 +14,14 @@ if [[ ${STATUSOUTPUT} != *"nothing to commit, working tree clean"* ]]; then
     # git pull
     git config user.name github-actions
     git config user.email github-actions@github.com
-    git add release
+    git add fptrelease
     git commit -m "Committed latest release"
     # git push
 
     LASTTAG=$(git tag | tail -1)
     CURRENTYEAR=$(date +%Y)
 
-    if [[ "${LASTTAG}" == *${CURRENTYEAR}* ]]; then
+    if [[ "${LASTTAG}" == *"${CURRENTYEAR}"* ]]; then
         NEWTAG=$((${LASTTAG} + 1))
     else
         NEWTAG="${CURRENTYEAR}01"
@@ -30,6 +30,8 @@ if [[ ${STATUSOUTPUT} != *"nothing to commit, working tree clean"* ]]; then
     git tag ${NEWTAG}
 
     git push --tags
+
+    git push
 
 else
     echo "No updates were found"
