@@ -444,4 +444,4 @@ $RECYCLE.BIN/
 ## additional files
 *appsettings*.json
 !*appsettings.template.json
-fpmonitor
+latestrelease/*
