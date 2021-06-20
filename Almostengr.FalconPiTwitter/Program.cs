@@ -54,7 +54,7 @@ namespace Almostengr.FalconPiTwitter
 
         private static void ShowHelp()
         {
-            Console.WriteLine("Falcon Pi Monitor Help");
+            Console.WriteLine("Falcon Pi Twitter Help");
             Console.WriteLine();
             Console.WriteLine("For more information about this program,");
             Console.WriteLine("visit https://thealmostengineer.com/falconpitwitter");

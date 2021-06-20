@@ -11,13 +11,11 @@ namespace Almostengr.FalconPiTwitter.Models
 
         public string Current_Song_NotFile
         {
-            get { return GetCurrentSongNotFile(); }
-        }
-
-        private string GetCurrentSongNotFile()
-        {
-            return Current_Song.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
-                    .Replace("_", " ").Replace("-", " ");
+            get
+            {
+                return Current_Song.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
+                  .Replace(".mp4", "").Replace("_", " ").Replace("-", " ");
+            }
         }
     }
 
