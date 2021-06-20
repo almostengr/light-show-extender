@@ -18,7 +18,6 @@ jobs:
         dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel
 
     - name: Publish Release
-      # run: dotnet run --project Almostengr.FalconPiTwitter/Almostengr.FalconPiTwitter.csproj
       run: dotnet publish -r linux-arm -c Release -o latestrelease *sln
 
     - run: mkdir -p release
@@ -32,5 +31,3 @@ jobs:
 
     - name: Commit release files
       run: bash scripts/release.sh
-
-    - run: 
