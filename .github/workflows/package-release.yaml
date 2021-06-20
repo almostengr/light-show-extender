@@ -21,8 +21,12 @@ jobs:
       # run: dotnet run --project Almostengr.FalconPiTwitter/Almostengr.FalconPiTwitter.csproj
       run: dotnet publish -r linux-arm -c Release -o latestrelease *sln
 
+    - run: mkdir -p release
+
     - name: Package files in tar
       run: tar -cf release/falconpitwitter.tar latestrelease/*
+
+    - run: rm -rf latestrelease 
 
     - name: Commit release files
       run: bash scripts/release.sh
