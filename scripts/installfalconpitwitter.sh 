@@ -10,7 +10,7 @@ cd /home/fpp/
 
 ## download files
 
-wget https://raw.githubusercontent.com/almostengr/almostengrwebsite/main/release/falconpitwitter.tar -O falconpitwitter.tar
+wget https://raw.githubusercontent.com/almostengr/almostengrwebsite/main/fptrelease/falconpitwitter.tar -O falconpitwitter.tar
 
 # create directory if it does not already exist
 
