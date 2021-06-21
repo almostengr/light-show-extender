@@ -25,14 +25,12 @@ jobs:
     - name: Package files in tar
       run: tar -cf release/falconpitwitter.tar latestrelease/*
 
-    - run: rm -rf latestrelease 
-
-    - run: git add fptrelease/
+    - run: rm -rf latestrelease
 
     - run: git config user.name github-actions
     - run: git config user.email github-actions@github.com
-    - run: git add fptrelease
-    - run: git commit -m "Committed latest release"
+    - run: git add fptrelease/
+    - run: git commit -m "Committed latest release" --allow-empty
     - run: git tag $(dotnet run --project Almostengr.FalconPiTwitter --version)
     - run: git push --tags
     - run: git push
