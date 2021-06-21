@@ -14,11 +14,33 @@ namespace Almostengr.FalconPiTwitter
         {
             if (args.Length > 0)
             {
-                ShowHelp();
+                ProcessArguments(args);
             }
             else
             {
                 CreateHostBuilder(args).Build().Run();
+            }
+        }
+
+        private static void ProcessArguments(string[] args)
+        {
+            switch (args[0])
+            {
+                case "--help":
+                case "-h":
+                case "help":
+                    ShowHelp();
+                    break;
+
+                case "--version":
+                case "version":
+                    ShowVersion();
+                    break;
+                    
+                default:
+                    Console.WriteLine("Invalid arguments");
+                    ShowHelp();
+                    break;
             }
         }
 
@@ -51,6 +73,11 @@ namespace Almostengr.FalconPiTwitter
                         services.AddHostedService<CountdownWorker>();
                     }
                 });
+
+        private static void ShowVersion()
+        {
+            Console.WriteLine(typeof(Program).Assembly.FullName.ToString());
+        }
 
         private static void ShowHelp()
         {
