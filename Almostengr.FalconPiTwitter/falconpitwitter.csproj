@@ -7,7 +7,7 @@
     <Platform>linux-arm</Platform>
     <AssemblyName>Almostengr.FalconPiTwitter</AssemblyName>
     <RootNamespace>Almostengr.FalconPiTwitter</RootNamespace>
-    <VersionSuffix>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</VersionSuffix>
+    <VersionSuffix>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd.hhmm))</VersionSuffix>
     <AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">0.0.0.1</AssemblyVersion>
     <AssemblyVersion Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</AssemblyVersion>
     <Version Condition=" '$(VersionSuffix)' == '' ">0.0.1.0</Version>
