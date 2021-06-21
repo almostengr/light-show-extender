@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  package-release:
+  build-and-tag:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,10 +27,18 @@ jobs:
 
     - run: rm -rf latestrelease
 
-    - run: git config user.name github-actions
-    - run: git config user.email github-actions@github.com
-    - run: git add fptrelease/
-    - run: git commit -m "Committed latest release" --allow-empty
+    # - run: git config user.name github-actions
+    # - run: git config user.email github-actions@github.com
+    # - run: git add fptrelease/
+    # - run: git commit -m "Committed latest release" --allow-empty
+    
     - run: git tag $(dotnet run --project Almostengr.FalconPiTwitter --version)
     - run: git push --tags
     - run: git push
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with: 
+        files: fptrelease/falconpitwitter.tar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
