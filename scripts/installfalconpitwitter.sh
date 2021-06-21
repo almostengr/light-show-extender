@@ -29,4 +29,3 @@ sudo systemctl enable falconpitwitter
 ## start service
 
 sudo systemctl start falconpitwitter
-sudo systemctl status falconpitwitter

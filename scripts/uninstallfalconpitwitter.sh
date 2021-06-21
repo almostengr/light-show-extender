@@ -15,7 +15,6 @@ sudo systemctl disable falconpitwitter
 ## stop service
 
 sudo systemctl stop falconpitwitter
-sudo systemctl status falconpitwitter
 
 # reload
 
