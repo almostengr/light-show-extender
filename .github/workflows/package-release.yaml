@@ -31,13 +31,14 @@ jobs:
     # - run: git config user.email github-actions@github.com
     # - run: git add fptrelease/
     # - run: git commit -m "Committed latest release" --allow-empty
-    
+
     - run: git tag $(dotnet run --project Almostengr.FalconPiTwitter --version)
     - run: git push --tags
     - run: git push
 
     - name: Release
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with: 
         files: fptrelease/falconpitwitter.tar
       env:
