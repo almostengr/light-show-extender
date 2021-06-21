@@ -36,6 +36,10 @@ namespace Almostengr.FalconPiTwitter
                 case "version":
                     ShowVersion();
                     break;
+
+                case "--fullversion":
+                    ShowFullVersion();
+                    break;
                     
                 default:
                     Console.WriteLine("Invalid arguments");
@@ -74,9 +78,14 @@ namespace Almostengr.FalconPiTwitter
                     }
                 });
 
+        private static void ShowFullVersion()
+        {
+            Console.WriteLine(typeof(Program).Assembly.ToString());
+        }
+
         private static void ShowVersion()
         {
-            Console.WriteLine(typeof(Program).Assembly.FullName.ToString());
+            Console.WriteLine(typeof(Program).Assembly.GetName().Version.ToString());
         }
 
         private static void ShowHelp()
