@@ -4,7 +4,6 @@
     <UserSecretsId>dotnet-falconpimonitor-3817F232-7A06-4C0C-A269-235458F451AD</UserSecretsId>
     <Company>Robinson Handy and Technology Services LLC</Company>
     <Authors>Kenny Robinson</Authors>
-    <Platform>linux-arm</Platform>
     <AssemblyName>Almostengr.FalconPiTwitter</AssemblyName>
     <RootNamespace>Almostengr.FalconPiTwitter</RootNamespace>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd.hhmm))</VersionSuffix>
