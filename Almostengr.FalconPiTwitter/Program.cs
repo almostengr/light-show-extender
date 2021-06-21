@@ -85,7 +85,7 @@ namespace Almostengr.FalconPiTwitter
 
         private static void ShowVersion()
         {
-            Console.WriteLine(typeof(Program).Assembly.GetName().Version.ToString());
+            Console.WriteLine(typeof(Program).Assembly.GetName().Version.ToString(3));
         }
 
         private static void ShowHelp()
