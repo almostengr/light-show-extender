@@ -94,6 +94,9 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine();
             Console.WriteLine("For more information about this program,");
             Console.WriteLine("visit https://thealmostengineer.com/falconpitwitter");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine(typeof(Program).Assembly.ToString());
         }
     }
 }
