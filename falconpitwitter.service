@@ -6,7 +6,7 @@ Documentation=https://thealmostengineer.com/falconpitwitter
 [Service]
 Type=simple
 Restart=always
-ExecStart=/home/fpp/media/plugins/falconpitwitter/falconpitwitter
+ExecStart=/home/fpp/media/plugins/falconpitwitter/Almostengr.FalconPiTwitter
 User=fpp
 
 [Install]
