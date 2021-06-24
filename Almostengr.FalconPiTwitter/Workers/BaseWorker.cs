@@ -94,7 +94,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 "HolidayLightShows", "HolidayLights", "LightShow"};
 
             Random random = new Random();
-            return "#" + hashTags[random.Next(0, hashTags.Length)];
+            return " #" + hashTags[random.Next(0, hashTags.Length)];
         }
     }
 }

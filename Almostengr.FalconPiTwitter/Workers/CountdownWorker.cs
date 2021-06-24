@@ -14,7 +14,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
-        private const string _christmasHashTags = "#Christmas #ChristmasCountdown #ChristmasIsComing";
+        private const string _christmasHashTags = "#ChristmasCountdown #ChristmasIsComing";
         private const string _newYearHashTags = "#HappyNewYear #NewYear";
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
