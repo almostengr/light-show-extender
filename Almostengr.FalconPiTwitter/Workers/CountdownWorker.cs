@@ -58,6 +58,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                         tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
                         tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
+                        tweetString += GetRandomHashTag();
 
                         await PostTweetAsync(tweetString);
                     }
@@ -83,7 +84,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (curDateTime <= christmasdate)
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, christmasdate);
-                return $"There are {dayDiff} until Christmas. " + _christmasHashTags;
+                return $"{dayDiff} until Christmas. " + _christmasHashTags;
             }
 
             return string.Empty;
@@ -94,7 +95,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (curDateTime <= newYearDate && curDateTime >= christmasDate)
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
-                return $"There are {dayDiff} until New Years. " + _newYearHashTags;
+                return $"{dayDiff} until New Years. " + _newYearHashTags;
             }
 
             return string.Empty;
@@ -111,7 +112,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (curDateTime <= showStartDate.AddHours(-36))
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, showStartDate);
-                return $"There are {dayDiff} until the light show. ";
+                return $"{dayDiff} until the light show. ";
             }
 
             return string.Empty;

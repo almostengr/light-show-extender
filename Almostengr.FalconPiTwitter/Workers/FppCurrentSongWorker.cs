@@ -104,12 +104,12 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             if (string.IsNullOrEmpty(artist) && tweet.Length < tweetLimit)
             {
-                tweet = string.Concat(tweet, " by ", artist);
+                tweet += " by " + artist;
             }
 
-            if (string.IsNullOrEmpty(album) && tweet.Length < tweetLimit)
+            if (tweet.Length < tweetLimit)
             {
-                tweet = string.Concat(tweet, " (", album, ")");
+                tweet += " " + GetRandomHashTag();
             }
 
             tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());

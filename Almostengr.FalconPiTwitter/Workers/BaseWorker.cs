@@ -70,7 +70,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             tweet = tweet.Trim();
 
             // trim the tweet between words if it is too long
-            while(tweet.Length > TweetMaxLength)
+            while (tweet.Length > TweetMaxLength)
             {
                 tweet = tweet.Substring(0, tweet.LastIndexOf(" "));
             }
@@ -88,5 +88,13 @@ namespace Almostengr.FalconPiTwitter.Workers
 #endif
         }
 
+        public string GetRandomHashTag()
+        {
+            string[] hashTags = { "ChristmasLightShow", "ChristmasLights", "Christmas", "HolidayLightShow",
+                "HolidayLightShows", "HolidayLights", "LightShow"};
+
+            Random random = new Random();
+            return "#" + hashTags[random.Next(0, hashTags.Length)];
+        }
     }
 }
