@@ -14,8 +14,6 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
-        private const string _christmasHashTags = "#ChristmasCountdown #ChristmasIsComing";
-        private const string _newYearHashTags = "#HappyNewYear #NewYear";
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
@@ -58,7 +56,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                         tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
                         tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
-                        tweetString += GetRandomHashTag();
+                        tweetString += GetRandomHashTag(3);
 
                         await PostTweetAsync(tweetString);
                     }
@@ -84,7 +82,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (curDateTime <= christmasdate)
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, christmasdate);
-                return $"{dayDiff} until Christmas. " + _christmasHashTags;
+                return $"{dayDiff} until Christmas. " + GetChristmasHashTag();
             }
 
             return string.Empty;
@@ -95,7 +93,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (curDateTime <= newYearDate && curDateTime >= christmasDate)
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
-                return $"{dayDiff} until New Years. " + _newYearHashTags;
+                return $"{dayDiff} until New Years. " + GetNewYearsHashTag();
             }
 
             return string.Empty;
@@ -135,6 +133,20 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _httpClient.Dispose();
             base.Dispose();
+        }
+
+        private string GetChristmasHashTag()
+        {
+            string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing" };
+            Random random = new Random();
+            return hashTags[random.Next(0, hashTags.Length)];
+        }
+
+        private string GetNewYearsHashTag()
+        {
+            string[] hashTags = { "#HappyNewYear", "#NewYear" };
+            Random random = new Random();
+            return hashTags[random.Next(0, hashTags.Length)];
         }
     }
 }
