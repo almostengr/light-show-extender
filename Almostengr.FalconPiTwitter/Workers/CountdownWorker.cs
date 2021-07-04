@@ -39,7 +39,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    await WaitBeforeContinue();
+                    await WaitBeforeContinueAsync();
 
                     currentDateTime = DateTime.Now;
                     newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
@@ -71,10 +71,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
-        private async Task WaitBeforeContinue()
+        private async Task WaitBeforeContinueAsync()
         {
             Random random = new Random();
-            int waitHours = random.Next(1, 12);
+            double waitHours = 12 * random.NextDouble();
             _logger.LogInformation("Waiting " + waitHours + " hours");
             await Task.Delay(TimeSpan.FromHours(waitHours));
         }
@@ -112,7 +112,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             if (curDateTime <= showStartDate.AddHours(-36))
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, showStartDate);
-                return $"{dayDiff} until the light show. ";
+                return $"{dayDiff} until the next Light Show. ";
             }
 
             return string.Empty;
@@ -122,12 +122,13 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             TimeSpan timeDiff = endDate - startDate;
             _logger.LogInformation(timeDiff.ToString());
-            return string.Concat(timeDiff.Days, " ",
-                                (timeDiff.Days == 1 ? "day" : "days"), " ",
-                                timeDiff.Hours, " ",
-                                (timeDiff.Hours == 1 ? "hour" : "hours"), " ",
-                                timeDiff.Minutes, " ",
-                                (timeDiff.Minutes == 1 ? "minute" : "minutes"));
+
+            string output = string.Empty;
+            output += (timeDiff.Days > 0 ? (timeDiff.Days + (timeDiff.Days == 1 ? " day " : " days ")) : string.Empty);
+            output += (timeDiff.Hours > 0 ? (timeDiff.Hours + (timeDiff.Hours == 1 ? " hour " : " hours ")) : string.Empty);
+            output += (timeDiff.Minutes > 0 ? (timeDiff.Minutes + (timeDiff.Minutes == 1 ? " minute " : " minutes ")) : string.Empty);
+
+            return output;
         }
 
         public override void Dispose()
