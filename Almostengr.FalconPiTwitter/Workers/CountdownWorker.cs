@@ -139,14 +139,14 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing" };
             Random random = new Random();
-            return hashTags[random.Next(0, hashTags.Length)];
+            return hashTags[random.Next(0, hashTags.Length)] + " ";
         }
 
         private string GetNewYearsHashTag()
         {
             string[] hashTags = { "#HappyNewYear", "#NewYear" };
             Random random = new Random();
-            return hashTags[random.Next(0, hashTags.Length)];
+            return hashTags[random.Next(0, hashTags.Length)] + " ";
         }
     }
 }
