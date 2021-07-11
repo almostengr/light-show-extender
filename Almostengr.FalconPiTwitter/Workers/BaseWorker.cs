@@ -92,9 +92,13 @@ namespace Almostengr.FalconPiTwitter.Workers
         public string GetRandomHashTag(int count = 1)
         {
             string[] hashTags = { 
-                "#LightShow", "#AnimatedLights",
-                "#ChristmasLightShow", "#ChristmasLights", "#Christmas", "#Christmas",
-                "#HolidayLightShow", "#HolidayLightShows", "#HolidayLights", 
+                "#LightShow", "#AnimatedLights", "#LedLighting",
+                "#ChristmasLightShow", "#ChristmasLights", "#Christmas", "#Christmas", "#ChristmasSeason",
+                "#ChristmasTime", "#ChristmasDecorations", "#ChristmasSpirit", "#ChristmasMagic",
+                "#ChristmasFun", $"#Christmas{DateTime.Now.Year}", "#MerryChristmas", "#ChristmasMusic",
+                "#ChristmasLighting",
+                "#HolidayLightShow", "#HolidayLightShows", "#HolidayLights", "#HappyHolidays",
+                "#HolidayLighting"
                 };
             Random random = new Random();
             string outputTags = string.Empty;

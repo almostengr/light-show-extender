@@ -109,7 +109,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             if (tweet.Length < tweetLimit)
             {
-                tweet += " " + GetRandomHashTag();
+                tweet += " " + GetRandomHashTag(2);
             }
 
             tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());
