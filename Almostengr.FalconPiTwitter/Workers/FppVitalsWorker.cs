@@ -99,7 +99,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     alarmMessage :
                     string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage);
 
-                await PostTweetAsync(alarmMessage + DateTime.Now.ToLongTimeString());
+                await PostTweetAsync(alarmMessage + " " + DateTime.Now.ToLongTimeString());
             }
         }
 
