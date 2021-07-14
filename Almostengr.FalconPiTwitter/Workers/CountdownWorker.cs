@@ -14,6 +14,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
+        private readonly Random _random;
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
@@ -24,36 +25,41 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
+
+            _random = new Random();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Starting countdown worker");
-            DateTime newYearDate;
-            DateTime christmasDate;
-            DateTime currentDateTime;
+            DateTime newYearDate, christmasDate, currentDateTime;
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                await WaitBeforeContinueAsync();
+
+                currentDateTime = DateTime.Now;
+                newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
+                christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
+
+                string tweetString = string.Empty;
+                FalconFppdStatus status = null;
+
                 try
                 {
-                    await WaitBeforeContinueAsync();
+                    status = await GetCurrentStatusAsync(_httpClient);
+                    tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
 
-                    currentDateTime = DateTime.Now;
-                    newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
-                    christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
-
-                    FalconFppdStatus status = await GetCurrentStatusAsync(_httpClient);
-
+                try
+                {
                     // if during offline playlist or no active playlist
-                    if (string.IsNullOrEmpty(status.Current_PlayList.Playlist) ||
-                        status.Current_PlayList.Playlist.ToLower().Contains("offline"))
+                    if (status == null || IsOfflineOrTesting(status.Current_PlayList.Playlist))
                     {
-                        _logger.LogInformation("Show is idle or offline");
-
-                        string tweetString = string.Empty;
-
-                        tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
                         tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
                         tweetString += GetRandomHashTag(3);
@@ -71,8 +77,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private async Task WaitBeforeContinueAsync()
         {
-            Random random = new Random();
-            double waitHours = 12 * random.NextDouble();
+            double waitHours = 12 * _random.NextDouble();
             _logger.LogInformation("Waiting " + waitHours + " hours");
             await Task.Delay(TimeSpan.FromHours(waitHours));
         }
@@ -137,16 +142,14 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private string GetChristmasHashTag()
         {
-            string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing" };
-            Random random = new Random();
-            return hashTags[random.Next(0, hashTags.Length)] + " ";
+            string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing", "#CountdownToChristmas" };
+            return hashTags[_random.Next(0, hashTags.Length)] + " ";
         }
 
         private string GetNewYearsHashTag()
         {
             string[] hashTags = { "#HappyNewYear", "#NewYear" };
-            Random random = new Random();
-            return hashTags[random.Next(0, hashTags.Length)] + " ";
+            return hashTags[_random.Next(0, hashTags.Length)] + " ";
         }
     }
 }

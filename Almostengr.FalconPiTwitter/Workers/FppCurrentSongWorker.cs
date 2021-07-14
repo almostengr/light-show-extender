@@ -88,7 +88,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
 
             playlist = playlist.ToLower(); // remove case sensitivity before comparing
-            if (playlist.Contains("offline") || playlist.Contains("testing"))
+            if (IsOfflineOrTesting(playlist))
             {
                 _logger.LogInformation("Show is offline. Not posting song");
                 return previousTitle;

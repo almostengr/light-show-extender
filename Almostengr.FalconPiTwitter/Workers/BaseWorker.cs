@@ -91,7 +91,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public string GetRandomHashTag(int count = 1)
         {
-            string[] hashTags = { 
+            string[] hashTags = {
                 "#LightShow", "#AnimatedLights", "#LedLighting",
                 "#ChristmasLightShow", "#ChristmasLights", "#Christmas", "#Christmas", "#ChristmasSeason",
                 "#ChristmasTime", "#ChristmasDecorations", "#ChristmasSpirit", "#ChristmasMagic",
@@ -118,6 +118,17 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
 
             return outputTags;
+        }
+
+        public bool IsOfflineOrTesting(string input)
+        {
+            if (input.ToLower().Contains("offline") || input.ToLower().Contains("test") || string.IsNullOrEmpty(input))
+            {
+                _logger.LogInformation("Show is idle or offline");
+                return true;
+            }
+
+            return false;
         }
     }
 }
