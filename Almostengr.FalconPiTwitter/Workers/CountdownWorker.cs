@@ -14,7 +14,6 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly ITwitterClient _twitterClient;
         private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
-        private readonly Random _random;
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
@@ -25,8 +24,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
-
-            _random = new Random();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,7 +38,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                 currentDateTime = DateTime.Now;
                 newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
                 christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
-
                 string tweetString = string.Empty;
                 FalconFppdStatus status = null;
 
@@ -58,7 +54,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 try
                 {
                     // if during offline playlist or no active playlist
-                    if (status == null || IsOfflineOrTesting(status.Current_PlayList.Playlist))
+                    if (status == null || IsIdleOfflineOrTesting(status.Current_PlayList.Playlist))
                     {
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
                         tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
@@ -77,7 +73,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private async Task WaitBeforeContinueAsync()
         {
-            double waitHours = 12 * _random.NextDouble();
+            double waitHours = 12 * Random.NextDouble();
             _logger.LogInformation("Waiting " + waitHours + " hours");
             await Task.Delay(TimeSpan.FromHours(waitHours));
         }
@@ -143,13 +139,13 @@ namespace Almostengr.FalconPiTwitter.Workers
         private string GetChristmasHashTag()
         {
             string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing", "#CountdownToChristmas" };
-            return hashTags[_random.Next(0, hashTags.Length)] + " ";
+            return hashTags[Random.Next(0, hashTags.Length)] + " ";
         }
 
         private string GetNewYearsHashTag()
         {
             string[] hashTags = { "#HappyNewYear", "#NewYear" };
-            return hashTags[_random.Next(0, hashTags.Length)] + " ";
+            return hashTags[Random.Next(0, hashTags.Length)] + " ";
         }
     }
 }

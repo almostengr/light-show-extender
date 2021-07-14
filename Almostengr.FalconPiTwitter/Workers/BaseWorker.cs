@@ -18,12 +18,14 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         internal readonly Uri HostUri;
         internal const int TweetMaxLength = 280;
+        internal readonly Random Random;
 
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
         {
             _appSettings = appSettings;
             _twitterClient = twitterClient;
             _logger = logger;
+            Random = new Random();
 
             HostUri = new Uri("http://localhost/");
         }
@@ -55,7 +57,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
             else
             {
-                throw new System.Exception(response.ReasonPhrase);
+                throw new Exception(response.ReasonPhrase);
             }
         }
 
@@ -100,7 +102,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                 "#HolidayLightShow", "#HolidayLightShows", "#HolidayLights", "#HappyHolidays",
                 "#HolidayLighting"
                 };
-            Random random = new Random();
             string outputTags = string.Empty;
             int tagsUsed = 0;
 
@@ -108,7 +109,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             while (tagsUsed <= count)
             {
-                string randomTag = hashTags[random.Next(0, hashTags.Length)];
+                string randomTag = hashTags[Random.Next(0, hashTags.Length)];
 
                 if (outputTags.Contains(randomTag) == false)
                 {
@@ -120,7 +121,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             return outputTags;
         }
 
-        public bool IsOfflineOrTesting(string input)
+        public bool IsIdleOfflineOrTesting(string input)
         {
             if (input.ToLower().Contains("offline") || input.ToLower().Contains("test") || string.IsNullOrEmpty(input))
             {
