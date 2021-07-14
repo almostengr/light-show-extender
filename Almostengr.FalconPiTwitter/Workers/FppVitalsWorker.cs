@@ -76,12 +76,14 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public async Task<int> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors)
         {
+            const double maxCpuTemperature = 60.0;
+
             foreach (var sensor in sensors)
             {
-                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Alarm.MaxTemperature)
+                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > maxCpuTemperature)
                 {
                     string alarmMessage =
-                        $"Temperature warning! Threshold: {_appSettings.Alarm.MaxTemperature}, Actual: {sensor.Value}";
+                        $"Temperature warning! Temperature: {sensor.Value}";
                     await TweetAlarmAsync(alarmMessage);
                     return 1;
                 }
@@ -93,7 +95,9 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger.LogWarning(alarmMessage);
 
-            if (_alarmCount <= _appSettings.Alarm.MaxAlarms || _appSettings.Alarm.MaxAlarms == 0)
+            const int maxAllowedAlarms = 3;
+
+            if (_alarmCount <= maxAllowedAlarms)
             {
                 alarmMessage = string.IsNullOrEmpty(_appSettings.Alarm.TwitterAlarmUser) ?
                     alarmMessage :

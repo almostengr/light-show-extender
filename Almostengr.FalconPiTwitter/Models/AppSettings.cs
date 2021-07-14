@@ -10,20 +10,6 @@ namespace Almostengr.FalconPiTwitter.Models
     public class Alarm
     {
         public string TwitterAlarmUser { get; set; }
-
-        private double _maxTemperature { get; set; }
-        public double MaxTemperature
-        {
-            get { return _maxTemperature; }
-            set { _maxTemperature = value > 0.0 ? value : 60.0; }
-        }
-
-        private int _maxAlarms;
-        public int MaxAlarms
-        {
-            get { return _maxAlarms; }
-            set { _maxAlarms = value > 0 ? value : 3; }
-        }
     }
 
     public class Twitter

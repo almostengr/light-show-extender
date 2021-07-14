@@ -63,7 +63,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             if (string.IsNullOrEmpty(tweet))
             {
-                _logger.LogWarning("Nothing to tweet.");
+                _logger.LogWarning("Nothing to tweet");
                 return false;
             }
 
@@ -124,7 +124,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             if (input.ToLower().Contains("offline") || input.ToLower().Contains("test") || string.IsNullOrEmpty(input))
             {
-                _logger.LogInformation("Show is idle or offline");
+                _logger.LogInformation("Show is idle, testing, or offline");
                 return true;
             }
 
