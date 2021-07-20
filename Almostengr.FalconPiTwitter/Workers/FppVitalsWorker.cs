@@ -13,7 +13,6 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly AppSettings _appSettings;
         private readonly ILogger<FppVitalsWorker> _logger;
-        private readonly ITwitterClient _twitterClient;
         private readonly HttpClient _httpClient;
         private int _alarmCount = 0;
 
@@ -22,7 +21,6 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _appSettings = appSettings;
             _logger = logger;
-            _twitterClient = twitterClient;
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
@@ -44,13 +42,9 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                     _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
                 }
-                catch (NullReferenceException ex)
-                {
-                    _logger.LogError(ex, string.Concat("Null Exception occurred. ", ex.Message));
-                }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(ex, string.Concat("Are you connected to internet? HttpRequest Exception occured. ", ex.Message));
+                    _logger.LogError("Are you connected to internet? Is FFPPd running? " + ex.Message);
                 }
                 catch (Exception ex)
                 {
@@ -82,8 +76,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > maxCpuTemperature)
                 {
-                    string alarmMessage =
-                        $"Temperature warning! Temperature: {sensor.Value}";
+                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}";
                     await TweetAlarmAsync(alarmMessage);
                     return 1;
                 }

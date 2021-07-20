@@ -11,16 +11,12 @@ namespace Almostengr.FalconPiTwitter.Workers
     public class CountdownWorker : BaseWorker, ICountdownWorker
     {
         private readonly ILogger<CountdownWorker> _logger;
-        private readonly ITwitterClient _twitterClient;
-        private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
         {
-            _twitterClient = twitterClient;
             _logger = logger;
-            _appSettings = appSettings;
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;

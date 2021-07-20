@@ -12,7 +12,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public abstract class BaseWorker : BackgroundService, IBaseWorker
     {
-        private readonly AppSettings _appSettings;
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<BaseWorker> _logger;
 
@@ -22,7 +21,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
         {
-            _appSettings = appSettings;
             _twitterClient = twitterClient;
             _logger = logger;
             Random = new Random();

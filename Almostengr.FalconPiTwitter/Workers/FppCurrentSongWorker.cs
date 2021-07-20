@@ -12,16 +12,12 @@ namespace Almostengr.FalconPiTwitter.Workers
     public class FppCurrentSongWorker : BaseWorker, IFppCurrentSongWorker
     {
         private readonly ILogger<FppCurrentSongWorker> _logger;
-        private readonly ITwitterClient _twitterClient;
-        private readonly AppSettings _appSettings;
         private readonly HttpClient _httpClient;
 
         public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
             base(logger, appSettings, twitterClient)
         {
             _logger = logger;
-            _appSettings = appSettings;
-            _twitterClient = twitterClient;
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = HostUri;
@@ -56,19 +52,15 @@ namespace Almostengr.FalconPiTwitter.Workers
                 }
                 catch (FppCurrentSongException)
                 {
-                    _logger.LogWarning("No song is currently playing");
-                }
-                catch (NullReferenceException ex)
-                {
-                    _logger.LogError(string.Concat("Null Exception occurred: ", ex.Message));
+                    // _logger.LogWarning("No song is currently playing"); // do nothing
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
+                    _logger.LogError("Are you connected to internet? Is FFPPd running? " + ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, string.Concat(ex.GetType(), ex.Message));
+                    _logger.LogError(ex, ex.Message);
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(15));
