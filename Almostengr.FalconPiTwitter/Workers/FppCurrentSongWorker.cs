@@ -94,7 +94,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             string tweet = string.Concat("Playing \"", currentTitle, "\"");
 
-            if (string.IsNullOrEmpty(artist) && tweet.Length < tweetLimit)
+            if (string.IsNullOrEmpty(artist) == false && tweet.Length < tweetLimit)
             {
                 tweet += " by " + artist;
             }
