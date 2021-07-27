@@ -71,15 +71,12 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger.LogInformation("Preparing to post current song");
 
-            int tweetLimit = TweetMaxLength - 14; // 280 - 14;
-
             if (previousTitle == currentTitle)
             {
-                _logger.LogInformation("Song title has not changed. Not posting.");
+                _logger.LogDebug("Song title has not changed. Not posting.");
                 return previousTitle;
             }
 
-            playlist = playlist.ToLower(); // remove case sensitivity before comparing
             if (IsIdleOfflineOrTesting(playlist))
             {
                 _logger.LogInformation("Show is offline. Not posting song");
@@ -94,17 +91,14 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             string tweet = string.Concat("Playing \"", currentTitle, "\"");
 
-            if (string.IsNullOrEmpty(artist) == false && tweet.Length < tweetLimit)
+            if (string.IsNullOrEmpty(artist) == false)
             {
                 tweet += " by " + artist;
             }
 
-            if (tweet.Length < tweetLimit)
-            {
-                tweet += " " + GetRandomHashTag(2);
-            }
+            tweet += " at " + DateTime.Now.ToShortTimeString();
 
-            tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());
+            tweet += " " + GetRandomHashTag(2);
 
             await PostTweetAsync(tweet);
 
