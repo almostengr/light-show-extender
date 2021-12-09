@@ -93,7 +93,7 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine("Falcon Pi Twitter Help");
             Console.WriteLine();
             Console.WriteLine("For more information about this program,");
-            Console.WriteLine("visit https://thealmostengineer.com/falconpitwitter");
+            Console.WriteLine("visit https://thealmostengineer.com/projects/falcon-pi-twitter");
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine(typeof(Program).Assembly.ToString());
