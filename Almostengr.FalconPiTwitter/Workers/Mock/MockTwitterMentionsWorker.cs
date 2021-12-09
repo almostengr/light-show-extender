@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class MockTwitterWorker : MockBaseWorker, ITwitterWorker
+    public class MockTwitterWorker : MockBaseWorker, ITwitterMentionsWorker
     {
         private readonly ILogger<MockTwitterWorker> _logger;
 

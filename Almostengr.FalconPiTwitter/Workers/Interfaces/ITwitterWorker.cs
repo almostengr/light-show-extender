@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public interface ITwitterWorker : IBaseWorker
+    public interface ITwitterMentionsWorker : IBaseWorker
     { 
         Task LikeMentionedTweetsAsync();
     }

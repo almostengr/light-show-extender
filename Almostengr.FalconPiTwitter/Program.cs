@@ -73,7 +73,7 @@ namespace Almostengr.FalconPiTwitter
                     if (appSettings.MonitorOnly == false)
                     {
                         services.AddHostedService<FppCurrentSongWorker>();
-                        services.AddHostedService<TwitterWorker>();
+                        services.AddHostedService<TwitterMentionsWorker>();
                         services.AddHostedService<CountdownWorker>();
                     }
                 });

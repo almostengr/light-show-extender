@@ -7,12 +7,12 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class TwitterWorker : BaseWorker, ITwitterWorker
+    public class TwitterMentionsWorker : BaseWorker, ITwitterMentionsWorker
     {
-        private readonly ILogger<TwitterWorker> _logger;
+        private readonly ILogger<TwitterMentionsWorker> _logger;
         private readonly ITwitterClient _twitterClient;
 
-        public TwitterWorker(ILogger<TwitterWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
+        public TwitterMentionsWorker(ILogger<TwitterMentionsWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
              base(logger, appSettings, twitterClient)
         {
             _logger = logger;
@@ -46,7 +46,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                 if (mention.Favorited == false)
                 {
                     await mention.FavoriteAsync();
-                    _logger.LogInformation("Favorited tweet: " + mention.Id);
                 }
             }
         }
