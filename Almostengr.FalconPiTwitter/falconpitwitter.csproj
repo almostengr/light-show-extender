@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-falconpimonitor-3817F232-7A06-4C0C-A269-235458F451AD</UserSecretsId>
     <Company>Robinson Handy and Technology Services LLC</Company>
     <Authors>Kenny Robinson</Authors>
     <AssemblyName>Almostengr.FalconPiTwitter</AssemblyName>
     <RootNamespace>Almostengr.FalconPiTwitter</RootNamespace>
-    <VersionSuffix>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd.hhmm))</VersionSuffix>
-    <AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">0.0.0.1</AssemblyVersion>
+    <VersionSuffix>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</VersionSuffix>
+    <AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">0.0.1</AssemblyVersion>
     <AssemblyVersion Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</AssemblyVersion>
-    <Version Condition=" '$(VersionSuffix)' == '' ">0.0.1.0</Version>
+    <Version Condition=" '$(VersionSuffix)' == '' ">00.00.01</Version>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</Version>
     <Copyright>Copyright © Robinson Handy and Technology Services</Copyright>
     <Product>Falcon Pi Twitter</Product>
