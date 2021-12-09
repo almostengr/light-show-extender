@@ -1,7 +1,7 @@
 [Unit]
 Description=Falcon Pi Twitter
 After=network.target
-Documentation=https://thealmostengineer.com/falconpitwitter
+Documentation=https://thealmostengineer.com/projects/falcon-pi-twitter
 
 [Service]
 Type=simple
