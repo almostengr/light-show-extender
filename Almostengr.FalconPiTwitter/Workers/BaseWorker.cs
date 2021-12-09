@@ -119,6 +119,14 @@ namespace Almostengr.FalconPiTwitter.Workers
             return outputTags;
         }
 
+        public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatus status)
+        {
+            string playlistName = status.Current_PlayList.Playlist.ToLower();
+
+            return (status == null || 
+                (playlistName == "idle" || playlistName == "testing" || playlistName == "offline"));
+        }
+
         public bool IsIdleOfflineOrTesting(string input)
         {
             if (input.ToLower().Contains("offline") || input.ToLower().Contains("test") || string.IsNullOrEmpty(input))

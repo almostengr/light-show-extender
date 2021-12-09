@@ -25,14 +25,12 @@ namespace Almostengr.FalconPiTwitter.Workers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Starting countdown worker");
-            DateTime newYearDate, christmasDate, currentDateTime;
+            DateTime christmasDate, currentDateTime;
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                await WaitBeforeContinueAsync();
-
                 currentDateTime = DateTime.Now;
-                newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
+                // newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
                 christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
                 string tweetString = string.Empty;
                 FalconFppdStatus status = null;
@@ -49,15 +47,16 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 try
                 {
-                    // if during offline playlist or no active playlist
-                    if (status == null || IsIdleOfflineOrTesting(status.Current_PlayList.Playlist))
+                    if (IsPlaylistIdleOfflineOrTesting(status))
                     {
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
-                        tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
+                        // tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
                         tweetString += GetRandomHashTag(3);
 
                         await PostTweetAsync(tweetString);
                     }
+                    
+                    await WaitBeforeContinueAsync();
                 }
                 catch (Exception ex)
                 {
@@ -69,32 +68,39 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         private async Task WaitBeforeContinueAsync()
         {
-            double waitHours = 12 * Random.NextDouble();
+            double waitHours = 6 * Random.NextDouble();
+
+            if (waitHours < 1)
+            {
+                waitHours = 1;
+            }
+
             _logger.LogInformation("Waiting " + waitHours + " hours");
+
             await Task.Delay(TimeSpan.FromHours(waitHours));
         }
 
-        private string DaysUntilChristmas(DateTime curDateTime, DateTime christmasdate)
+        private string DaysUntilChristmas(DateTime curDateTime, DateTime christmasDate)
         {
-            if (curDateTime <= christmasdate)
+            if (curDateTime >= christmasDate)
             {
-                string dayDiff = CalculateTimeBetween(curDateTime, christmasdate);
-                return $"{dayDiff} until Christmas. " + GetChristmasHashTag();
+                christmasDate = new DateTime(curDateTime.Year + 1, 12, 25, 00, 00, 00);
             }
 
-            return string.Empty;
+            string dayDiff = CalculateTimeBetween(curDateTime, christmasDate);
+            return $"{dayDiff} until Christmas. " + GetChristmasHashTag();
         }
 
-        private string DaysUntilNewYear(DateTime curDateTime, DateTime christmasDate, DateTime newYearDate)
-        {
-            if (curDateTime <= newYearDate && curDateTime >= christmasDate)
-            {
-                string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
-                return $"{dayDiff} until New Years. " + GetNewYearsHashTag();
-            }
+        // private string DaysUntilNewYear(DateTime curDateTime, DateTime christmasDate, DateTime newYearDate)
+        // {
+        //     if (curDateTime <= newYearDate && curDateTime >= christmasDate)
+        //     {
+        //         string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
+        //         return $"{dayDiff} until New Years. " + GetNewYearsHashTag();
+        //     }
 
-            return string.Empty;
-        }
+        //     return string.Empty;
+        // }
 
         private string DaysUntilLightShow(DateTime curDateTime, string start_Time)
         {
@@ -138,10 +144,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             return hashTags[Random.Next(0, hashTags.Length)] + " ";
         }
 
-        private string GetNewYearsHashTag()
-        {
-            string[] hashTags = { "#HappyNewYear", "#NewYear" };
-            return hashTags[Random.Next(0, hashTags.Length)] + " ";
-        }
+        // private string GetNewYearsHashTag()
+        // {
+        //     string[] hashTags = { "#HappyNewYear", "#NewYear" };
+        //     return hashTags[Random.Next(0, hashTags.Length)] + " ";
+        // }
     }
 }
