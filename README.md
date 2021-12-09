@@ -19,4 +19,4 @@ Christmas light show. This monitor gets the status ando ther information based o
 via the FPP API. 
 
 For more information about this project, visit the 
-<a href="https://thealmostengineer.com/falconpitwitter" target="_blank">project page</a>.
+<a href="https://thealmostengineer.com/projects/falcon-pi-twitter" target="_blank">project page</a>.
