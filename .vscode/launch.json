@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Almostengr.FalconPiTwitter/bin/Debug/netcoreapp3.1/falconpitwitter.dll",
+            "program": "${workspaceFolder}/Almostengr.FalconPiTwitter/bin/Debug/net5.0/Almostengr.FalconPiTwitter.dll",
             "args": [
             ],
             "cwd": "${workspaceFolder}/Almostengr.FalconPiTwitter",
