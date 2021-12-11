@@ -31,7 +31,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             while (!stoppingToken.IsCancellationRequested)
             {
                 currentDateTime = DateTime.Now;
-                // newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
                 christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
                 string tweetString = string.Empty;
                 FalconFppdStatusDto status = null;
@@ -51,7 +50,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                     if (IsPlaylistIdleOfflineOrTesting(status))
                     {
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
-                        // tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
                         tweetString += GetRandomHashTag(3);
 
                         await PostTweetAsync(tweetString);
@@ -91,17 +89,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             string dayDiff = CalculateTimeBetween(curDateTime, christmasDate);
             return $"{dayDiff} until Christmas. " + GetChristmasHashTag();
         }
-
-        // private string DaysUntilNewYear(DateTime curDateTime, DateTime christmasDate, DateTime newYearDate)
-        // {
-        //     if (curDateTime <= newYearDate && curDateTime >= christmasDate)
-        //     {
-        //         string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
-        //         return $"{dayDiff} until New Years. " + GetNewYearsHashTag();
-        //     }
-
-        //     return string.Empty;
-        // }
 
         private string DaysUntilLightShow(DateTime curDateTime, string start_Time)
         {
@@ -144,11 +131,5 @@ namespace Almostengr.FalconPiTwitter.Workers
             string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing", "#CountdownToChristmas" };
             return hashTags[Random.Next(0, hashTags.Length)] + " ";
         }
-
-        // private string GetNewYearsHashTag()
-        // {
-        //     string[] hashTags = { "#HappyNewYear", "#NewYear" };
-        //     return hashTags[Random.Next(0, hashTags.Length)] + " ";
-        // }
     }
 }
