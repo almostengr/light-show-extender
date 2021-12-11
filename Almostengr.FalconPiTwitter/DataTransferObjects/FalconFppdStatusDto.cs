@@ -8,6 +8,8 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
         public List<FalconFppdStatusSensor> Sensors { get; set; }
         public string Current_Song { get; set; }
         public FalconFppdStatusNextPlaylist Next_Playlist { get; set; }
+        public string Mode_Name { get; set; }
+        public string Fppd { get; set; }
 
         public string Current_Song_NotFile
         {
@@ -21,12 +23,12 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
 
     public class FalconFppdStatusNextPlaylist
     {
-        public string Playlist { get; set; }
         public string Start_Time { get; set; }
     }
 
     public class FalconFppdStatusSensor
     {
+        public string Label { get; set; }
         public double Value { get; set; }
         public string ValueType { get; set; }
     }

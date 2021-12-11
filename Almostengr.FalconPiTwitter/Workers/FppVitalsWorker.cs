@@ -73,9 +73,9 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             foreach (var sensor in sensors)
             {
-                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.RaspberryPi.MaxCpuTemperatureC)
+                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Monitor.MaxCpuTemperatureC)
                 {
-                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.RaspberryPi.MaxCpuTemperatureC}";
+                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitor.MaxCpuTemperatureC}";
                     await TweetAlarmAsync(alarmMessage);
                     return 1;
                 }
@@ -88,11 +88,11 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger.LogWarning(alarmMessage);
 
-            if (_alarmCount <= _appSettings.Twitter.MaxAllowedAlarms)
+            if (_alarmCount <= _appSettings.Monitor.MaxAllowedAlarms)
             {
-                alarmMessage = _appSettings.Twitter.AlarmUsers.Count > 0 ?
+                alarmMessage = _appSettings.Monitor.AlarmUsernames.Count > 0 ?
                     alarmMessage :
-                    string.Concat(_appSettings.Twitter.AlarmUsers, " ", alarmMessage);
+                    string.Concat(_appSettings.Monitor.AlarmUsernames, " ", alarmMessage);
 
                 await PostTweetAsync(alarmMessage + " " + DateTime.Now.ToLongTimeString());
             }

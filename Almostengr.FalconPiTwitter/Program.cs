@@ -66,7 +66,7 @@ namespace Almostengr.FalconPiTwitter
 
                     services.AddHostedService<FppVitalsWorker>();
 
-                    if (appSettings.MonitorOnly == false)
+                    if (appSettings.HostMonitoring == false)
                     {
                         services.AddHostedService<FppCurrentSongWorker>();
                         services.AddHostedService<TwitterMentionsWorker>();
