@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Workers

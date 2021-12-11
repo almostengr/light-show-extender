@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {

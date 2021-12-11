@@ -13,7 +13,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _logger = logger;
         }
 
-        public async Task LikeMentionedTweetsAsync()
+        public async Task ProcessMentionedTweets()
         {
             await Task.Delay(TimeSpan.FromSeconds(2));
             _logger.LogInformation("Multiple tweets liked");

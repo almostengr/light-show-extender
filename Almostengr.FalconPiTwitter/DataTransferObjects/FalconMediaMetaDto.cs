@@ -1,6 +1,6 @@
-namespace Almostengr.FalconPiTwitter.Models
+namespace Almostengr.FalconPiTwitter.DataTransferObjects
 {
-    public class FalconMediaMeta : ModelBase
+    public class FalconMediaMetaDto : BaseDto
     {
         public FalconMediaMetaFormat Format { get; set; }
     }

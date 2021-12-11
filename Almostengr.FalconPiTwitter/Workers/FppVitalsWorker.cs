@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -38,7 +38,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 {
                     _logger.LogInformation("Checking vitals for " + HostUri);
 
-                    FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
+                    FalconFppdStatusDto falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
 
                     _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
                 }
@@ -92,9 +92,9 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             if (_alarmCount <= maxAllowedAlarms)
             {
-                alarmMessage = string.IsNullOrEmpty(_appSettings.Alarm.TwitterAlarmUser) ?
+                alarmMessage = _appSettings.Twitter.AlarmUsers.Count > 0 ?
                     alarmMessage :
-                    string.Concat(_appSettings.Alarm.TwitterAlarmUser, " ", alarmMessage);
+                    string.Concat(_appSettings.Twitter.AlarmUsers, " ", alarmMessage);
 
                 await PostTweetAsync(alarmMessage + " " + DateTime.Now.ToLongTimeString());
             }

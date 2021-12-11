@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -40,12 +40,12 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        public virtual async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
+        public virtual async Task<FalconFppdStatusDto> GetCurrentStatusAsync(HttpClient httpClient)
         {
-            return await HttpGetAsync<FalconFppdStatus>(httpClient, "api/fppd/status");
+            return await HttpGetAsync<FalconFppdStatusDto>(httpClient, "api/fppd/status");
         }
 
-        public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase
+        public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
         {
             HttpResponseMessage response = await httpClient.GetAsync(route);
 
@@ -119,7 +119,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             return outputTags;
         }
 
-        public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatus status)
+        public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatusDto status)
         {
             string playlistName = status.Current_PlayList.Playlist.ToLower();
 

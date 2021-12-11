@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Almostengr.FalconPiTwitter.Models
+namespace Almostengr.FalconPiTwitter.DataTransferObjects
 {
-    public class FalconFppdStatus : ModelBase
+    public class FalconFppdStatusDto : BaseDto
     {
         public FalconFppdStatusCurrentPlayList Current_PlayList { get; set; }
         public List<FalconFppdStatusSensor> Sensors { get; set; }

@@ -4,6 +4,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public interface ITwitterMentionsWorker : IBaseWorker
     { 
-        Task LikeMentionedTweetsAsync();
+        Task ProcessMentionedTweets();
     }
 }

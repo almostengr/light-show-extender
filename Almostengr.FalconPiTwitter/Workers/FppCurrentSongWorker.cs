@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Exceptions;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
@@ -31,14 +31,14 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
+                    FalconFppdStatusDto falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
 
                     if (falconFppdStatus.Current_Song == string.Empty)
                     {
                         throw new FppCurrentSongException();
                     }
 
-                    FalconMediaMeta falconMediaMeta =
+                    FalconMediaMetaDto falconMediaMeta =
                         await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
                     falconMediaMeta.Format.Tags.Title =
@@ -105,17 +105,17 @@ namespace Almostengr.FalconPiTwitter.Workers
             return currentTitle;
         }
 
-        public async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string currentSong)
+        public async Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
         {
             _logger.LogInformation("Getting current song meta data");
 
             if (string.IsNullOrEmpty(currentSong))
             {
                 _logger.LogWarning("No song provided");
-                return new FalconMediaMeta();
+                return new FalconMediaMetaDto();
             }
 
-            return await HttpGetAsync<FalconMediaMeta>(_httpClient, string.Concat("api/media/", currentSong, "/meta"));
+            return await HttpGetAsync<FalconMediaMetaDto>(_httpClient, string.Concat("api/media/", currentSong, "/meta"));
         }
 
         public string GetSongTitle(string notFileTitle, string tagTitle)

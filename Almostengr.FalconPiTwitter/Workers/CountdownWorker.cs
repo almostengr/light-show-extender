@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -33,7 +33,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 // newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
                 christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
                 string tweetString = string.Empty;
-                FalconFppdStatus status = null;
+                FalconFppdStatusDto status = null;
 
                 try
                 {

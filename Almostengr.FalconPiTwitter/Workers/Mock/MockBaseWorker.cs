@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -16,12 +16,12 @@ namespace Almostengr.FalconPiTwitter.Workers
             _logger = logger;
         }
 
-        public virtual Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
+        public virtual Task<FalconFppdStatusDto> GetCurrentStatusAsync(HttpClient httpClient)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : ModelBase
+        public Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
         {
             throw new System.NotImplementedException();
         }

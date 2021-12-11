@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -40,8 +40,8 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(httpClient);
-                    FalconMediaMeta falconMediaMeta = await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
+                    FalconFppdStatusDto falconFppdStatus = await GetCurrentStatusAsync(httpClient);
+                    FalconMediaMetaDto falconMediaMeta = await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
                     falconMediaMeta.Format.Tags.Title =
                         GetSongTitle(falconFppdStatus.Current_Song_NotFile, falconMediaMeta.Format.Tags.Title);
@@ -76,9 +76,9 @@ namespace Almostengr.FalconPiTwitter.Workers
               .Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 
-        public override async Task<FalconFppdStatus> GetCurrentStatusAsync(HttpClient httpClient)
+        public override async Task<FalconFppdStatusDto> GetCurrentStatusAsync(HttpClient httpClient)
         {
-            FalconFppdStatus falconFppdStatus = new FalconFppdStatus();
+            FalconFppdStatusDto falconFppdStatus = new FalconFppdStatusDto();
             falconFppdStatus.Current_Song = RandomString(25);
             falconFppdStatus.Current_PlayList = new FalconFppdStatusCurrentPlayList();
             falconFppdStatus.Current_PlayList.Playlist = RandomString(40);
@@ -86,11 +86,11 @@ namespace Almostengr.FalconPiTwitter.Workers
             return await Task.FromResult(falconFppdStatus);
         }
 
-        public Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string currentSong)
+        public Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
         {
             _logger.LogInformation("Getting current song meta data");
 
-            var falconMediaMeta = new FalconMediaMeta();
+            var falconMediaMeta = new FalconMediaMetaDto();
             falconMediaMeta.Format = new FalconMediaMetaFormat();
             falconMediaMeta.Format.Tags = new FalconMediaMetaFormatTags();
             falconMediaMeta.Format.Tags.Title = RandomString(15);

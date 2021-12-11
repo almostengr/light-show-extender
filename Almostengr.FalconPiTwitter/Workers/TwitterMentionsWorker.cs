@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -25,7 +25,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    await LikeMentionedTweetsAsync();
+                    await ProcessMentionedTweets();
                 }
                 catch (Exception ex)
                 {
@@ -36,7 +36,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
-        public async Task LikeMentionedTweetsAsync()
+        public async Task ProcessMentionedTweets()
         {
             _logger.LogInformation("Checking for mentioned tweets");
             var mentions = await _twitterClient.Timelines.GetMentionsTimelineAsync();
