@@ -34,10 +34,6 @@ namespace Almostengr.FalconPiTwitter
 
                 case "--version":
                 case "version":
-                    ShowVersion();
-                    break;
-
-                case "--fullversion":
                     ShowFullVersion();
                     break;
                     
@@ -83,11 +79,6 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine(typeof(Program).Assembly.ToString());
         }
 
-        private static void ShowVersion()
-        {
-            Console.WriteLine(typeof(Program).Assembly.GetName().Version.ToString());
-        }
-
         private static void ShowHelp()
         {
             Console.WriteLine("Falcon Pi Twitter Help");
@@ -96,7 +87,7 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine("visit https://thealmostengineer.com/projects/falcon-pi-twitter");
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine(typeof(Program).Assembly.ToString());
+            ShowFullVersion();
         }
     }
 }
