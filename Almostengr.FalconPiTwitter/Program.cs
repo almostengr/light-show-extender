@@ -1,5 +1,5 @@
 using System;
-using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Settings;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Settings;
 using Almostengr.FalconPiTwitter.Exceptions;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Almostengr.FalconPiTwitter.DataTransferObjects
+namespace Almostengr.FalconPiTwitter.Settings
 {
     public class AppSettings
     {
@@ -21,6 +21,7 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
         public string AccessToken { get; set; }
         public string AccessSecret { get; set; }
         public List<string> AlarmUsers { get; set; } = new();
+        public int MaxAllowedAlarms { get; set; } = 3;
     }
 
 }

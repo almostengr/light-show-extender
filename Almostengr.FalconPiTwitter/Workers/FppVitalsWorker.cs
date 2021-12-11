@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -70,17 +71,16 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public async Task<int> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors)
         {
-            const double maxCpuTemperature = 60.0;
-
             foreach (var sensor in sensors)
             {
-                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > maxCpuTemperature)
+                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.RaspberryPi.MaxCpuTemperatureC)
                 {
-                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}";
+                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.RaspberryPi.MaxCpuTemperatureC}";
                     await TweetAlarmAsync(alarmMessage);
                     return 1;
                 }
-            } // end for
+            }
+
             return 0;
         }
 
@@ -88,9 +88,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger.LogWarning(alarmMessage);
 
-            const int maxAllowedAlarms = 3;
-
-            if (_alarmCount <= maxAllowedAlarms)
+            if (_alarmCount <= _appSettings.Twitter.MaxAllowedAlarms)
             {
                 alarmMessage = _appSettings.Twitter.AlarmUsers.Count > 0 ?
                     alarmMessage :
