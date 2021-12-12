@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
@@ -32,7 +33,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     _logger.LogError(ex, ex.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(15));
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.ExtraLong), stoppingToken);
             }
         }
 
