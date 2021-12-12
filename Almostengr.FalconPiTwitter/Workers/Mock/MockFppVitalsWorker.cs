@@ -11,7 +11,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
         }
 
-        public Task<int> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors)
+        public Task CheckAllSensors(IList<FalconFppdStatusSensor> sensors)
         {
             throw new System.NotImplementedException();
         }
@@ -21,7 +21,12 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        public Task TweetAlarmAsync(string alarmMessage)
+        public Task PostTweetAlarmAsync(string alarmMessage)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task CheckInstanceVitals(RemoteSystems fppInstance)
         {
             throw new System.NotImplementedException();
         }

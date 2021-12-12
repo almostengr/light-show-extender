@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
@@ -18,8 +19,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public MockFppCurrentSongWorker(
             ILogger<MockFppCurrentSongWorker> logger,
-            AppSettings appSettings,
-            ITwitterClient twitterClient) :
+            AppSettings appSettings) :
             base(logger)
         {
             _logger = logger;
@@ -41,7 +41,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             {
                 try
                 {
-                    FalconFppdStatusDto falconFppdStatus = await GetCurrentStatusAsync(httpClient);
+                    FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(httpClient);
                     FalconMediaMetaDto falconMediaMeta = await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
                     falconMediaMeta.Format.Tags.Title =
@@ -50,18 +50,17 @@ namespace Almostengr.FalconPiTwitter.Workers
                     previousSong = await PostCurrentSongAsync(
                         previousSong, falconMediaMeta.Format.Tags.Title,
                         falconMediaMeta.Format.Tags.Artist,
-                        falconMediaMeta.Format.Tags.Album,
                         falconFppdStatus.Current_PlayList.Playlist);
 
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
                 catch (NullReferenceException ex)
                 {
-                    _logger.LogError(string.Concat("Null Exception occurred: ", ex.Message));
+                    _logger.LogError(string.Concat(ExceptionMessage.NullReference, ex.Message));
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(string.Concat("Are you connected to internet? HttpRequest Exception occured: ", ex.Message));
+                    _logger.LogError(string.Concat(ExceptionMessage.NoInternetConnection, ex.Message));
                 }
                 catch (Exception ex)
                 {
@@ -77,7 +76,7 @@ namespace Almostengr.FalconPiTwitter.Workers
               .Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 
-        public override async Task<FalconFppdStatusDto> GetCurrentStatusAsync(HttpClient httpClient)
+        public override async Task<FalconFppdStatusDto> GetFppdStatusAsync(HttpClient httpClient)
         {
             FalconFppdStatusDto falconFppdStatus = new FalconFppdStatusDto();
             falconFppdStatus.Current_Song = RandomString(25);
@@ -96,7 +95,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             falconMediaMeta.Format.Tags = new FalconMediaMetaFormatTags();
             falconMediaMeta.Format.Tags.Title = RandomString(15);
             falconMediaMeta.Format.Tags.Artist = RandomString(20);
-            falconMediaMeta.Format.Tags.Album = RandomString(5);
 
             return Task.FromResult(falconMediaMeta);
         }
@@ -107,11 +105,9 @@ namespace Almostengr.FalconPiTwitter.Workers
             return string.IsNullOrEmpty(tagTitle) ? notFileTitle : tagTitle;
         }
 
-        public Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string album, string playlist)
+        public Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string playlist)
         {
             _logger.LogInformation("Posting current song");
-
-            int tweetLimit = 266; // 280 - 14;
 
             if (previousTitle == currentTitle)
             {
@@ -119,7 +115,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
 
             playlist = playlist.ToLower();
-            if (playlist.Contains("offline") || playlist.Contains("testing"))
+            if (playlist.Contains(PlaylistIgnoreName.Offline) || playlist.Contains(PlaylistIgnoreName.Testing))
             {
                 _logger.LogInformation("Show is offline. Not posting song");
                 return Task.FromResult(previousTitle);
@@ -131,19 +127,14 @@ namespace Almostengr.FalconPiTwitter.Workers
                 return Task.FromResult(previousTitle);
             }
 
-            string tweet = string.Concat("Playing ", "\"", currentTitle, "\"");
+            string tweet = $"Playing \"{currentTitle}\"";
 
-            if (string.IsNullOrEmpty(artist) && tweet.Length < tweetLimit)
+            if (string.IsNullOrEmpty(artist) && tweet.Length < TwitterConstants.TweetCharacterLimit)
             {
-                tweet = string.Concat(tweet, " by ", artist);
+                tweet += $" by {artist}";
             }
 
-            if (string.IsNullOrEmpty(album) && tweet.Length < tweetLimit)
-            {
-                tweet = string.Concat(tweet, " (", album, ")");
-            }
-
-            tweet = string.Concat(tweet, " at ", DateTime.Now.ToLongTimeString());
+            tweet += $" at {DateTime.Now.ToLongTimeString()}";
 
             _logger.LogInformation("Posted song update. Result posted");
             return Task.FromResult(currentTitle);

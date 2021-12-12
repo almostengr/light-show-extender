@@ -16,12 +16,32 @@ namespace Almostengr.FalconPiTwitter.Workers
             _logger = logger;
         }
 
-        public virtual Task<FalconFppdStatusDto> GetCurrentStatusAsync(HttpClient httpClient)
+        public virtual Task<FalconFppdStatusDto> GetFppdStatusAsync(HttpClient httpClient)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<FalconFppdMultiSyncSystemsDto> GetMultiSyncStatusAsync(HttpClient httpClient)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetRandomChristmasHashTag()
         {
             throw new System.NotImplementedException();
         }
 
         public Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatusDto status)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task PostTweetAlarmAsync(string alarmMessage)
         {
             throw new System.NotImplementedException();
         }

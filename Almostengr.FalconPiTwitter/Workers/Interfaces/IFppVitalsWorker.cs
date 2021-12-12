@@ -6,8 +6,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 {
     public interface IFppVitalsWorker : IBaseWorker
     {
-        Task TweetAlarmAsync(string alarmMessage);
-        Task<int> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors);
-        int ResetAlarmCount(int previousHour);
+        Task CheckAllSensors(IList<FalconFppdStatusSensor> sensors);
+        Task CheckInstanceVitals(RemoteSystems fppInstance);
     }
 }

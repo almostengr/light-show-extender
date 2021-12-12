@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,6 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly AppSettings _appSettings;
         private readonly ILogger<FppVitalsWorker> _logger;
         private readonly HttpClient _httpClient;
-        private int _alarmCount = 0;
 
         public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
              : base(logger, appSettings, twitterClient)
@@ -24,77 +24,66 @@ namespace Almostengr.FalconPiTwitter.Workers
             _logger = logger;
 
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = HostUri;
+            _httpClient.BaseAddress = AppConstants.Localhost;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            int previousHour = 0;
-
             while (!stoppingToken.IsCancellationRequested)
             {
-                previousHour = ResetAlarmCount(previousHour);
+                DateTime currentDateTime = DateTime.Now;
+
+                if (currentDateTime.Minute > 53 && AlarmCount > 0)
+                {
+                    _logger.LogInformation($"Alarm count reset. Previous count: {AlarmCount}");
+                    AlarmCount = 0;
+                }
 
                 try
                 {
-                    _logger.LogInformation("Checking vitals for " + HostUri);
+                    _httpClient.BaseAddress = AppConstants.Localhost;
+                    FalconFppdMultiSyncSystemsDto syncStatus = await GetMultiSyncStatusAsync(_httpClient);
 
-                    FalconFppdStatusDto falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
-
-                    _alarmCount += await IsCpuTemperatureHighAsync(falconFppdStatus.Sensors);
+                    foreach (var fppInstance in syncStatus.Systems)
+                    {
+                        await CheckInstanceVitals(fppInstance);
+                    }
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError("Are you connected to internet? Is FFPPd running? " + ex.Message);
+                    _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(5));
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Long));
             }
         }
 
-        public int ResetAlarmCount(int previousHour)
+        public async Task CheckInstanceVitals(RemoteSystems fppInstance)
         {
-            int currentHour = DateTime.Now.Hour;
+            Uri hostUri = new Uri($"http://{fppInstance.Address}");
 
-            if (previousHour != currentHour && _alarmCount > 0)
-            {
-                _logger.LogInformation("Alarm count has been reset. " + _alarmCount + " alarms occurred in the last hour.");
-                _alarmCount = 0;
-            }
+            _logger.LogInformation($"Checking vitals for {fppInstance.Address}");
 
-            return currentHour;
+            _httpClient.BaseAddress = hostUri;
+
+            FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(_httpClient);
+
+            await CheckAllSensors(falconFppdStatus.Sensors);
         }
 
-        public async Task<int> IsCpuTemperatureHighAsync(IList<FalconFppdStatusSensor> sensors)
+        public async Task CheckAllSensors(IList<FalconFppdStatusSensor> sensors)
         {
             foreach (var sensor in sensors)
             {
                 if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Monitor.MaxCpuTemperatureC)
                 {
                     string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitor.MaxCpuTemperatureC}";
-                    await TweetAlarmAsync(alarmMessage);
-                    return 1;
+                    await PostTweetAlarmAsync(alarmMessage);
                 }
-            }
-
-            return 0;
-        }
-
-        public async Task TweetAlarmAsync(string alarmMessage)
-        {
-            _logger.LogWarning(alarmMessage);
-
-            if (_alarmCount <= _appSettings.Monitor.MaxAllowedAlarms)
-            {
-                alarmMessage = _appSettings.Monitor.AlarmUsernames.Count > 0 ?
-                    alarmMessage :
-                    string.Concat(_appSettings.Monitor.AlarmUsernames, " ", alarmMessage);
-
-                await PostTweetAsync(alarmMessage + " " + DateTime.Now.ToLongTimeString());
             }
         }
 

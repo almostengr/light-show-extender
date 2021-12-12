@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Hosting;
@@ -15,24 +16,22 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<BaseWorker> _logger;
-
-        internal readonly Uri HostUri;
-        internal const int TweetMaxLength = 280;
+        private readonly AppSettings _appSettings;
         internal readonly Random Random;
+        internal int AlarmCount = 0;
 
         public BaseWorker(ILogger<BaseWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
         {
             _twitterClient = twitterClient;
             _logger = logger;
+            _appSettings = appSettings;
             Random = new Random();
-
-            HostUri = new Uri("http://localhost/");
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             var response = _twitterClient.Users.GetAuthenticatedUserAsync();
-            _logger.LogInformation(string.Concat("Connected to twitter as ", response.Result.Name));
+            _logger.LogInformation($"Connected to twitter as {response.Result.Name}");
             return base.StartAsync(cancellationToken);
         }
 
@@ -41,10 +40,16 @@ namespace Almostengr.FalconPiTwitter.Workers
             throw new System.NotImplementedException();
         }
 
-        public virtual async Task<FalconFppdStatusDto> GetCurrentStatusAsync(HttpClient httpClient)
+        public virtual async Task<FalconFppdStatusDto> GetFppdStatusAsync(HttpClient httpClient)
         {
             return await HttpGetAsync<FalconFppdStatusDto>(httpClient, "api/fppd/status");
         }
+
+        public async Task<FalconFppdMultiSyncSystemsDto> GetMultiSyncStatusAsync(HttpClient httpClient)
+        {
+            return await HttpGetAsync<FalconFppdMultiSyncSystemsDto>(httpClient, "api/fppd/multiSyncSystems");
+        }
+
 
         public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
         {
@@ -71,17 +76,13 @@ namespace Almostengr.FalconPiTwitter.Workers
             tweet = tweet.Trim();
             tweet = tweet.Replace("  ", " ");
 
-            // trim the tweet between words if it is too long
-            while (tweet.Length > TweetMaxLength)
+            while (tweet.Length > TwitterConstants.TweetCharacterLimit)
             {
                 tweet = tweet.Substring(0, tweet.LastIndexOf(" "));
             }
 
-            _logger.LogInformation("Tweeting: " + tweet);
-
 #if RELEASE
             var response = await _twitterClient.Tweets.PublishTweetAsync(tweet);
-            _logger.LogInformation("Sent tweet at: " + response.CreatedAt.ToString());
             return response.CreatedBy.Name.Length > 0 ? true : false;
 #else
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -90,30 +91,43 @@ namespace Almostengr.FalconPiTwitter.Workers
 #endif
         }
 
-        public string GetRandomHashTag(int count = 1)
+        public async Task PostTweetAlarmAsync(string alarmMessage)
         {
-            string[] hashTags = {
-                "#LightShow", "#AnimatedLights", "#LedLighting",
-                "#ChristmasLightShow", "#ChristmasLights", "#Christmas", "#Christmas", "#ChristmasSeason",
-                "#ChristmasTime", "#ChristmasDecorations", "#ChristmasSpirit", "#ChristmasMagic",
-                "#ChristmasFun", $"#Christmas{DateTime.Now.Year}", "#MerryChristmas", "#ChristmasMusic",
-                "#ChristmasLighting",
-                "#HolidayLightShow", "#HolidayLightShows", "#HolidayLights", "#HappyHolidays",
-                "#HolidayLighting"
-                };
-            string outputTags = string.Empty;
-            int tagsUsed = 0;
+            _logger.LogWarning(alarmMessage);
 
-            count = count > hashTags.Length ? hashTags.Length : count; // prevent index out of bounds
-
-            while (tagsUsed <= count)
+            if (AlarmCount <= _appSettings.Monitor.MaxAlarmsPerHour)
             {
-                string randomTag = hashTags[Random.Next(0, hashTags.Length)];
+                string users = string.Empty;
+
+                foreach (string user in _appSettings.Monitor.AlarmUsernames)
+                {
+                    users += user + " ";
+                }
+
+                await PostTweetAsync(users + " " + alarmMessage);
+            }
+            
+            AlarmCount++;
+        }
+
+        public string GetRandomChristmasHashTag()
+        {
+            string outputTags = string.Empty;
+            int numTagsUsed = 0;
+
+            // prevent index out of bounds
+            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ? 
+                TwitterConstants.ChristmasHashTags.Length : 
+                _appSettings.MaxHashTags;
+
+            while (numTagsUsed <= maxNumHashTags)
+            {
+                string randomTag = TwitterConstants.ChristmasHashTags[Random.Next(0, TwitterConstants.ChristmasHashTags.Length)];
 
                 if (outputTags.Contains(randomTag) == false)
                 {
                     outputTags += randomTag + " ";
-                    tagsUsed++;
+                    numTagsUsed++;
                 }
             }
 
@@ -123,20 +137,8 @@ namespace Almostengr.FalconPiTwitter.Workers
         public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatusDto status)
         {
             string playlistName = status.Current_PlayList.Playlist.ToLower();
-
-            return (status == null || 
-                (playlistName == "idle" || playlistName == "testing" || playlistName == "offline"));
+            return (status == null || (playlistName == PlaylistIgnoreName.Testing || playlistName == PlaylistIgnoreName.Offline));
         }
 
-        public bool IsIdleOfflineOrTesting(string input)
-        {
-            if (input.ToLower().Contains("offline") || input.ToLower().Contains("test") || string.IsNullOrEmpty(input))
-            {
-                _logger.LogInformation("Show is idle, testing, or offline");
-                return true;
-            }
-
-            return false;
-        }
     }
 }

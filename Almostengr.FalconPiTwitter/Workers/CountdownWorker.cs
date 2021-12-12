@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             _logger = logger;
 
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = HostUri;
+            _httpClient.BaseAddress = AppConstants.Localhost;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -37,7 +38,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 try
                 {
-                    status = await GetCurrentStatusAsync(_httpClient);
+                    status = await GetFppdStatusAsync(_httpClient);
                     tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
                 }
                 catch (Exception ex)
@@ -50,7 +51,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     if (IsPlaylistIdleOfflineOrTesting(status))
                     {
                         tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
-                        tweetString += GetRandomHashTag(3);
+                        tweetString += GetRandomChristmasHashTag();
 
                         await PostTweetAsync(tweetString);
                     }
@@ -60,7 +61,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
-                    await Task.Delay(TimeSpan.FromSeconds(15));
+                    await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
                 }
             }
         }
@@ -74,7 +75,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 waitHours = 1;
             }
 
-            _logger.LogInformation("Waiting " + waitHours + " hours");
+            _logger.LogInformation($"Waiting {waitHours} hours");
 
             await Task.Delay(TimeSpan.FromHours(waitHours));
         }
@@ -87,7 +88,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
 
             string dayDiff = CalculateTimeBetween(curDateTime, christmasDate);
-            return $"{dayDiff} until Christmas. " + GetChristmasHashTag();
+            return $"{dayDiff} until Christmas. " + GetRandomChristmasHashTag();
         }
 
         private string DaysUntilLightShow(DateTime curDateTime, string start_Time)
@@ -98,7 +99,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             DateTime showStartDate = DateTime.Parse(nextPlaylistDateTime);
 
-            if (curDateTime <= showStartDate.AddHours(-36))
+            if (curDateTime <= showStartDate.AddHours(-3))
             {
                 string dayDiff = CalculateTimeBetween(curDateTime, showStartDate);
                 return $"{dayDiff} until the next Light Show. ";
@@ -126,10 +127,5 @@ namespace Almostengr.FalconPiTwitter.Workers
             base.Dispose();
         }
 
-        private string GetChristmasHashTag()
-        {
-            string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing", "#CountdownToChristmas" };
-            return hashTags[Random.Next(0, hashTags.Length)] + " ";
-        }
     }
 }

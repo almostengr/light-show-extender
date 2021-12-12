@@ -36,7 +36,7 @@ namespace Almostengr.FalconPiTwitter
                 case "version":
                     ShowFullVersion();
                     break;
-                    
+
                 default:
                     Console.WriteLine("Invalid arguments");
                     ShowHelp();
@@ -65,12 +65,16 @@ namespace Almostengr.FalconPiTwitter
                         ));
 
                     services.AddHostedService<FppVitalsWorker>();
+                    services.AddHostedService<FppCurrentSongWorker>();
 
-                    if (appSettings.HostMonitoring == false)
+                    if (appSettings.CountdownEnabled)
                     {
-                        services.AddHostedService<FppCurrentSongWorker>();
-                        services.AddHostedService<TwitterMentionsWorker>();
                         services.AddHostedService<CountdownWorker>();
+                    }
+
+                    if (appSettings.MentionsEnabled)
+                    {
+                        services.AddHostedService<TwitterMentionsWorker>();
                     }
                 });
 
