@@ -21,8 +21,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger = logger;
             _appSettings = appSettings;
-
-            _httpClient = new HttpClient();            
+            _httpClient = new HttpClient();
             _httpClient.BaseAddress = AppConstants.Localhost;
         }
 
@@ -32,18 +31,21 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
+
                 try
                 {
                     FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(_httpClient);
 
                     if (falconFppdStatus.Mode_Name == FppMode.Remote)
                     {
+                        _logger.LogDebug("This is remote instance of FPP");
                         break;
                     }
 
                     if (falconFppdStatus.Current_Song == string.Empty)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
+                        _logger.LogDebug("No song is currently playling");
                         continue;
                     }
 
@@ -58,10 +60,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                         falconMediaMeta.Format.Tags.Artist,
                         falconFppdStatus.Current_PlayList.Playlist);
                 }
-                // catch (FppCurrentSongException)
-                // {
-                //     // _logger.LogWarning("No song is currently playing"); // do nothing
-                // }
                 catch (HttpRequestException ex)
                 {
                     _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
@@ -70,8 +68,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                 {
                     _logger.LogError(ex, ex.Message);
                 }
-
-                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
             }
         }
 
@@ -81,7 +77,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
             if (previousTitle == currentTitle || string.IsNullOrEmpty(currentTitle))
             {
-                _logger.LogInformation("Not posting song information");
+                _logger.LogDebug("Not posting song information");
                 return previousTitle;
             }
 
@@ -117,7 +113,7 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             return await HttpGetAsync<FalconMediaMetaDto>(httpClient, $"api/media/{musicFilename}/meta");
         }
-        
+
         public string GetSongTitle(string notFileTitle, string tagTitle)
         {
             _logger.LogDebug("Getting song title");

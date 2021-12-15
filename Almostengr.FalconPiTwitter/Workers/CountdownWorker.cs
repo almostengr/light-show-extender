@@ -19,7 +19,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             base(logger, appSettings, twitterClient)
         {
             _logger = logger;
-
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = AppConstants.Localhost;
         }

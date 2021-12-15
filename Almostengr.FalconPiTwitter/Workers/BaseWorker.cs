@@ -50,7 +50,6 @@ namespace Almostengr.FalconPiTwitter.Workers
             return await HttpGetAsync<FalconFppdMultiSyncSystemsDto>(httpClient, "api/fppd/multiSyncSystems");
         }
 
-
         public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
         {
             HttpResponseMessage response = await httpClient.GetAsync(route);
