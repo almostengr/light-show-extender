@@ -86,7 +86,7 @@ namespace Almostengr.FalconPiTwitter.Workers
             return response.CreatedBy.Name.Length > 0 ? true : false;
 #else
             await Task.Delay(TimeSpan.FromSeconds(1));
-            _logger.LogInformation("Sent testing tweet");
+            _logger.LogInformation($"Sent testing tweet: {tweet}");
             return true;
 #endif
         }

@@ -6,22 +6,14 @@
 # CREATED: 2021-06-20
 ####################################################################################
 
-cd /home/fpp/
-
-# remove service
+cd /home/fpp/media/plugins/
 
 sudo systemctl disable falconpitwitter
 
-## stop service
-
 sudo systemctl stop falconpitwitter
-
-# reload
 
 sudo systemctl daemon-reload
 
-## remove files
+sudo rm -rf /home/fpp/media/plugins/falconpitwitter
 
-rm -rf /home/fpp/media/falconpitwitter
-
-rm -f /lib/systemd/system/falconpitwitter.service
+sudo rm -f /lib/systemd/system/falconpitwitter.service
