@@ -8,11 +8,11 @@
 
 cd /home/fpp/media/uploads
 
-## download files
+echo "Downloading application"
 
 wget https://github.com/almostengr/falconpitwitter/releases/latest/download/falconpitwitter.tar.gz -O falconpitwitter.tar.gz
 
-# create directory if it does not already exist
+echo "Unpacking application files to project directory"
 
 mkdir -p /home/fpp/media/plugins
 
@@ -22,7 +22,7 @@ mkdir -p /home/fpp/media/plugins/falconpitwitter
 
 tar -xf /home/fpp/media/uploads/falconpitwitter.tar --directory /home/fpp/media/plugins/falconpitwitter
 
-## install service
+echo "Installing service"
 
 sudo cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
 sudo systemctl daemon-reload
@@ -33,6 +33,8 @@ echo "Installation complete."
 echo "First time users, update the configuration file located at "
 echo "/home/fpp/media/plugins/falconpitwitter/appsettings.json"
 echo "and restart the service or reboot the Pi."
-
+echo ""
+echo "Upgrading users, reboot your device to make sure the new application loads."
+echo ""
 echo "See https://thealmostengineer.com/projects/falcon-pi-twitter for more information."
 echo ""

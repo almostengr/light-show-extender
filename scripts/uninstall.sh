@@ -8,12 +8,20 @@
 
 cd /home/fpp/media/plugins/
 
-sudo systemctl disable falconpitwitter
+echo "Stopping the system service"
 
 sudo systemctl stop falconpitwitter
 
+echo "Disabling the system service"
+
+sudo systemctl disable falconpitwitter
+
 sudo systemctl daemon-reload
 
-sudo rm -rf /home/fpp/media/plugins/falconpitwitter
+echo "Removing the application service"
 
 sudo rm -f /lib/systemd/system/falconpitwitter.service
+
+echo "Removing the application files"
+
+sudo rm -rf /home/fpp/media/plugins/falconpitwitter
