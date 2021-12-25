@@ -4,8 +4,7 @@ This project is designed for Falcon Pi Player to provide updates via Twitter on 
 you are running. Those updates include posting the current song and providing alerts when problems
 are detected.
 
-This application is designed to run on Falcon Pi Players that are installed on Raspberry Pi. It may be 
-possible, but has not been confirmed to have this application work with Beagle Bone Black (BBB) devices.
+This application is designed to run on Falcon Pi Players that are installed on Raspberry Pi.
 
 ## Problem
 
@@ -16,9 +15,13 @@ way to have this task be able to be completed.
 
 ## Solution
 
-I created this Falcon PI Twitter application that will monitor the Falcon Pi Player that runs my 
+I created this Falcon Pi Twitter application that will monitor the Falcon Pi Player that runs my 
 Christmas light show. This monitor gets the status and other information based on the Falcon Pi Player
-via the FPP API. Then the information is sent out as a tweet via the Light Show's Twitter account.
+via the Falcon Pi Player API. Then the information is sent out as a tweet via the Light Show's Twitter account.
+
+The application also monitors the Falcon Pi Player for abnomalities. Currently the application monitors the 
+CPU temperature of the Raspberry Pi and whether a song gets stuck playing or the FPP Daemon freezes while 
+playing a song.
 
 For more information about this project, visit the 
 <a href="https://thealmostengineer.com/projects/falcon-pi-twitter" target="_blank">project page</a>.
