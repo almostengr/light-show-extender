@@ -12,7 +12,7 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public abstract class BaseWorker : BackgroundService, IBaseWorker
+    public abstract class BaseWorker : BackgroundService
     {
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<BaseWorker> _logger;
@@ -94,11 +94,11 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _logger.LogWarning(alarmMessage);
 
-            if (AlarmCount <= _appSettings.Monitor.MaxAlarmsPerHour)
+            if (AlarmCount <= _appSettings.Monitoring.MaxAlarmsPerHour)
             {
                 string users = string.Empty;
 
-                foreach (string user in _appSettings.Monitor.AlarmUsernames)
+                foreach (string user in _appSettings.Monitoring.AlarmUsernames)
                 {
                     users += user + " ";
                 }

@@ -10,6 +10,9 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
         public FalconFppdStatusNextPlaylist Next_Playlist { get; set; }
         public string Mode_Name { get; set; }
         public string Fppd { get; set; }
+        public string Seconds_Played { get; set; }
+        public string Seconds_Remaining { get; set; }
+        public string Status_Name { get; set; }
 
         public string Current_Song_NotFile
         {

@@ -10,7 +10,7 @@ using Almostengr.FalconPiTwitter.Constants;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class FppCurrentSongWorker : BaseWorker, IFppCurrentSongWorker
+    public class FppCurrentSongWorker : BaseWorker
     {
         private readonly ILogger<FppCurrentSongWorker> _logger;
         private readonly AppSettings _appSettings;
@@ -52,8 +52,11 @@ namespace Almostengr.FalconPiTwitter.Workers
                     FalconMediaMetaDto falconMediaMeta =
                         await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
+                    _logger.LogDebug("Getting song title");
                     falconMediaMeta.Format.Tags.Title =
-                        GetSongTitle(falconFppdStatus.Current_Song_NotFile, falconMediaMeta.Format.Tags.Title);
+                        string.IsNullOrEmpty(falconMediaMeta.Format.Tags.Title) ?
+                        falconFppdStatus.Current_Song_NotFile :
+                        falconMediaMeta.Format.Tags.Title;
 
                     previousSong = await PostCurrentSongAsync(
                         previousSong, falconMediaMeta.Format.Tags.Title,
@@ -106,18 +109,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 return new FalconMediaMetaDto();
             }
 
-            return await GetMediaMetaAsync(_httpClient, currentSong);
-        }
-
-        public async Task<FalconMediaMetaDto> GetMediaMetaAsync(HttpClient httpClient, string musicFilename)
-        {
-            return await HttpGetAsync<FalconMediaMetaDto>(httpClient, $"api/media/{musicFilename}/meta");
-        }
-
-        public string GetSongTitle(string notFileTitle, string tagTitle)
-        {
-            _logger.LogDebug("Getting song title");
-            return string.IsNullOrEmpty(tagTitle) ? notFileTitle : tagTitle;
+            return await HttpGetAsync<FalconMediaMetaDto>(_httpClient, $"api/media/{currentSong}/meta");
         }
 
         public override void Dispose()

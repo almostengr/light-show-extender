@@ -5,11 +5,10 @@ namespace Almostengr.FalconPiTwitter.Settings
     public class AppSettings
     {
         public Twitter Twitter { get; set; }
-        public Monitor Monitor { get; set; }
+        public Monitoring Monitoring { get; set; }
         public bool CountdownEnabled { get; set; } = false;
-        public bool MentionsEnabled { get; set; } = false;
         public int MaxHashTags { get; set; } = 3;
-        public List<string> FppHosts { get; set; } = new List<string>();
+        public List<string> FppHosts { get; set; } = new();
     }
 
     public class Twitter
@@ -20,7 +19,7 @@ namespace Almostengr.FalconPiTwitter.Settings
         public string AccessSecret { get; set; }
     }
 
-    public class Monitor
+    public class Monitoring
     {
         public List<string> AlarmUsernames { get; set; } = new();
         public int MaxAlarmsPerHour { get; set; } = 3;

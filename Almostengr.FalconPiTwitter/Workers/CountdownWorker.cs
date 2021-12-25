@@ -10,7 +10,7 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class CountdownWorker : BaseWorker, ICountdownWorker
+    public class CountdownWorker : BaseWorker
     {
         private readonly ILogger<CountdownWorker> _logger;
         private readonly HttpClient _httpClient;
@@ -54,8 +54,16 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                         await PostTweetAsync(tweetString);
                     }
-                    
-                    await WaitBeforeContinueAsync();
+
+                    double waitHours = 7 * Random.NextDouble();
+
+                    if (waitHours < 1)
+                    {
+                        waitHours = 1;
+                    }
+                    _logger.LogInformation($"Waiting {waitHours} hours");
+
+                    await Task.Delay(TimeSpan.FromHours(waitHours), stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -65,52 +73,32 @@ namespace Almostengr.FalconPiTwitter.Workers
             }
         }
 
-        private async Task WaitBeforeContinueAsync()
-        {
-            double waitHours = 6 * Random.NextDouble();
-
-            if (waitHours < 1)
-            {
-                waitHours = 1;
-            }
-
-            _logger.LogInformation($"Waiting {waitHours} hours");
-
-            await Task.Delay(TimeSpan.FromHours(waitHours));
-        }
-
         private string DaysUntilChristmas(DateTime curDateTime, DateTime christmasDate)
         {
             if (curDateTime >= christmasDate)
             {
-                christmasDate = new DateTime(curDateTime.Year + 1, 12, 25, 00, 00, 00);
+                christmasDate = new DateTime((curDateTime.Year + 1), 12, 25, 00, 00, 00);
             }
 
             string dayDiff = CalculateTimeBetween(curDateTime, christmasDate);
             return $"{dayDiff} until Christmas. " + GetRandomChristmasHashTag();
         }
 
-        private string DaysUntilLightShow(DateTime curDateTime, string start_Time)
+        private string DaysUntilLightShow(DateTime currentDateTime, string startTime)
         {
-            string nextPlaylistDateTime = start_Time.Substring(0, start_Time.IndexOf(" - "));
-
+            string nextPlaylistDateTime = startTime.Substring(0, startTime.IndexOf(" - "));
             nextPlaylistDateTime = nextPlaylistDateTime.Replace(" @ ", "T");
 
-            DateTime showStartDate = DateTime.Parse(nextPlaylistDateTime);
+            DateTime showStartDateTime = DateTime.Parse(nextPlaylistDateTime);
 
-            if (curDateTime <= showStartDate.AddHours(-3))
-            {
-                string dayDiff = CalculateTimeBetween(curDateTime, showStartDate);
-                return $"{dayDiff} until the next Light Show. ";
-            }
-
-            return string.Empty;
+            string dayDiff = CalculateTimeBetween(currentDateTime, showStartDateTime);
+            return $"{dayDiff} until the next Light Show. ";
         }
 
         private string CalculateTimeBetween(DateTime startDate, DateTime endDate)
         {
             TimeSpan timeDiff = endDate - startDate;
-            _logger.LogInformation(timeDiff.ToString());
+            _logger.LogDebug(timeDiff.ToString());
 
             string output = string.Empty;
             output += (timeDiff.Days > 0 ? (timeDiff.Days + (timeDiff.Days == 1 ? " day " : " days ")) : string.Empty);

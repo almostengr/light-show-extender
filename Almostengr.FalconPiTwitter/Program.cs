@@ -12,6 +12,8 @@ namespace Almostengr.FalconPiTwitter
     {
         public static void Main(string[] args)
         {
+            ShowFullVersion();
+
             if (args.Length > 0)
             {
                 ProcessArguments(args);
@@ -34,7 +36,6 @@ namespace Almostengr.FalconPiTwitter
 
                 case "--version":
                 case "version":
-                    ShowFullVersion();
                     break;
 
                 default:
@@ -71,11 +72,6 @@ namespace Almostengr.FalconPiTwitter
                     {
                         services.AddHostedService<CountdownWorker>();
                     }
-
-                    if (appSettings.MentionsEnabled)
-                    {
-                        services.AddHostedService<TwitterMentionsWorker>();
-                    }
                 });
 
         private static void ShowFullVersion()
@@ -90,8 +86,6 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine("For more information about this program,");
             Console.WriteLine("visit https://thealmostengineer.com/projects/falcon-pi-twitter");
             Console.WriteLine();
-            Console.WriteLine();
-            ShowFullVersion();
         }
     }
 }

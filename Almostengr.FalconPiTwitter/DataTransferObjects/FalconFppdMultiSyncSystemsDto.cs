@@ -4,7 +4,7 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
 {
     public class FalconFppdMultiSyncSystemsDto : BaseDto
     {
-        public List<RemoteSystems> Systems { get; set; }
+        public List<RemoteSystems> RemoteSystems { get; set; }
     }
 
     public class RemoteSystems

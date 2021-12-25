@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,7 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class FppVitalsWorker : BaseWorker, IFppVitalsWorker
+    public class FppVitalsWorker : BaseWorker
     {
         private readonly AppSettings _appSettings;
         private readonly ILogger<FppVitalsWorker> _logger;
@@ -22,13 +21,15 @@ namespace Almostengr.FalconPiTwitter.Workers
         {
             _appSettings = appSettings;
             _logger = logger;
-
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = AppConstants.Localhost;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            string previousSecondsPlayed = string.Empty;
+            string previousSecondsRemaining = string.Empty;
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 DateTime currentDateTime = DateTime.Now;
@@ -44,9 +45,38 @@ namespace Almostengr.FalconPiTwitter.Workers
                     _httpClient.BaseAddress = AppConstants.Localhost;
                     FalconFppdMultiSyncSystemsDto syncStatus = await GetMultiSyncStatusAsync(_httpClient);
 
-                    foreach (var fppInstance in syncStatus.Systems)
+                    foreach (var fppInstance in syncStatus.RemoteSystems)
                     {
-                        await CheckInstanceVitals(fppInstance);
+                        Uri hostUri = new Uri($"http://{fppInstance.Address}");
+
+                        _logger.LogInformation($"Checking vitals for {fppInstance.Address}");
+
+                        _httpClient.BaseAddress = hostUri;
+
+                        FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(_httpClient);
+
+                        // check sensors
+                        foreach (var sensor in falconFppdStatus.Sensors)
+                        {
+                            if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Monitoring.MaxCpuTemperatureC)
+                            {
+                                string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
+                                await PostTweetAlarmAsync(alarmMessage);
+                            }
+                        }
+
+                        // check for stuck songs
+                        if (falconFppdStatus.Mode_Name == FppMode.Master || falconFppdStatus.Mode_Name == FppMode.Standalone)
+                        {
+                            if (previousSecondsPlayed == falconFppdStatus.Seconds_Played ||
+                                previousSecondsRemaining == falconFppdStatus.Seconds_Remaining)
+                            {
+                                await PostTweetAlarmAsync($"FPP appears to be stuck");
+                            }
+
+                            previousSecondsPlayed = falconFppdStatus.Seconds_Played;
+                            previousSecondsRemaining = falconFppdStatus.Seconds_Remaining;
+                        }
                     }
                 }
                 catch (HttpRequestException ex)
@@ -58,32 +88,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     _logger.LogError(ex, ex.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Long));
-            }
-        }
-
-        public async Task CheckInstanceVitals(RemoteSystems fppInstance)
-        {
-            Uri hostUri = new Uri($"http://{fppInstance.Address}");
-
-            _logger.LogInformation($"Checking vitals for {fppInstance.Address}");
-
-            _httpClient.BaseAddress = hostUri;
-
-            FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(_httpClient);
-
-            await CheckAllSensors(falconFppdStatus.Sensors);
-        }
-
-        public async Task CheckAllSensors(IList<FalconFppdStatusSensor> sensors)
-        {
-            foreach (var sensor in sensors)
-            {
-                if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Monitor.MaxCpuTemperatureC)
-                {
-                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitor.MaxCpuTemperatureC}";
-                    await PostTweetAlarmAsync(alarmMessage);
-                }
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Medium), stoppingToken);
             }
         }
 
