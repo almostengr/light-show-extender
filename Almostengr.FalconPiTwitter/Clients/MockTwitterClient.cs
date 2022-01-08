@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Tweetinvi;
 using Tweetinvi.Client;
 using Tweetinvi.Client.Tools;
@@ -11,6 +12,13 @@ namespace Almostengr.FalconPiTwitter.Clients
 {
     public class MockTwitterClient : ITwitterClient
     {
+        private readonly ILogger<MockTwitterClient> _logger;
+
+        public MockTwitterClient(ILogger<MockTwitterClient> logger)
+        {
+            _logger = logger;
+        }
+
         public IAccountSettingsClient AccountSettings => throw new System.NotImplementedException();
 
         public IAuthClient Auth => throw new System.NotImplementedException();
@@ -34,6 +42,7 @@ namespace Almostengr.FalconPiTwitter.Clients
         public ITrendsClient Trends => throw new System.NotImplementedException();
 
         public ITweetsClient Tweets => throw new System.NotImplementedException();
+        // public ITweetsClient Tweets => new MockTweetsClient(_logger);
 
         public IUsersClient Users => throw new System.NotImplementedException();
 

@@ -10,6 +10,29 @@ namespace Almostengr.FalconPiTwitter.Clients
     {
         private readonly Random _random = new Random();
         private const string FppVersion = "4.6.1";
+        private List<FalconFppdMultiSyncSystemsDto> _multiSyncDtos = new List<FalconFppdMultiSyncSystemsDto>();
+
+        public MockFppClient()
+        {
+            for (int i = 0; i < _random.Next(4, 10); i++)
+            {
+                FalconFppdMultiSyncSystemsDto newDto = new FalconFppdMultiSyncSystemsDto()
+                {
+                    RemoteSystems = new List<RemoteSystems>()
+                    {
+                        new RemoteSystems()
+                        {
+                            Address = $"testing{i}",
+                            Version = FppVersion,
+                            FppModeString = i == 0 ? FppMode.Master : FppMode.Remote,
+                            Hostname = $"fpptest{i}"
+                        }
+                    }
+                };
+
+                _multiSyncDtos.Add(newDto);
+            }
+        }
 
         public async Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string current_Song)
         {
@@ -48,34 +71,9 @@ namespace Almostengr.FalconPiTwitter.Clients
 
         public async Task<FalconFppdMultiSyncSystemsDto> GetMultiSyncStatusAsync(string address)
         {
-            return await Task.Run(() => new FalconFppdMultiSyncSystemsDto()
-            {
-                RemoteSystems = new List<RemoteSystems>()
-                {
-                    new RemoteSystems()
-                    {
-                        Address = "testing1",
-                        Version = FppVersion,
-                        FppModeString = FppMode.Master,
-                        Hostname = "fpptest1"
-                    },
-                    new RemoteSystems()
-                    {
-                        Address = "testing2",
-                        Version = FppVersion,
-                        FppModeString = FppMode.Remote,
-                        Hostname = "fpptest2"
-                    },
-                    new RemoteSystems()
-                    {
-                        Address = "testing3",
-                        Version = FppVersion,
-                        FppModeString = FppMode.Remote,
-                        Hostname = "fpptest3"
-                    },
-                }
-            });
+            int ranNumber = _random.Next(0, _multiSyncDtos.Count)-1;
+            return await Task.Run(() => _multiSyncDtos[ranNumber]);
         }
-        
+
     }
 }
