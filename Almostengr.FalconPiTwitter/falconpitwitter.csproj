@@ -14,8 +14,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0"/>
     <PackageReference Include="TweetinviAPI" Version="5.0.4"/>
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1"/>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="*"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0"/>
     <Content Remove="appsettings.json"/>
     <Content Include="../README.md" CopyToPublishDirectory="PreserveNewest"/>
     <Content Include="../scripts/falconpitwitter.service" CopyToPublishDirectory="PreserveNewest"/>
