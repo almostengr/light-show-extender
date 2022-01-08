@@ -1,4 +1,6 @@
 using System;
+using Almostengr.FalconPiTwitter.Clients;
+using Almostengr.FalconPiTwitter.Services;
 using Almostengr.FalconPiTwitter.Settings;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
@@ -54,8 +56,12 @@ namespace Almostengr.FalconPiTwitter
                 .ConfigureServices((hostContext, services) =>
                 {
                     IConfiguration configuration = hostContext.Configuration;
+                    
                     AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
                     services.AddSingleton(appSettings);
+
+
+                    // CLIENTS ///////////////////////////////////////////////////////////////////////////////
 
                     services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
                         new TwitterClient(
@@ -64,6 +70,17 @@ namespace Almostengr.FalconPiTwitter
                             appSettings.Twitter.AccessToken,
                             appSettings.Twitter.AccessSecret
                         ));
+
+                    services.AddSingleton<IFppClient, FppClient>();
+
+
+                    // SERVICES ///////////////////////////////////////////////////////////////////////////////
+
+                    services.AddSingleton<IFppService, FppService>();
+                    services.AddSingleton<ITwitterService, TwitterService>();
+                    
+
+                    // WORKERS ///////////////////////////////////////////////////////////////////////////////
 
                     services.AddHostedService<FppVitalsWorker>();
                     services.AddHostedService<FppCurrentSongWorker>();

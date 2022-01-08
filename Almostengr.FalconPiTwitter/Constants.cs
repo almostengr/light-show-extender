@@ -23,7 +23,7 @@ namespace Almostengr.FalconPiTwitter.Constants
 
     public sealed class AppConstants
     {
-        public static readonly Uri Localhost = new Uri("http://localhost");
+        public static readonly string Localhost = "http://localhost";
     }
 
     public sealed class FppMode
@@ -44,5 +44,7 @@ namespace Almostengr.FalconPiTwitter.Constants
     {
         public const string NoInternetConnection = "Are you connected to internet? Is FPPd running? ";
         public const string NullReference = "Null Exception occurred. ";
+        public const string FppOffline = "FPP did not respond. Is it online?";
+        internal const string FppFrozen = "FPP appears to be stuck or frozen";
     }
 }

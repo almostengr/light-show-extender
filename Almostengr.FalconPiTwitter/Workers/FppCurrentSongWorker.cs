@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
-using Tweetinvi;
 using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Services;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
@@ -14,19 +14,23 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly ILogger<FppCurrentSongWorker> _logger;
         private readonly AppSettings _appSettings;
-        private readonly HttpClient _httpClient;
+        private readonly ITwitterService _twitterService;
+        private readonly IFppService _fppService;
 
-        public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
-            base(logger, appSettings, twitterClient)
+        public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings,
+            IFppService fppService, ITwitterService twitterService)
+         : base(logger, appSettings)
         {
             _logger = logger;
             _appSettings = appSettings;
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = AppConstants.Localhost;
+            _fppService = fppService;
+            _twitterService = twitterService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Starting current song worker");
+            
             string previousSong = string.Empty;
 
             while (!stoppingToken.IsCancellationRequested)
@@ -35,7 +39,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 try
                 {
-                    FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(_httpClient);
+                    FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(AppConstants.Localhost);
 
                     if (falconFppdStatus.Mode_Name == FppMode.Remote)
                     {
@@ -46,11 +50,11 @@ namespace Almostengr.FalconPiTwitter.Workers
                     if (falconFppdStatus.Current_Song == string.Empty)
                     {
                         _logger.LogDebug("No song is currently playling");
-                        continue;
+                        break;
                     }
 
                     FalconMediaMetaDto falconMediaMeta =
-                        await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
+                        await _fppService.GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
                     _logger.LogDebug("Getting song title");
                     falconMediaMeta.Format.Tags.Title =
@@ -58,7 +62,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                         falconFppdStatus.Current_Song_NotFile :
                         falconMediaMeta.Format.Tags.Title;
 
-                    previousSong = await PostCurrentSongAsync(
+                    previousSong = await _twitterService.PostCurrentSongAsync(
                         previousSong, falconMediaMeta.Format.Tags.Title,
                         falconMediaMeta.Format.Tags.Artist,
                         falconFppdStatus.Current_PlayList.Playlist);
@@ -72,50 +76,6 @@ namespace Almostengr.FalconPiTwitter.Workers
                     _logger.LogError(ex, ex.Message);
                 }
             }
-        }
-
-        public async Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string playlist)
-        {
-            _logger.LogDebug("Preparing to post current song");
-
-            if (previousTitle == currentTitle || string.IsNullOrEmpty(currentTitle))
-            {
-                _logger.LogDebug("Not posting song information");
-                return previousTitle;
-            }
-
-            string tweet = $"Playing \"{currentTitle}\"";
-
-            if (string.IsNullOrEmpty(artist) == false)
-            {
-                tweet += $" by {artist}";
-            }
-
-            tweet += $" at {DateTime.Now.ToShortTimeString()}";
-            tweet += $" {GetRandomChristmasHashTag()}";
-
-            await PostTweetAsync(tweet);
-
-            return currentTitle;
-        }
-
-        public async Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
-        {
-            _logger.LogDebug("Getting current song meta data");
-
-            if (string.IsNullOrEmpty(currentSong))
-            {
-                _logger.LogWarning("No song provided");
-                return new FalconMediaMetaDto();
-            }
-
-            return await HttpGetAsync<FalconMediaMetaDto>(_httpClient, $"api/media/{currentSong}/meta");
-        }
-
-        public override void Dispose()
-        {
-            _httpClient.Dispose();
-            base.Dispose();
         }
 
     }

@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Services;
 using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
-using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
@@ -14,46 +14,47 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly AppSettings _appSettings;
         private readonly ILogger<FppVitalsWorker> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly ITwitterService _twitterService;
+        private readonly IFppService _fppService;
 
-        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, ITwitterClient twitterClient)
-             : base(logger, appSettings, twitterClient)
+        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings,
+            IFppService fppService, ITwitterService twitterService)
+             : base(logger, appSettings)
         {
             _appSettings = appSettings;
             _logger = logger;
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = AppConstants.Localhost;
+            _twitterService = twitterService;
+            _fppService = fppService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Starting vitals worker");
+            
             string previousSecondsPlayed = string.Empty;
             string previousSecondsRemaining = string.Empty;
 
+            await _twitterService.GetAuthenticatedUserAsync();
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                DateTime currentDateTime = DateTime.Now;
-
-                if (currentDateTime.Minute > 53 && AlarmCount > 0)
-                {
-                    _logger.LogInformation($"Alarm count reset. Previous count: {AlarmCount}");
-                    AlarmCount = 0;
-                }
+                _fppService.ResetAlarmCount();
 
                 try
                 {
-                    _httpClient.BaseAddress = AppConstants.Localhost;
-                    FalconFppdMultiSyncSystemsDto syncStatus = await GetMultiSyncStatusAsync(_httpClient);
+                    FalconFppdMultiSyncSystemsDto syncStatus = await _fppService.GetMultiSyncStatusAsync(AppConstants.Localhost);
 
                     foreach (var fppInstance in syncStatus.RemoteSystems)
                     {
-                        Uri hostUri = new Uri($"http://{fppInstance.Address}");
-
                         _logger.LogInformation($"Checking vitals for {fppInstance.Address}");
 
-                        _httpClient.BaseAddress = hostUri;
+                        FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(fppInstance.Address);
 
-                        FalconFppdStatusDto falconFppdStatus = await GetFppdStatusAsync(_httpClient);
+                        if (falconFppdStatus == null)
+                        {
+                            _logger.LogError(ExceptionMessage.FppOffline);
+                            break;
+                        }
 
                         // check sensors
                         foreach (var sensor in falconFppdStatus.Sensors)
@@ -61,7 +62,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                             if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Monitoring.MaxCpuTemperatureC)
                             {
                                 string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
-                                await PostTweetAlarmAsync(alarmMessage);
+                                await _twitterService.PostTweetAlarmAsync(alarmMessage);
                             }
                         }
 
@@ -71,7 +72,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                             if (previousSecondsPlayed == falconFppdStatus.Seconds_Played ||
                                 previousSecondsRemaining == falconFppdStatus.Seconds_Remaining)
                             {
-                                await PostTweetAlarmAsync($"FPP appears to be stuck");
+                                var task = Task.Run(() => _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen));
                             }
 
                             previousSecondsPlayed = falconFppdStatus.Seconds_Played;
@@ -81,7 +82,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
+                    _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
                 }
                 catch (Exception ex)
                 {
@@ -90,12 +91,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Medium), stoppingToken);
             }
-        }
-
-        public override void Dispose()
-        {
-            _httpClient.Dispose();
-            base.Dispose();
         }
     }
 }
