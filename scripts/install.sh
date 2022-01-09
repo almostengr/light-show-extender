@@ -14,23 +14,23 @@ wget https://github.com/almostengr/falconpitwitter/releases/latest/download/falc
 
 echo "Unpacking application files to project directory"
 
-mkdir -p /home/fpp/media/plugins
+/bin/mkdir -p /home/fpp/media/plugins
 
 gunzip /home/fpp/media/uploads/falconpitwitter.tar.gz
 
-mkdir -p /home/fpp/media/plugins/falconpitwitter
+/bin/mkdir -p /home/fpp/media/plugins/falconpitwitter
 
 tar -xf /home/fpp/media/uploads/falconpitwitter.tar --directory /home/fpp/media/plugins/falconpitwitter
 
 echo "Installing service"
 
-sudo cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
+sudo /bin/cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl enable falconpitwitter
 
 echo "Installation complete."
 
-echo "First time users, update the configuration file located at "
+echo "First time users, copy and update the configuration file located at "
 echo "/home/fpp/media/plugins/falconpitwitter/appsettings.json"
 echo "and restart the service or reboot the Pi."
 echo ""
