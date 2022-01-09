@@ -13,7 +13,7 @@
                 "cp",
                 "-p",
                 "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Debug/netcoreapp3.1/",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Debug/net5.0/",
                 "&&",
                 "dotnet",
                 "build",
@@ -23,7 +23,10 @@
                 "/consoleloggerparameters:NoSummary",
                 "\""
             ],
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "presentation": {
                 "reveal": "silent"
             },
@@ -62,7 +65,7 @@
             "args": [
                 "-p",
                 "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/netcoreapp3.1/linux-arm/*",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net5.0/linux-arm/*",
                 "${workspaceRoot}/falconpitwitter.service",
                 "fpp@falconpi://home/fpp/media/plugins/falconpitwitter",
             ],

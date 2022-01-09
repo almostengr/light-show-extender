@@ -1,5 +1,7 @@
 using System;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.Clients;
+using Almostengr.FalconPiTwitter.Services;
+using Almostengr.FalconPiTwitter.Settings;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +14,8 @@ namespace Almostengr.FalconPiTwitter
     {
         public static void Main(string[] args)
         {
+            ShowFullVersion();
+
             if (args.Length > 0)
             {
                 ProcessArguments(args);
@@ -34,13 +38,8 @@ namespace Almostengr.FalconPiTwitter
 
                 case "--version":
                 case "version":
-                    ShowVersion();
                     break;
 
-                case "--fullversion":
-                    ShowFullVersion();
-                    break;
-                    
                 default:
                     Console.WriteLine("Invalid arguments");
                     ShowHelp();
@@ -57,23 +56,42 @@ namespace Almostengr.FalconPiTwitter
                 .ConfigureServices((hostContext, services) =>
                 {
                     IConfiguration configuration = hostContext.Configuration;
+
                     AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
                     services.AddSingleton(appSettings);
 
-                    services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
-                        new TwitterClient(
-                            appSettings.Twitter.ConsumerKey,
-                            appSettings.Twitter.ConsumerSecret,
-                            appSettings.Twitter.AccessToken,
-                            appSettings.Twitter.AccessSecret
-                        ));
+
+                    // CLIENTS ///////////////////////////////////////////////////////////////////////////////
+
+                    // if (appSettings.Twitter != null)
+                    // {
+                    //     services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
+                    //         new TwitterClient(
+                    //             appSettings.Twitter.ConsumerKey,
+                    //             appSettings.Twitter.ConsumerSecret,
+                    //             appSettings.Twitter.AccessToken,
+                    //             appSettings.Twitter.AccessSecret
+                    //         ));
+                    // }
+
+                    services.AddSingleton<ITwitterClient, MockTwitterClient>();
+
+                    services.AddSingleton<IFppClient, FppClient>();
+
+
+                    // SERVICES ///////////////////////////////////////////////////////////////////////////////
+
+                    services.AddSingleton<IFppService, FppService>();
+                    services.AddSingleton<ITwitterService, TwitterService>();
+
+
+                    // WORKERS ///////////////////////////////////////////////////////////////////////////////
 
                     services.AddHostedService<FppVitalsWorker>();
+                    services.AddHostedService<FppCurrentSongWorker>();
 
-                    if (appSettings.MonitorOnly == false)
+                    if (appSettings.CountdownEnabled)
                     {
-                        services.AddHostedService<FppCurrentSongWorker>();
-                        services.AddHostedService<TwitterWorker>();
                         services.AddHostedService<CountdownWorker>();
                     }
                 });
@@ -83,20 +101,13 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine(typeof(Program).Assembly.ToString());
         }
 
-        private static void ShowVersion()
-        {
-            Console.WriteLine(typeof(Program).Assembly.GetName().Version.ToString());
-        }
-
         private static void ShowHelp()
         {
             Console.WriteLine("Falcon Pi Twitter Help");
             Console.WriteLine();
             Console.WriteLine("For more information about this program,");
-            Console.WriteLine("visit https://thealmostengineer.com/falconpitwitter");
+            Console.WriteLine("visit https://thealmostengineer.com/projects/falcon-pi-twitter");
             Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine(typeof(Program).Assembly.ToString());
         }
     }
 }

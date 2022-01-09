@@ -1,147 +1,68 @@
 using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
+using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Services;
+using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
-using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class CountdownWorker : BaseWorker, ICountdownWorker
+    public class CountdownWorker : BaseWorker
     {
         private readonly ILogger<CountdownWorker> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly IFppService _fppService;
+        private readonly ITwitterService _twitterService;
 
-        public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
-            base(logger, appSettings, twitterClient)
+        public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings,
+            ITwitterService twitterService, IFppService fppService) :
+            base(logger, appSettings)
         {
             _logger = logger;
-
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = HostUri;
+            _fppService = fppService;
+            _twitterService = twitterService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Starting countdown worker");
-            DateTime newYearDate, christmasDate, currentDateTime;
-
+            
             while (!stoppingToken.IsCancellationRequested)
             {
-                await WaitBeforeContinueAsync();
-
-                currentDateTime = DateTime.Now;
-                newYearDate = new DateTime(currentDateTime.Year + 1, 01, 01, 00, 00, 00);
-                christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
-                string tweetString = string.Empty;
-                FalconFppdStatus status = null;
-
                 try
                 {
-                    status = await GetCurrentStatusAsync(_httpClient);
-                    tweetString += DaysUntilLightShow(currentDateTime, status.Next_Playlist.Start_Time);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                }
+                    DateTime currentDateTime = DateTime.Now;
+                    string tweetString = string.Empty;
+                    FalconFppdStatusDto status = await _fppService.GetFppdStatusAsync(AppConstants.Localhost);
 
-                try
-                {
-                    // if during offline playlist or no active playlist
-                    if (status == null || IsIdleOfflineOrTesting(status.Current_PlayList.Playlist))
+                    if (status == null)
                     {
-                        tweetString += DaysUntilChristmas(currentDateTime, christmasDate);
-                        tweetString += DaysUntilNewYear(currentDateTime, christmasDate, newYearDate);
-                        tweetString += GetRandomHashTag(3);
-
-                        await PostTweetAsync(tweetString);
+                        _logger.LogError("Fpp did not respond. Is it online?");
+                        await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
+                        break;
                     }
+
+                    tweetString += _fppService.TimeUntilNextLightShow(currentDateTime, status.Next_Playlist.Start_Time);
+
+                    if (_fppService.IsPlaylistIdleOfflineOrTesting(status))
+                    {
+                        tweetString += _fppService.TimeUntilChristmas(currentDateTime);
+                        tweetString += _twitterService.GetRandomChristmasHashTag();
+
+                        await _twitterService.PostTweetAsync(tweetString);
+                    }
+
+                    await Task.Delay(TimeSpan.FromHours(_fppService.GetRandomWaitTime()), stoppingToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
-                    await Task.Delay(TimeSpan.FromSeconds(15));
+                    await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
                 }
+
             }
         }
 
-        private async Task WaitBeforeContinueAsync()
-        {
-            double waitHours = 12 * Random.NextDouble();
-            _logger.LogInformation("Waiting " + waitHours + " hours");
-            await Task.Delay(TimeSpan.FromHours(waitHours));
-        }
-
-        private string DaysUntilChristmas(DateTime curDateTime, DateTime christmasdate)
-        {
-            if (curDateTime <= christmasdate)
-            {
-                string dayDiff = CalculateTimeBetween(curDateTime, christmasdate);
-                return $"{dayDiff} until Christmas. " + GetChristmasHashTag();
-            }
-
-            return string.Empty;
-        }
-
-        private string DaysUntilNewYear(DateTime curDateTime, DateTime christmasDate, DateTime newYearDate)
-        {
-            if (curDateTime <= newYearDate && curDateTime >= christmasDate)
-            {
-                string dayDiff = CalculateTimeBetween(curDateTime, newYearDate);
-                return $"{dayDiff} until New Years. " + GetNewYearsHashTag();
-            }
-
-            return string.Empty;
-        }
-
-        private string DaysUntilLightShow(DateTime curDateTime, string start_Time)
-        {
-            string nextPlaylistDateTime = start_Time.Substring(0, start_Time.IndexOf(" - "));
-
-            nextPlaylistDateTime = nextPlaylistDateTime.Replace(" @ ", "T");
-
-            DateTime showStartDate = DateTime.Parse(nextPlaylistDateTime);
-
-            if (curDateTime <= showStartDate.AddHours(-36))
-            {
-                string dayDiff = CalculateTimeBetween(curDateTime, showStartDate);
-                return $"{dayDiff} until the next Light Show. ";
-            }
-
-            return string.Empty;
-        }
-
-        private string CalculateTimeBetween(DateTime startDate, DateTime endDate)
-        {
-            TimeSpan timeDiff = endDate - startDate;
-            _logger.LogInformation(timeDiff.ToString());
-
-            string output = string.Empty;
-            output += (timeDiff.Days > 0 ? (timeDiff.Days + (timeDiff.Days == 1 ? " day " : " days ")) : string.Empty);
-            output += (timeDiff.Hours > 0 ? (timeDiff.Hours + (timeDiff.Hours == 1 ? " hour " : " hours ")) : string.Empty);
-            output += (timeDiff.Minutes > 0 ? (timeDiff.Minutes + (timeDiff.Minutes == 1 ? " minute " : " minutes ")) : string.Empty);
-
-            return output;
-        }
-
-        public override void Dispose()
-        {
-            _httpClient.Dispose();
-            base.Dispose();
-        }
-
-        private string GetChristmasHashTag()
-        {
-            string[] hashTags = { "#ChristmasCountdown", "#ChristmasIsComing", "#CountdownToChristmas" };
-            return hashTags[Random.Next(0, hashTags.Length)] + " ";
-        }
-
-        private string GetNewYearsHashTag()
-        {
-            string[] hashTags = { "#HappyNewYear", "#NewYear" };
-            return hashTags[Random.Next(0, hashTags.Length)] + " ";
-        }
     }
 }

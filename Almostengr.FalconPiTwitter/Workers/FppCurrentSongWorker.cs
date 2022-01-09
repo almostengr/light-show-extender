@@ -2,132 +2,80 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Models;
-using Almostengr.FalconPiTwitter.Exceptions;
+using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
-using Tweetinvi;
+using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Services;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class FppCurrentSongWorker : BaseWorker, IFppCurrentSongWorker
+    public class FppCurrentSongWorker : BaseWorker
     {
         private readonly ILogger<FppCurrentSongWorker> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly AppSettings _appSettings;
+        private readonly ITwitterService _twitterService;
+        private readonly IFppService _fppService;
 
-        public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings, ITwitterClient twitterClient) :
-            base(logger, appSettings, twitterClient)
+        public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings,
+            IFppService fppService, ITwitterService twitterService)
+         : base(logger, appSettings)
         {
             _logger = logger;
-
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = HostUri;
+            _appSettings = appSettings;
+            _fppService = fppService;
+            _twitterService = twitterService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Starting current song worker");
+            
             string previousSong = string.Empty;
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
+
                 try
                 {
-                    FalconFppdStatus falconFppdStatus = await GetCurrentStatusAsync(_httpClient);
+                    FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(AppConstants.Localhost);
+
+                    if (falconFppdStatus.Mode_Name == FppMode.Remote)
+                    {
+                        _logger.LogDebug("This is remote instance of FPP");
+                        break;
+                    }
 
                     if (falconFppdStatus.Current_Song == string.Empty)
                     {
-                        throw new FppCurrentSongException();
+                        _logger.LogDebug("No song is currently playling");
+                        break;
                     }
 
-                    FalconMediaMeta falconMediaMeta =
-                        await GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
+                    FalconMediaMetaDto falconMediaMeta =
+                        await _fppService.GetCurrentSongMetaDataAsync(falconFppdStatus.Current_Song);
 
+                    _logger.LogDebug("Getting song title");
                     falconMediaMeta.Format.Tags.Title =
-                        GetSongTitle(falconFppdStatus.Current_Song_NotFile, falconMediaMeta.Format.Tags.Title);
+                        string.IsNullOrEmpty(falconMediaMeta.Format.Tags.Title) ?
+                        falconFppdStatus.Current_Song_NotFile :
+                        falconMediaMeta.Format.Tags.Title;
 
-                    previousSong = await PostCurrentSongAsync(
+                    previousSong = await _twitterService.PostCurrentSongAsync(
                         previousSong, falconMediaMeta.Format.Tags.Title,
                         falconMediaMeta.Format.Tags.Artist,
-                        falconMediaMeta.Format.Tags.Album,
                         falconFppdStatus.Current_PlayList.Playlist);
-                }
-                catch (FppCurrentSongException)
-                {
-                    // _logger.LogWarning("No song is currently playing"); // do nothing
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError("Are you connected to internet? Is FFPPd running? " + ex.Message);
+                    _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
                 }
-
-                await Task.Delay(TimeSpan.FromSeconds(15));
             }
-        }
-
-        public async Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string album, string playlist)
-        {
-            _logger.LogInformation("Preparing to post current song");
-
-            if (previousTitle == currentTitle)
-            {
-                _logger.LogDebug("Song title has not changed. Not posting.");
-                return previousTitle;
-            }
-
-            if (IsIdleOfflineOrTesting(playlist))
-            {
-                _logger.LogInformation("Show is offline. Not posting song");
-                return previousTitle;
-            }
-
-            if (string.IsNullOrEmpty(currentTitle))
-            {
-                _logger.LogInformation("Not posting song as it does not have a title");
-                return previousTitle;
-            }
-
-            string tweet = string.Concat("Playing \"", currentTitle, "\"");
-
-            if (string.IsNullOrEmpty(artist) == false)
-            {
-                tweet += " by " + artist;
-            }
-
-            tweet += " at " + DateTime.Now.ToShortTimeString();
-
-            tweet += " " + GetRandomHashTag(2);
-
-            await PostTweetAsync(tweet);
-
-            return currentTitle;
-        }
-
-        public async Task<FalconMediaMeta> GetCurrentSongMetaDataAsync(string currentSong)
-        {
-            _logger.LogInformation("Getting current song meta data");
-
-            if (string.IsNullOrEmpty(currentSong))
-            {
-                _logger.LogWarning("No song provided");
-                return new FalconMediaMeta();
-            }
-
-            return await HttpGetAsync<FalconMediaMeta>(_httpClient, string.Concat("api/media/", currentSong, "/meta"));
-        }
-
-        public string GetSongTitle(string notFileTitle, string tagTitle)
-        {
-            _logger.LogInformation("Getting song title");
-            return string.IsNullOrEmpty(tagTitle) ? notFileTitle : tagTitle;
-        }
-
-        public override void Dispose()
-        {
-            _httpClient.Dispose();
-            base.Dispose();
         }
 
     }
