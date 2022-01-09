@@ -1,96 +1,88 @@
 using System;
-using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
 using Almostengr.FalconPiTwitter.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
     public class FppVitalsWorker : BaseWorker
     {
-        private readonly AppSettings _appSettings;
         private readonly ILogger<FppVitalsWorker> _logger;
         private readonly ITwitterService _twitterService;
         private readonly IFppService _fppService;
 
-        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings,
-            IFppService fppService, ITwitterService twitterService)
-             : base(logger, appSettings)
+        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, IServiceScopeFactory factory)
+             : base(logger)
         {
-            _appSettings = appSettings;
             _logger = logger;
-            _twitterService = twitterService;
-            _fppService = fppService;
+            _fppService = factory.CreateScope().ServiceProvider.GetRequiredService<IFppService>();
+            _twitterService = factory.CreateScope().ServiceProvider.GetRequiredService<ITwitterService>();
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Starting vitals worker");
-            
-            string previousSecondsPlayed = string.Empty;
-            string previousSecondsRemaining = string.Empty;
+
+            string previousSecondsPlayed = string.Empty,
+                previousSecondsRemaining = string.Empty;
 
             await _twitterService.GetAuthenticatedUserAsync();
 
+            List<string> fppHosts = await _fppService.GetFppHostsAsync();
+            int alarmCount = 0;
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                _fppService.ResetAlarmCount();
-
-                try
+                if (DateTime.Now.Minute >= 54 && alarmCount > 0)
                 {
-                    FalconFppdMultiSyncSystemsDto syncStatus = await _fppService.GetMultiSyncStatusAsync(AppConstants.Localhost);
+                    _logger.LogInformation("Resetting alarm count");
+                    alarmCount = 0;
+                }
 
-                    foreach (var fppInstance in syncStatus.RemoteSystems)
+                foreach (var fppInstance in fppHosts)
+                {
+                    _logger.LogInformation($"Checking vitals for {fppInstance}");
+
+                    FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(fppInstance);
+
+                    if (falconFppdStatus == null)
                     {
-                        _logger.LogInformation($"Checking vitals for {fppInstance.Address}");
+                        await TaskDelayAsync(DelaySeconds.Smedium, stoppingToken);
+                        continue;
+                    }
 
-                        FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(fppInstance.Address);
+                    foreach (var sensor in falconFppdStatus.Sensors)
+                    {
+                        string alarmMessage = _fppService.CheckSensorData(sensor);
+                        await _twitterService.PostTweetAlarmAsync(alarmMessage, alarmCount);
 
-                        if (falconFppdStatus == null)
+                        if (alarmMessage != string.Empty)
                         {
-                            _logger.LogError(ExceptionMessage.FppOffline);
-                            break;
-                        }
-
-                        // check sensors
-                        foreach (var sensor in falconFppdStatus.Sensors)
-                        {
-                            if (sensor.ValueType.ToLower() == "temperature" && sensor.Value > _appSettings.Monitoring.MaxCpuTemperatureC)
-                            {
-                                string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
-                                await _twitterService.PostTweetAlarmAsync(alarmMessage);
-                            }
-                        }
-
-                        // check for stuck songs
-                        if (falconFppdStatus.Mode_Name == FppMode.Master || falconFppdStatus.Mode_Name == FppMode.Standalone)
-                        {
-                            if (previousSecondsPlayed == falconFppdStatus.Seconds_Played ||
-                                previousSecondsRemaining == falconFppdStatus.Seconds_Remaining)
-                            {
-                                var task = Task.Run(() => _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen));
-                            }
-
-                            previousSecondsPlayed = falconFppdStatus.Seconds_Played;
-                            previousSecondsRemaining = falconFppdStatus.Seconds_Remaining;
+                            alarmCount++;
                         }
                     }
-                }
-                catch (HttpRequestException ex)
-                {
-                    _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
+
+                    bool IsFppStuck = _fppService.CheckForStuckFpp(previousSecondsPlayed, previousSecondsRemaining, falconFppdStatus);
+
+                    if (IsFppStuck)
+                    {
+                        var task = Task.Run(() => _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen, alarmCount));
+                        alarmCount++;
+                    }
+
+                    previousSecondsPlayed = falconFppdStatus.Seconds_Played;
+                    previousSecondsRemaining = falconFppdStatus.Seconds_Remaining;
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Medium), stoppingToken);
+                await TaskDelayAsync(DelaySeconds.Medium, stoppingToken);
             }
         }
+
     }
 }

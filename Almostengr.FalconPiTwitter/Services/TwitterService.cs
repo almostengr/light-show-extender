@@ -13,7 +13,7 @@ namespace Almostengr.FalconPiTwitter.Services
         private readonly ILogger<TwitterService> _logger;
         private readonly AppSettings _appSettings;
 
-        public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings, 
+        public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings,
             ITwitterClient twitterClient) : base(logger)
         {
             _logger = logger;
@@ -29,8 +29,7 @@ namespace Almostengr.FalconPiTwitter.Services
                 return false;
             }
 
-            tweet = tweet.Trim();
-            tweet = tweet.Replace("  ", " ");
+            tweet = tweet.Trim().Replace("  ", " ");
 
             while (tweet.Length > TwitterConstants.TweetCharacterLimit)
             {
@@ -43,16 +42,28 @@ namespace Almostengr.FalconPiTwitter.Services
                 return true;
             }
 
-            var response = await _twitterClient.Tweets.PublishTweetAsync(tweet);
-            return response.CreatedBy.Name.Length > 0 ? true : false;
+            try
+            {
+                var response = await _twitterClient.Tweets.PublishTweetAsync(tweet);
+                return response.CreatedBy.Name.Length > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return false;
+            }
         }
 
-        public async Task PostTweetAlarmAsync(string alarmMessage)
+        public async Task PostTweetAlarmAsync(string alarmMessage, int alarmCount = 0)
         {
-            _logger.LogWarning(alarmMessage);
-            AlarmCount++;
+            if (string.IsNullOrEmpty(alarmMessage))
+            {
+                return;
+            }
 
-            if (AlarmCount <= _appSettings.Monitoring.MaxAlarmsPerHour)
+            _logger.LogWarning(alarmMessage);
+
+            if (alarmCount <= _appSettings.Monitoring.MaxAlarmsPerHour)
             {
                 string users = string.Empty;
 
@@ -71,8 +82,8 @@ namespace Almostengr.FalconPiTwitter.Services
             int numTagsUsed = 0;
 
             // prevent index out of bounds
-            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ? 
-                TwitterConstants.ChristmasHashTags.Length : 
+            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ?
+                TwitterConstants.ChristmasHashTags.Length :
                 _appSettings.MaxHashTags;
 
             while (numTagsUsed <= maxNumHashTags)
@@ -91,9 +102,17 @@ namespace Almostengr.FalconPiTwitter.Services
 
         public async Task<string> GetAuthenticatedUserAsync()
         {
-            var user = await _twitterClient.Users.GetAuthenticatedUserAsync();
-            _logger.LogInformation($"Authenticated user: {user.Name}");
-            return user.Name;
+            try
+            {
+                var user = await _twitterClient.Users.GetAuthenticatedUserAsync();
+                _logger.LogInformation($"Authenticated user: {user.Name}");
+                return user.Name;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return string.Empty;
+            }
         }
 
         public async Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string playlist)
@@ -120,5 +139,6 @@ namespace Almostengr.FalconPiTwitter.Services
 
             return currentTitle;
         }
+
     }
 }

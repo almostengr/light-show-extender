@@ -6,7 +6,6 @@ namespace Almostengr.FalconPiTwitter.Services
     public abstract class BaseService : IBaseService
     {
         private readonly ILogger<BaseService> _logger;
-        internal int AlarmCount = 0;
         internal Random Random = new Random();
 
         public BaseService(ILogger<BaseService> logger)
@@ -25,17 +24,6 @@ namespace Almostengr.FalconPiTwitter.Services
             output += (timeDiff.Minutes > 0 ? (timeDiff.Minutes + (timeDiff.Minutes == 1 ? " minute " : " minutes ")) : string.Empty);
 
             return output;
-        }
-
-        public void ResetAlarmCount()
-        {
-            TimeSpan currentTime = DateTime.Now.TimeOfDay;
-            
-            if (AlarmCount > 0 && currentTime.Minutes >= 55)
-            {
-                _logger.LogWarning($"Alarm count reset. Previous count: {AlarmCount}");
-                AlarmCount = 0;
-            }
         }
 
     }

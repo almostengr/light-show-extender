@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 
@@ -12,7 +13,9 @@ namespace Almostengr.FalconPiTwitter.Services
         string TimeUntilChristmas(DateTime currentDateTime);
         Task<FalconFppdMultiSyncSystemsDto> GetMultiSyncStatusAsync(string address);
         Task<FalconFppdStatusDto> GetFppdStatusAsync(string address);
-        void ResetAlarmCount();
         Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string current_Song);
+        Task<List<string>> GetFppHostsAsync();
+        string CheckSensorData(FalconFppdStatusSensor sensor);
+        bool CheckForStuckFpp(string previousSecondsPlayed, string previousSecondsRemaining, FalconFppdStatusDto falconFppdStatus);
     }
 }
