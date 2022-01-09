@@ -16,6 +16,22 @@ namespace Almostengr.FalconPiTwitter.Clients
             _logger = logger;
         }
 
+        public string AssignRoute(string address)
+        {
+            if (string.IsNullOrEmpty(address))
+            {
+                _logger.LogWarning("No address provided");
+                return null;
+            }
+
+            if (address.StartsWith("http") == false)
+            {
+                return $"http://{address}";
+            }
+
+            return $"{address}";
+        }
+
         public async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
         {
             HttpResponseMessage response = await httpClient.GetAsync(route);

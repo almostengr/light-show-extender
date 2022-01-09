@@ -1,8 +1,7 @@
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Clients
@@ -11,11 +10,13 @@ namespace Almostengr.FalconPiTwitter.Clients
     {
         private readonly ILogger<FppClient> _logger;
         private readonly HttpClient _httpClient;
-        
-        public FppClient(ILogger<FppClient> logger) : base(logger)
+        private readonly AppSettings _appSettings;
+
+        public FppClient(ILogger<FppClient> logger, AppSettings appSettings) : base(logger)
         {
             _logger = logger;
             _httpClient = new HttpClient();
+            _appSettings = appSettings;
         }
 
         public async Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
@@ -28,21 +29,20 @@ namespace Almostengr.FalconPiTwitter.Clients
                 return new FalconMediaMetaDto();
             }
 
-            _httpClient.BaseAddress = new Uri(AppConstants.Localhost);
-
-            return await HttpGetAsync<FalconMediaMetaDto>(_httpClient, $"api/media/{currentSong}/meta");
+            string route = AssignRoute($"{_appSettings.FppHosts[0]}/api/media/{currentSong}/meta");
+            return await HttpGetAsync<FalconMediaMetaDto>(_httpClient, route);
         }
 
         public async Task<FalconFppdStatusDto> GetFppdStatusAsync(string address)
         {
-            _httpClient.BaseAddress = new Uri(address);
-            return await HttpGetAsync<FalconFppdStatusDto>(_httpClient, "api/fppd/status");
+            string route = AssignRoute($"{address}/api/fppd/status");
+            return await HttpGetAsync<FalconFppdStatusDto>(_httpClient, route);
         }
 
         public async Task<FalconFppdMultiSyncSystemsDto> GetMultiSyncStatusAsync(string address)
         {
-            _httpClient.BaseAddress = new Uri(address);
-            return await HttpGetAsync<FalconFppdMultiSyncSystemsDto>(_httpClient, "api/fppd/multiSyncSystems");
+            string route = AssignRoute($"{address}/api/fppd/status");
+            return await HttpGetAsync<FalconFppdMultiSyncSystemsDto>(_httpClient, route);
         }
     }
 }
