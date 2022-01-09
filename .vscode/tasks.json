@@ -33,7 +33,18 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Clean Release Project",
+            "label": "dotnet clean -c debug",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "clean",
+                "-c",
+                "debug",
+            ],
+            "group": "none"
+        },
+        {
+            "label": "dotnet clean -c release",
             "command": "dotnet",
             "type": "shell",
             "args": [
@@ -41,14 +52,16 @@
                 "-c",
                 "Release",
             ],
-            "group": "none"
+            "group": "none",
+            "dependsOn": ["dotnet clean -c debug"]
         },
         {
-            "label": "Publish Release",
+            "label": "dotnet publish -c release",
             "command": "dotnet",
             "type": "shell",
             "args": [
                 "publish",
+                "--self-contained",
                 "-r",
                 "linux-arm",
                 "-c",
@@ -56,7 +69,34 @@
                 "*sln"
             ],
             "group": "none",
-            "dependsOn": ["Clean Release Project"]
+            "dependsOn": ["dotnet clean -c release"]
+        },
+        {
+            "label": "tar release files",
+            "command" : "tar",
+            "type": "shell",
+            "args": [
+                "-czf",
+                "${workspaceRoot}/falconpitwitter.tar.gz",
+                "-C",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net5.0/linux-arm/publish/",
+                "."
+            ],
+            "group": "none",
+            "dependsOn": ["dotnet publish -c release"],
+        },
+        {
+            "label": "git tag release",
+            "command" : "git",
+            "type": "shell",
+            "args": [
+                "tag",
+                "-a",
+                "\"v$(date +%Y.%m.%d)\"",
+                "-m",
+                "\"version $(date +%Y.%m.%d)\""
+            ],
+            "dependsOn": ["tar release files"],
         },
         {
             "label": "Deploy Local",
