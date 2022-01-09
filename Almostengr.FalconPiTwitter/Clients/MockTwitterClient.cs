@@ -41,7 +41,8 @@ namespace Almostengr.FalconPiTwitter.Clients
 
         public ITrendsClient Trends => throw new System.NotImplementedException();
 
-        public ITweetsClient Tweets => throw new System.NotImplementedException();
+        public ITweetsClient Tweets { get; } = new MockTweetsClient();
+        // public ITweetsClient Tweets => throw new System.NotImplementedException();
         // public ITweetsClient Tweets => new MockTweetsClient(_logger);
 
         public IUsersClient Users => throw new System.NotImplementedException();

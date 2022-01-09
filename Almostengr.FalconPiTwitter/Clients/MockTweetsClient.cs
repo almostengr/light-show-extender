@@ -17,6 +17,11 @@ namespace Almostengr.FalconPiTwitter.Clients
     {
         private readonly ILogger<MockTweetsClient> _logger;
 
+        public MockTweetsClient()
+        {
+            
+        }
+
         public MockTweetsClient(ILogger<MockTweetsClient> logger)
         {
             _logger = logger;

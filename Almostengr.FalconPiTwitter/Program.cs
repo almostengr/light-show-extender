@@ -56,20 +56,25 @@ namespace Almostengr.FalconPiTwitter
                 .ConfigureServices((hostContext, services) =>
                 {
                     IConfiguration configuration = hostContext.Configuration;
-                    
+
                     AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
                     services.AddSingleton(appSettings);
 
 
                     // CLIENTS ///////////////////////////////////////////////////////////////////////////////
 
-                    services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
-                        new TwitterClient(
-                            appSettings.Twitter.ConsumerKey,
-                            appSettings.Twitter.ConsumerSecret,
-                            appSettings.Twitter.AccessToken,
-                            appSettings.Twitter.AccessSecret
-                        ));
+                    // if (appSettings.Twitter != null)
+                    // {
+                    //     services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
+                    //         new TwitterClient(
+                    //             appSettings.Twitter.ConsumerKey,
+                    //             appSettings.Twitter.ConsumerSecret,
+                    //             appSettings.Twitter.AccessToken,
+                    //             appSettings.Twitter.AccessSecret
+                    //         ));
+                    // }
+
+                    services.AddSingleton<ITwitterClient, MockTwitterClient>();
 
                     services.AddSingleton<IFppClient, FppClient>();
 
@@ -78,7 +83,7 @@ namespace Almostengr.FalconPiTwitter
 
                     services.AddSingleton<IFppService, FppService>();
                     services.AddSingleton<ITwitterService, TwitterService>();
-                    
+
 
                     // WORKERS ///////////////////////////////////////////////////////////////////////////////
 
