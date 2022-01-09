@@ -99,6 +99,17 @@
             "dependsOn": ["tar release files"],
         },
         {
+            "label" : "git push --tags",
+            "command" : "git",
+            "type": "shell",
+            "args": [
+                "push",
+                "--tags"
+            ],
+            "group": "none",
+            "dependsOn": ["git tag release"]
+        },
+        {
             "label": "Deploy Local",
             "command": "scp",
             "type": "shell",
