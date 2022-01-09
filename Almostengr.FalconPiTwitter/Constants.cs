@@ -36,6 +36,7 @@ namespace Almostengr.FalconPiTwitter.Constants
     public sealed class DelaySeconds
     {
         public const int Short = 15;
+        public const int Smedium = 30;
         public const int Medium = 300;
         public const int Long = 900;
     }
