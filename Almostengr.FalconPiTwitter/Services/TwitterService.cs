@@ -37,6 +37,12 @@ namespace Almostengr.FalconPiTwitter.Services
                 tweet = tweet.Substring(0, tweet.LastIndexOf(" "));
             }
 
+            if (_appSettings.DemoMode)
+            {
+                _logger.LogInformation("TEST TWEET: {0}", tweet);
+                return true;
+            }
+
             var response = await _twitterClient.Tweets.PublishTweetAsync(tweet);
             return response.CreatedBy.Name.Length > 0 ? true : false;
         }

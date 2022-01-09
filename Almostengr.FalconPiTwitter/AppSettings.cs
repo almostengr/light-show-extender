@@ -9,6 +9,7 @@ namespace Almostengr.FalconPiTwitter.Settings
         public bool CountdownEnabled { get; set; } = false;
         public int MaxHashTags { get; set; } = 3;
         public List<string> FppHosts { get; set; } = new();
+        public bool DemoMode { get; set; } = false;
     }
 
     public class Twitter
