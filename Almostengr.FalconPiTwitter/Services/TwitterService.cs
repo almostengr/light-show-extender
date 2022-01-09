@@ -39,7 +39,7 @@ namespace Almostengr.FalconPiTwitter.Services
 
             if (_appSettings.DemoMode)
             {
-                _logger.LogInformation("TEST TWEET: {0}", tweet);
+                _logger.LogWarning("Demo mode active. TWEET: {0}", tweet);
                 return true;
             }
 
