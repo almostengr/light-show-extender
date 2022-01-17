@@ -63,21 +63,25 @@ namespace Almostengr.FalconPiTwitter
 
                     // CLIENTS ///////////////////////////////////////////////////////////////////////////////
 
-                    // if (appSettings.Twitter != null)
-                    // {
-                    //     services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
-                    //         new TwitterClient(
-                    //             appSettings.Twitter.ConsumerKey,
-                    //             appSettings.Twitter.ConsumerSecret,
-                    //             appSettings.Twitter.AccessToken,
-                    //             appSettings.Twitter.AccessSecret
-                    //         ));
-                    // }
-
-                    services.AddSingleton<ITwitterClient, MockTwitterClient>();
+                    if (string.IsNullOrEmpty(appSettings.Twitter.ConsumerSecret) == false &&
+                        string.IsNullOrEmpty(appSettings.Twitter.ConsumerKey) == false &&
+                        string.IsNullOrEmpty(appSettings.Twitter.AccessToken) == false &&
+                        string.IsNullOrEmpty(appSettings.Twitter.AccessSecret) == false)
+                    {
+                        services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
+                            new TwitterClient(
+                                appSettings.Twitter.ConsumerKey,
+                                appSettings.Twitter.ConsumerSecret,
+                                appSettings.Twitter.AccessToken,
+                                appSettings.Twitter.AccessSecret
+                            ));
+                    }
+                    else
+                    {
+                        services.AddSingleton<ITwitterClient, MockTwitterClient>();
+                    }
 
                     services.AddSingleton<IFppClient, FppClient>();
-
 
                     // SERVICES ///////////////////////////////////////////////////////////////////////////////
 

@@ -4,8 +4,8 @@ namespace Almostengr.FalconPiTwitter.Settings
 {
     public class AppSettings
     {
-        public Twitter Twitter { get; set; }
-        public Monitoring Monitoring { get; set; }
+        public Twitter Twitter { get; set; } = new();
+        public Monitoring Monitoring { get; set; } = new();
         public bool CountdownEnabled { get; set; } = false;
         public int MaxHashTags { get; set; } = 3;
         public List<string> FppHosts { get; set; } = new();
