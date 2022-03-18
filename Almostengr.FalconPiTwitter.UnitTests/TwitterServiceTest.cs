@@ -17,17 +17,17 @@ namespace Almostengr.FalconPiTwitter.UnitTests
         [Test]
         public void GetRandomChristmasHashTag_ReturnsString()
         {
-            // Arrange
+            // Setup (Arrange)
             ILogger<TwitterService> logger = new Logger<TwitterService>(new LoggerFactory());
             ILogger<MockTwitterClient> mockLogger = new Logger<MockTwitterClient>(new LoggerFactory());
             AppSettings appSettings = new AppSettings();
             ITwitterClient twitterClient = new MockTwitterClient(mockLogger);
             ITwitterService twitterService = new TwitterService(logger, appSettings, twitterClient);
 
-            // Act
+            // Attempt (Act)
             string result = twitterService.GetRandomChristmasHashTag();
 
-            // Assert
+            // Verify (Assert)
             Assert.IsInstanceOf<string>(result);
         }
     }
