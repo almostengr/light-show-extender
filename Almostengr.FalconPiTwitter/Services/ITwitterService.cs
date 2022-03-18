@@ -5,6 +5,7 @@ namespace Almostengr.FalconPiTwitter.Services
     public interface ITwitterService : IBaseService
     {
         string GetRandomChristmasHashTag();
+        string GetRandomNewYearHashTag();
         Task PostTweetAlarmAsync(string alarmMessage);
         Task<bool> PostTweetAsync(string tweet);
         Task<string> GetAuthenticatedUserAsync();

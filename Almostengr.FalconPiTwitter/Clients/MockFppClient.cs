@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 
 namespace Almostengr.FalconPiTwitter.Clients

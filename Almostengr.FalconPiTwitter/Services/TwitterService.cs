@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Constants;
-using Almostengr.FalconPiTwitter.Settings;
+using Almostengr.FalconPiTwitter.Common;
+using Almostengr.FalconPiTwitter.Common.Constants;
+
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -13,7 +14,7 @@ namespace Almostengr.FalconPiTwitter.Services
         private readonly ILogger<TwitterService> _logger;
         private readonly AppSettings _appSettings;
 
-        public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings, 
+        public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings,
             ITwitterClient twitterClient) : base(logger)
         {
             _logger = logger;
@@ -65,13 +66,37 @@ namespace Almostengr.FalconPiTwitter.Services
             int numTagsUsed = 0;
 
             // prevent index out of bounds
-            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ? 
-                TwitterConstants.ChristmasHashTags.Length : 
+            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ?
+                TwitterConstants.ChristmasHashTags.Length :
                 _appSettings.MaxHashTags;
 
             while (numTagsUsed <= maxNumHashTags)
             {
                 string randomTag = TwitterConstants.ChristmasHashTags[Random.Next(0, TwitterConstants.ChristmasHashTags.Length)];
+
+                if (outputTags.Contains(randomTag) == false)
+                {
+                    outputTags += randomTag + " ";
+                    numTagsUsed++;
+                }
+            }
+
+            return outputTags;
+        }
+
+        public string GetRandomNewYearHashTag()
+        {
+            string outputTags = string.Empty;
+            int numTagsUsed = 0;
+
+            // prevent index out of bounds
+            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.NewYearHashTags.Length ?
+                TwitterConstants.NewYearHashTags.Length :
+                _appSettings.MaxHashTags;
+
+            while (numTagsUsed <= maxNumHashTags)
+            {
+                string randomTag = TwitterConstants.NewYearHashTags[Random.Next(0, TwitterConstants.NewYearHashTags.Length)];
 
                 if (outputTags.Contains(randomTag) == false)
                 {

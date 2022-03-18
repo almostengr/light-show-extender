@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 

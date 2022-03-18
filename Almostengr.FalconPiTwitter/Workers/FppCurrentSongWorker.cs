@@ -3,10 +3,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
-using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
-using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Services;
+using Almostengr.FalconPiTwitter.Common;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
@@ -29,8 +29,6 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Starting current song worker");
-            
             string previousSong = string.Empty;
 
             while (!stoppingToken.IsCancellationRequested)
@@ -39,18 +37,19 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 try
                 {
-                    FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(AppConstants.Localhost);
+                    FalconFppdStatusDto falconFppdStatus = 
+                        await _fppService.GetFppdStatusAsync(_appSettings.FppHosts[0]);
 
                     if (falconFppdStatus.Mode_Name == FppMode.Remote)
                     {
-                        _logger.LogDebug("This is remote instance of FPP");
+                        _logger.LogDebug("This is remote instance of FPP. Exiting");
                         break;
                     }
 
                     if (falconFppdStatus.Current_Song == string.Empty)
                     {
                         _logger.LogDebug("No song is currently playling");
-                        break;
+                        continue ;
                     }
 
                     FalconMediaMetaDto falconMediaMeta =

@@ -1,6 +1,6 @@
 using System;
 
-namespace Almostengr.FalconPiTwitter.Constants
+namespace Almostengr.FalconPiTwitter.Common.Constants
 {
     public sealed class TwitterConstants
     {
@@ -13,7 +13,11 @@ namespace Almostengr.FalconPiTwitter.Constants
             "#ChristmasLighting",
             "#HolidayLightShow", "#HolidayLightShows", "#HolidayLights", "#HappyHolidays",
             "#HolidayLighting"};
+        public static readonly string[] NewYearHashTags = {
+            $"#NewYear{DateTime.Now.AddYears(1)}", "#NewYears", "#NewYearsDay", "#NewYear", "#NewYearsEve",
+        };
     }
+
 
     public sealed class PlaylistIgnoreName
     {

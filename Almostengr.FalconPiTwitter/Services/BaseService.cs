@@ -14,6 +14,19 @@ namespace Almostengr.FalconPiTwitter.Services
             _logger = logger;
         }
 
+        public double GetRandomWaitTime()
+        {
+            double waitHours = 7 * Random.NextDouble();
+
+            if (waitHours < 0.5)
+            {
+                waitHours = 1;
+            }
+
+            _logger.LogDebug($"Waiting {waitHours} hours");
+            return waitHours;
+        }
+
         public string CalculateTimeBetween(DateTime startDate, DateTime endDate)
         {
             TimeSpan timeDiff = endDate - startDate;

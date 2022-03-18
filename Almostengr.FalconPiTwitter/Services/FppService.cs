@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.Clients;
-using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Common;
+using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
-using Almostengr.FalconPiTwitter.Settings;
+
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Services
@@ -11,12 +12,16 @@ namespace Almostengr.FalconPiTwitter.Services
     public class FppService : BaseService, IFppService
     {
         private readonly IFppClient _fppClient;
-        private readonly ILogger<FppService> _logger;
+        private readonly AppSettings _appSettings;
+        private readonly ITwitterService _twitterService;
 
-        public FppService(ILogger<FppService> logger, AppSettings appSettings, IFppClient fppClient) : base(logger)
+        public FppService(ILogger<FppService> logger, AppSettings appSettings,
+            ITwitterService twitterService, IFppClient fppClient) :
+             base(logger)
         {
             _fppClient = fppClient;
-            _logger = logger;
+            _appSettings = appSettings;
+            _twitterService = twitterService;
         }
 
         public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatusDto status)
@@ -53,19 +58,6 @@ namespace Almostengr.FalconPiTwitter.Services
             return string.Empty;
         }
 
-        public double GetRandomWaitTime()
-        {
-            double waitHours = 7 * Random.NextDouble();
-
-            if (waitHours < 0.5)
-            {
-                waitHours = 1;
-            }
-
-            _logger.LogDebug($"Waiting {waitHours} hours");
-            return waitHours;
-        }
-
         public async Task<FalconFppdStatusDto> GetFppdStatusAsync(string address)
         {
             return await _fppClient.GetFppdStatusAsync(address);
@@ -80,5 +72,45 @@ namespace Almostengr.FalconPiTwitter.Services
         {
             return await _fppClient.GetCurrentSongMetaDataAsync(current_Song);
         }
+
+        public async Task CheckCpuTemperatureAsync(FalconFppdStatusDto status)
+        {
+            foreach (var sensor in status.Sensors)
+            {
+                if (sensor.ValueType.ToLower() == "temperature")
+                {
+                    if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC)
+                    {
+                        string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
+                        await _twitterService.PostTweetAlarmAsync(alarmMessage);
+                    }
+                    break;
+                }
+            }
+        }
+
+        public async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
+        {
+            if (status.Mode_Name == FppMode.Master || status.Mode_Name == FppMode.Standalone)
+            {
+                if (previousSecondsPlayed == status.Seconds_Played ||
+                    previousSecondsRemaining == status.Seconds_Remaining)
+                {
+                    var task = Task.Run(() => _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen));
+                }
+            }
+        }
+
+        public async Task PostChristmasCountDownWhenIdleAsync(FalconFppdStatusDto status)
+        {
+            if (IsPlaylistIdleOfflineOrTesting(status))
+            {
+                string tweetString = TimeUntilChristmas(DateTime.Now);
+                tweetString += _twitterService.GetRandomChristmasHashTag();
+
+                await _twitterService.PostTweetAsync(tweetString);
+            }
+        }
+
     }
 }
