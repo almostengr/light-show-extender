@@ -72,7 +72,7 @@ namespace Almostengr.FalconPiTwitter.Services
         {
             return await _fppClient.GetCurrentSongMetaDataAsync(current_Song);
         }
-
+        
         public async Task CheckCpuTemperatureAsync(FalconFppdStatusDto status)
         {
             foreach (var sensor in status.Sensors)
@@ -88,7 +88,6 @@ namespace Almostengr.FalconPiTwitter.Services
                 }
             }
         }
-
         public async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
             if (status.Mode_Name == FppMode.Master || status.Mode_Name == FppMode.Standalone)
@@ -96,7 +95,7 @@ namespace Almostengr.FalconPiTwitter.Services
                 if (previousSecondsPlayed == status.Seconds_Played ||
                     previousSecondsRemaining == status.Seconds_Remaining)
                 {
-                    var task = Task.Run(() => _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen));
+                    await _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen);
                 }
             }
         }
