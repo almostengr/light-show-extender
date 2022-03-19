@@ -8,14 +8,16 @@ using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Services
 {
-    public class TwitterService : BaseService, ITwitterService
+    public class TwitterService : ITwitterService
     {
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<TwitterService> _logger;
         private readonly AppSettings _appSettings;
+        private int AlarmCount = 0;
+        private readonly Random _random = new Random();
 
         public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings,
-            ITwitterClient twitterClient) : base(logger)
+            ITwitterClient twitterClient)
         {
             _logger = logger;
             _twitterClient = twitterClient;
@@ -72,7 +74,7 @@ namespace Almostengr.FalconPiTwitter.Services
 
             while (numTagsUsed <= maxNumHashTags)
             {
-                string randomTag = TwitterConstants.ChristmasHashTags[Random.Next(0, TwitterConstants.ChristmasHashTags.Length)];
+                string randomTag = TwitterConstants.ChristmasHashTags[_random.Next(0, TwitterConstants.ChristmasHashTags.Length)];
 
                 if (outputTags.Contains(randomTag) == false)
                 {
@@ -96,7 +98,7 @@ namespace Almostengr.FalconPiTwitter.Services
 
             while (numTagsUsed <= maxNumHashTags)
             {
-                string randomTag = TwitterConstants.NewYearHashTags[Random.Next(0, TwitterConstants.NewYearHashTags.Length)];
+                string randomTag = TwitterConstants.NewYearHashTags[_random.Next(0, TwitterConstants.NewYearHashTags.Length)];
 
                 if (outputTags.Contains(randomTag) == false)
                 {

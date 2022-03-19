@@ -3,6 +3,7 @@ using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Services;
 using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using Tweetinvi;
 
@@ -51,6 +52,16 @@ namespace Almostengr.FalconPiTwitter.UnitTests
             string result = _twitterService.GetRandomNewYearHashTag();
 
             // Verify (Assert)
+            Assert.IsTrue(result.ToUpper().Contains("NEWYEAR"));
+        }
+
+        [Test]
+        public void GetRandomNewYearHashTag_Returns_StringWithNewYear_WithMoq()
+        {
+            Mock<TwitterService> mockTwitterService = new Mock<TwitterService>();
+
+            string result = mockTwitterService.Object.GetRandomNewYearHashTag();
+
             Assert.IsTrue(result.ToUpper().Contains("NEWYEAR"));
         }
 

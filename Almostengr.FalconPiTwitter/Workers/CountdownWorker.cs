@@ -5,20 +5,19 @@ using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
-
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class CountdownWorker : BaseWorker
+    public class CountdownWorker : BackgroundService
     {
         private readonly ILogger<CountdownWorker> _logger;
         private readonly IFppService _fppService;
         private readonly AppSettings _appSettings;
 
         public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings,
-            ITwitterService twitterService, IFppService fppService) :
-            base(logger, appSettings)
+            ITwitterService twitterService, IFppService fppService)
         {
             _logger = logger;
             _fppService = fppService;

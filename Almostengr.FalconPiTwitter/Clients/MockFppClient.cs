@@ -69,39 +69,12 @@ namespace Almostengr.FalconPiTwitter.Clients
 
         public async Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string current_Song)
         {
-            // return await Task.Run(() => new FalconMediaMetaDto());
             int ranNumber = _random.Next(0, _mediaMetaDtos.Count)-1;
             return await Task.Run(() => _mediaMetaDtos[ranNumber]);
         }
 
         public async Task<FalconFppdStatusDto> GetFppdStatusAsync(string address)
         {
-            // return await Task.Run(() => new FalconFppdStatusDto()
-            // {
-            //     Current_PlayList = new FalconFppdStatusCurrentPlayList()
-            //     {
-            //         Playlist = "offline"
-            //     },
-            //     Current_Song = "Current_Song",
-            //     Fppd = FppVersion,
-            //     Mode_Name = FppMode.Master,
-            //     Next_Playlist = new FalconFppdStatusNextPlaylist()
-            //     {
-            //         Start_Time = "Start_Time"
-            //     },
-            //     Seconds_Played = _random.Next(0, 100).ToString(),
-            //     Seconds_Remaining = _random.Next(0, 100).ToString(),
-            //     Sensors = new List<FalconFppdStatusSensor>()
-            //     {
-            //         new FalconFppdStatusSensor()
-            //         {
-            //             Label = "temperature",
-            //             Value = _random.NextDouble(),
-            //             ValueType = "30"
-            //         }
-            //     },
-            //     Status_Name = "playing"
-            // });
             int ranNumber = _random.Next(0, _fppdStatusDtos.Count)-1;
             return await Task.Run(() => _fppdStatusDtos[ranNumber]);
         }

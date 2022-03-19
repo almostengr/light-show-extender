@@ -7,10 +7,11 @@ using Microsoft.Extensions.Logging;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Services;
 using Almostengr.FalconPiTwitter.Common;
+using Microsoft.Extensions.Hosting;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class FppCurrentSongWorker : BaseWorker
+    public class FppCurrentSongWorker : BackgroundService
     {
         private readonly ILogger<FppCurrentSongWorker> _logger;
         private readonly AppSettings _appSettings;
@@ -19,7 +20,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings,
             IFppService fppService, ITwitterService twitterService)
-         : base(logger, appSettings)
+        
         {
             _logger = logger;
             _appSettings = appSettings;

@@ -6,17 +6,17 @@ using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class FppVitalsWorker : BaseWorker
+    public class FppVitalsWorker : BackgroundService
     {
         private readonly ILogger<FppVitalsWorker> _logger;
         private readonly IFppService _fppService;
 
-        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings,
-            IFppService fppService) : base(logger, appSettings)
+        public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, IFppService fppService)
         {
             _logger = logger;
             _fppService = fppService;

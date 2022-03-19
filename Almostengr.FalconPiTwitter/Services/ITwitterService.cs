@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Almostengr.FalconPiTwitter.Services
 {
-    public interface ITwitterService : IBaseService
+    public interface ITwitterService
     {
         string GetRandomChristmasHashTag();
         string GetRandomNewYearHashTag();
