@@ -53,6 +53,7 @@
                 "linux-arm",
                 "-c",
                 "Release",
+                "--self-contained",
                 "*sln"
             ],
             "group": "none",
@@ -71,6 +72,19 @@
             ],
             "group": "none",
             "dependsOn": ["Publish Release"]
+        },
+        {
+            "label": "Tag Release",
+            "command" : "git",
+            "type": "shell",
+            "args": [
+                "tag",
+                "-a",
+                "\"v$(date +%Y.%m.%d)\"",
+                "-m",
+                "\"version $(date +%Y.%m.%d)\""
+            ],
+            "dependsOn": ["Publish Release"],
         }
     ]
 }
