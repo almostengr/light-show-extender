@@ -12,7 +12,6 @@ namespace Almostengr.FalconPiTwitter.UnitTests
     public class TwitterServiceTests
     {
         private readonly ILogger<TwitterService> _tsLogger;
-        private readonly ILogger<MockTwitterClient> _tcLogger;
         private readonly AppSettings _appSettings;
         private readonly ITwitterClient _twitterClient;
         private readonly ITwitterService _twitterService;
@@ -20,9 +19,7 @@ namespace Almostengr.FalconPiTwitter.UnitTests
         public TwitterServiceTests()
         {
             _tsLogger = new Logger<TwitterService>(new LoggerFactory());
-            _tcLogger = new Logger<MockTwitterClient>(new LoggerFactory());
             _appSettings = new AppSettings();
-            _twitterClient = new MockTwitterClient(_tcLogger);
             _twitterService = new TwitterService(_tsLogger, _appSettings, _twitterClient);
         }
 
