@@ -8,6 +8,7 @@ using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Tweetinvi.Exceptions;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
@@ -15,17 +16,27 @@ namespace Almostengr.FalconPiTwitter.Workers
     {
         private readonly ILogger<FppVitalsWorker> _logger;
         private readonly IFppService _fppService;
+        private readonly AppSettings _appSettings;
 
         public FppVitalsWorker(ILogger<FppVitalsWorker> logger, AppSettings appSettings, IFppService fppService)
         {
             _logger = logger;
             _fppService = fppService;
+            _appSettings = appSettings;
+        }
+
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Stopping vitals monitor");
+            return base.StopAsync(cancellationToken);
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string previousSecondsPlayed = string.Empty;
             string previousSecondsRemaining = string.Empty;
+
+            _logger.LogInformation("Starting vitals monitor");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -35,7 +46,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 try
                 {
-                    syncStatus = await _fppService.GetMultiSyncStatusAsync(AppConstants.Localhost);
+                    syncStatus = await _fppService.GetMultiSyncStatusAsync(_appSettings.FppHosts[0]);
                 }
                 catch (Exception ex)
                 {
@@ -46,7 +57,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                 {
                     try
                     {
-                        _logger.LogInformation($"Checking vitals for {fppInstance.Address}");
+                        _logger.LogInformation($"Checking vitals for {fppInstance.Hostname} ({fppInstance.Address})");
 
                         FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(fppInstance.Address);
 
@@ -70,13 +81,18 @@ namespace Almostengr.FalconPiTwitter.Workers
                     {
                         _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
                     }
+                    catch (TwitterException ex)
+                    {
+                        _logger.LogError(ex, ex.Message);
+                        break;
+                    }
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, ex.Message);
                     }
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Medium), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Long), stoppingToken);
             }
         }
         

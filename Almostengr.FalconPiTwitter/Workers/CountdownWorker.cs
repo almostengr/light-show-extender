@@ -7,6 +7,7 @@ using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Tweetinvi.Exceptions;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
@@ -16,17 +17,22 @@ namespace Almostengr.FalconPiTwitter.Workers
         private readonly IFppService _fppService;
         private readonly AppSettings _appSettings;
 
-        public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings,
-            ITwitterService twitterService, IFppService fppService)
+        public CountdownWorker(ILogger<CountdownWorker> logger, AppSettings appSettings, IFppService fppService)
         {
             _logger = logger;
             _fppService = fppService;
             _appSettings = appSettings;
         }
 
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Stopping countdown monitor");
+            return base.StopAsync(cancellationToken);
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Starting countdown worker");
+            _logger.LogInformation("Starting countdown monitor");
             
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -48,10 +54,15 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                     await Task.Delay(TimeSpan.FromHours(_fppService.GetRandomWaitTime()), stoppingToken);
                 }
+                catch (TwitterException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    break;
+                }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
-                    await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Medium), stoppingToken);
                 }
 
             }

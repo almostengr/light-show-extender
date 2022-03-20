@@ -8,6 +8,7 @@ using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Services;
 using Almostengr.FalconPiTwitter.Common;
 using Microsoft.Extensions.Hosting;
+using Tweetinvi.Exceptions;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
@@ -28,9 +29,17 @@ namespace Almostengr.FalconPiTwitter.Workers
             _twitterService = twitterService;
         }
 
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Stopping current song monitor");
+            return base.StopAsync(cancellationToken);
+        }
+        
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string previousSong = string.Empty;
+
+            _logger.LogInformation("Starting current song monitor");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -70,6 +79,11 @@ namespace Almostengr.FalconPiTwitter.Workers
                 catch (HttpRequestException ex)
                 {
                     _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
+                }
+                catch (TwitterException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    break;
                 }
                 catch (Exception ex)
                 {
