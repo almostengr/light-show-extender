@@ -23,6 +23,7 @@ namespace Almostengr.FalconPiTwitter.Common.Constants
     {
         public const string Offline = "offline";
         public const string Testing = "testing";
+        public const string Idle = "idle";
     }
 
     public sealed class AppConstants
@@ -50,5 +51,10 @@ namespace Almostengr.FalconPiTwitter.Common.Constants
         public const string NullReference = "Null Exception occurred. ";
         public const string FppOffline = "FPP did not respond. Is it online?";
         internal const string FppFrozen = "FPP appears to be stuck or frozen";
+    }
+
+    public sealed class SensorValueType
+    {
+        public const string Temperature = "temperature";
     }
 }
