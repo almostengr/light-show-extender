@@ -67,7 +67,6 @@ namespace Almostengr.FalconPiTwitter.Services
             string outputTags = string.Empty;
             int numTagsUsed = 0;
 
-            // prevent index out of bounds
             int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ?
                 TwitterConstants.ChristmasHashTags.Length :
                 _appSettings.MaxHashTags;
@@ -91,7 +90,6 @@ namespace Almostengr.FalconPiTwitter.Services
             string outputTags = string.Empty;
             int numTagsUsed = 0;
 
-            // prevent index out of bounds
             int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.NewYearHashTags.Length ?
                 TwitterConstants.NewYearHashTags.Length :
                 _appSettings.MaxHashTags;
@@ -108,13 +106,6 @@ namespace Almostengr.FalconPiTwitter.Services
             }
 
             return outputTags;
-        }
-
-        public async Task<string> GetAuthenticatedUserAsync()
-        {
-            var user = await _twitterClient.Users.GetAuthenticatedUserAsync();
-            _logger.LogInformation($"Authenticated user: {user.Name}");
-            return user.Name;
         }
 
         public async Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string playlist)
