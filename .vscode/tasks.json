@@ -53,7 +53,6 @@
                 "linux-arm",
                 "-c",
                 "Release",
-                "--self-contained",
                 "*sln"
             ],
             "group": "none",
@@ -66,12 +65,25 @@
             "args": [
                 "-p",
                 "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net5.0/linux-arm/*",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net5.0/linux-arm/publish/*",
                 "${workspaceRoot}/falconpitwitter.service",
                 "fpp@falconpi://home/fpp/media/plugins/falconpitwitter",
             ],
             "group": "none",
             "dependsOn": ["Publish Release"]
+        },
+        {
+            "label": "Package Release",
+            "command": "tar",
+            "type": "shell",
+            "args": [
+                "-C",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net5.0/linux-arm/publish/",
+                "-czf",
+                "/home/almostengineer/Downloads/falconpitwitter.tar.gz",
+                "."
+            ],
+            "dependsOn": ["Publish Release"],
         },
         {
             "label": "Tag Release",
@@ -84,7 +96,7 @@
                 "-m",
                 "\"version $(date +%Y.%m.%d)\""
             ],
-            "dependsOn": ["Publish Release"],
+            "dependsOn": ["Package Release"],
         }
     ]
 }
