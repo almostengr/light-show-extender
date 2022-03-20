@@ -3,14 +3,16 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
-using Almostengr.FalconPiTwitter.Settings;
 using Microsoft.Extensions.Logging;
-using Almostengr.FalconPiTwitter.Constants;
+using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Services;
+using Almostengr.FalconPiTwitter.Common;
+using Microsoft.Extensions.Hosting;
+using Tweetinvi.Exceptions;
 
 namespace Almostengr.FalconPiTwitter.Workers
 {
-    public class FppCurrentSongWorker : BaseWorker
+    public class FppCurrentSongWorker : BackgroundService
     {
         private readonly ILogger<FppCurrentSongWorker> _logger;
         private readonly AppSettings _appSettings;
@@ -19,7 +21,7 @@ namespace Almostengr.FalconPiTwitter.Workers
 
         public FppCurrentSongWorker(ILogger<FppCurrentSongWorker> logger, AppSettings appSettings,
             IFppService fppService, ITwitterService twitterService)
-         : base(logger, appSettings)
+        
         {
             _logger = logger;
             _appSettings = appSettings;
@@ -27,11 +29,17 @@ namespace Almostengr.FalconPiTwitter.Workers
             _twitterService = twitterService;
         }
 
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Stopping current song monitor");
+            return base.StopAsync(cancellationToken);
+        }
+        
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Starting current song worker");
-            
             string previousSong = string.Empty;
+
+            _logger.LogInformation("Starting current song monitor");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -39,18 +47,19 @@ namespace Almostengr.FalconPiTwitter.Workers
 
                 try
                 {
-                    FalconFppdStatusDto falconFppdStatus = await _fppService.GetFppdStatusAsync(AppConstants.Localhost);
+                    FalconFppdStatusDto falconFppdStatus = 
+                        await _fppService.GetFppdStatusAsync(_appSettings.FppHosts[0]);
 
                     if (falconFppdStatus.Mode_Name == FppMode.Remote)
                     {
-                        _logger.LogDebug("This is remote instance of FPP");
+                        _logger.LogDebug("This is remote instance of FPP. Exiting");
                         break;
                     }
 
                     if (falconFppdStatus.Current_Song == string.Empty)
                     {
                         _logger.LogDebug("No song is currently playling");
-                        break;
+                        continue ;
                     }
 
                     FalconMediaMetaDto falconMediaMeta =
@@ -70,6 +79,11 @@ namespace Almostengr.FalconPiTwitter.Workers
                 catch (HttpRequestException ex)
                 {
                     _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
+                }
+                catch (TwitterException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    break;
                 }
                 catch (Exception ex)
                 {

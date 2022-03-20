@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 
-namespace Almostengr.FalconPiTwitter.Settings
+namespace Almostengr.FalconPiTwitter.Common
 {
     public class AppSettings
     {
-        public Twitter Twitter { get; set; }
-        public Monitoring Monitoring { get; set; }
-        public bool CountdownEnabled { get; set; } = false;
-        public int MaxHashTags { get; set; } = 3;
         public List<string> FppHosts { get; set; } = new();
+        public int MaxHashTags { get; set; } = 3;
+        public Monitoring Monitoring { get; set; } = new();
+        public Twitter Twitter { get; set; } = new();
     }
 
     public class Twitter
     {
-        public string ConsumerSecret { get; set; }
-        public string ConsumerKey { get; set; }
-        public string AccessToken { get; set; }
         public string AccessSecret { get; set; }
+        public string AccessToken { get; set; }
+        public string ConsumerKey { get; set; }
+        public string ConsumerSecret { get; set; }
     }
 
     public class Monitoring

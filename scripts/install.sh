@@ -30,9 +30,11 @@ sudo systemctl enable falconpitwitter
 
 echo "Installation complete."
 
-echo "First time users, update the configuration file located at "
-echo "/home/fpp/media/plugins/falconpitwitter/appsettings.json"
-echo "and restart the service or reboot the Pi."
+echo "First time users, you will need to enter your configuration settings." 
+echo "This can be done by copying appsettings.template.json to appsettings.json"
+echo "and entering your configuration values in appsettings.json."
+echo "After updating the configuration, you will need to restart the service"
+echo "or reboot the Pi."
 echo ""
 echo "Upgrading users, reboot your device to make sure the new application loads."
 echo ""

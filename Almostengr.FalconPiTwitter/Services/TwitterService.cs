@@ -1,20 +1,23 @@
 using System;
 using System.Threading.Tasks;
-using Almostengr.FalconPiTwitter.Constants;
-using Almostengr.FalconPiTwitter.Settings;
+using Almostengr.FalconPiTwitter.Common;
+using Almostengr.FalconPiTwitter.Common.Constants;
+
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
 namespace Almostengr.FalconPiTwitter.Services
 {
-    public class TwitterService : BaseService, ITwitterService
+    public class TwitterService : ITwitterService
     {
         private readonly ITwitterClient _twitterClient;
         private readonly ILogger<TwitterService> _logger;
         private readonly AppSettings _appSettings;
+        private int AlarmCount = 0;
+        private readonly Random _random = new Random();
 
-        public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings, 
-            ITwitterClient twitterClient) : base(logger)
+        public TwitterService(ILogger<TwitterService> logger, AppSettings appSettings,
+            ITwitterClient twitterClient)
         {
             _logger = logger;
             _twitterClient = twitterClient;
@@ -64,14 +67,13 @@ namespace Almostengr.FalconPiTwitter.Services
             string outputTags = string.Empty;
             int numTagsUsed = 0;
 
-            // prevent index out of bounds
-            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ? 
-                TwitterConstants.ChristmasHashTags.Length : 
+            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.ChristmasHashTags.Length ?
+                TwitterConstants.ChristmasHashTags.Length :
                 _appSettings.MaxHashTags;
 
             while (numTagsUsed <= maxNumHashTags)
             {
-                string randomTag = TwitterConstants.ChristmasHashTags[Random.Next(0, TwitterConstants.ChristmasHashTags.Length)];
+                string randomTag = TwitterConstants.ChristmasHashTags[_random.Next(0, TwitterConstants.ChristmasHashTags.Length)];
 
                 if (outputTags.Contains(randomTag) == false)
                 {
@@ -83,11 +85,27 @@ namespace Almostengr.FalconPiTwitter.Services
             return outputTags;
         }
 
-        public async Task<string> GetAuthenticatedUserAsync()
+        public string GetRandomNewYearHashTag()
         {
-            var user = await _twitterClient.Users.GetAuthenticatedUserAsync();
-            _logger.LogInformation($"Authenticated user: {user.Name}");
-            return user.Name;
+            string outputTags = string.Empty;
+            int numTagsUsed = 0;
+
+            int maxNumHashTags = _appSettings.MaxHashTags > TwitterConstants.NewYearHashTags.Length ?
+                TwitterConstants.NewYearHashTags.Length :
+                _appSettings.MaxHashTags;
+
+            while (numTagsUsed <= maxNumHashTags)
+            {
+                string randomTag = TwitterConstants.NewYearHashTags[_random.Next(0, TwitterConstants.NewYearHashTags.Length)];
+
+                if (outputTags.Contains(randomTag) == false)
+                {
+                    outputTags += randomTag + " ";
+                    numTagsUsed++;
+                }
+            }
+
+            return outputTags;
         }
 
         public async Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string playlist)

@@ -1,6 +1,6 @@
 using System;
 
-namespace Almostengr.FalconPiTwitter.Constants
+namespace Almostengr.FalconPiTwitter.Common.Constants
 {
     public sealed class TwitterConstants
     {
@@ -13,12 +13,17 @@ namespace Almostengr.FalconPiTwitter.Constants
             "#ChristmasLighting",
             "#HolidayLightShow", "#HolidayLightShows", "#HolidayLights", "#HappyHolidays",
             "#HolidayLighting"};
+        public static readonly string[] NewYearHashTags = {
+            $"#NewYear{DateTime.Now.AddYears(1)}", "#NewYears", "#NewYearsDay", "#NewYear", "#NewYearsEve",
+        };
     }
+
 
     public sealed class PlaylistIgnoreName
     {
         public const string Offline = "offline";
         public const string Testing = "testing";
+        public const string Idle = "idle";
     }
 
     public sealed class AppConstants
@@ -46,5 +51,10 @@ namespace Almostengr.FalconPiTwitter.Constants
         public const string NullReference = "Null Exception occurred. ";
         public const string FppOffline = "FPP did not respond. Is it online?";
         internal const string FppFrozen = "FPP appears to be stuck or frozen";
+    }
+
+    public sealed class SensorValueType
+    {
+        public const string Temperature = "temperature";
     }
 }

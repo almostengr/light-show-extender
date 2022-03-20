@@ -1,7 +1,8 @@
 using System;
 using Almostengr.FalconPiTwitter.Clients;
+using Almostengr.FalconPiTwitter.Common;
+using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Services;
-using Almostengr.FalconPiTwitter.Settings;
 using Almostengr.FalconPiTwitter.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,12 +37,8 @@ namespace Almostengr.FalconPiTwitter
                     ShowHelp();
                     break;
 
-                case "--version":
-                case "version":
-                    break;
-
                 default:
-                    Console.WriteLine("Invalid arguments");
+                    Console.WriteLine("Invalid argument(s)");
                     ShowHelp();
                     break;
             }
@@ -58,42 +55,39 @@ namespace Almostengr.FalconPiTwitter
                     IConfiguration configuration = hostContext.Configuration;
 
                     AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
+
+                    if (appSettings.FppHosts.Count == 0)
+                    {
+                        appSettings.FppHosts.Add(AppConstants.Localhost);
+                    }
+
                     services.AddSingleton(appSettings);
 
-
                     // CLIENTS ///////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////
 
-                    // if (appSettings.Twitter != null)
-                    // {
-                    //     services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
-                    //         new TwitterClient(
-                    //             appSettings.Twitter.ConsumerKey,
-                    //             appSettings.Twitter.ConsumerSecret,
-                    //             appSettings.Twitter.AccessToken,
-                    //             appSettings.Twitter.AccessSecret
-                    //         ));
-                    // }
-
-                    services.AddSingleton<ITwitterClient, MockTwitterClient>();
+                    services.AddSingleton<ITwitterClient, TwitterClient>(tc =>
+                        new TwitterClient(
+                            appSettings.Twitter.ConsumerKey,
+                            appSettings.Twitter.ConsumerSecret,
+                            appSettings.Twitter.AccessToken,
+                            appSettings.Twitter.AccessSecret
+                        ));
 
                     services.AddSingleton<IFppClient, FppClient>();
 
-
-                    // SERVICES ///////////////////////////////////////////////////////////////////////////////
+                    // SERVICES //////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////
 
                     services.AddSingleton<IFppService, FppService>();
                     services.AddSingleton<ITwitterService, TwitterService>();
 
-
                     // WORKERS ///////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////
 
                     services.AddHostedService<FppVitalsWorker>();
                     services.AddHostedService<FppCurrentSongWorker>();
-
-                    if (appSettings.CountdownEnabled)
-                    {
-                        services.AddHostedService<CountdownWorker>();
-                    }
+                    services.AddHostedService<CountdownWorker>();
                 });
 
         private static void ShowFullVersion()
@@ -109,5 +103,6 @@ namespace Almostengr.FalconPiTwitter
             Console.WriteLine("visit https://thealmostengineer.com/projects/falcon-pi-twitter");
             Console.WriteLine();
         }
+        
     }
 }
