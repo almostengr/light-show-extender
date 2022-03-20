@@ -29,7 +29,13 @@ namespace Almostengr.FalconPiTwitter.Services
         public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatusDto status)
         {
             string playlistName = status.Current_PlayList.Playlist.ToLower();
-            return (status == null || (playlistName.Contains(PlaylistIgnoreName.Testing) || playlistName.Contains(PlaylistIgnoreName.Offline)));
+            return (status == null || 
+            (
+                playlistName == string.Empty ||
+                playlistName.Contains(PlaylistIgnoreName.Testing) || 
+                playlistName.Contains(PlaylistIgnoreName.Offline) || 
+                playlistName.Contains(PlaylistIgnoreName.Idle)
+            ));
         }
 
         public string TimeUntilNextLightShow(DateTime currentDateTime, string startTime)
@@ -116,7 +122,7 @@ namespace Almostengr.FalconPiTwitter.Services
         {
             foreach (var sensor in status.Sensors)
             {
-                if (sensor.ValueType.ToLower() == "temperature")
+                if (sensor.ValueType.ToLower() == SensorValueType.Temperature)
                 {
                     if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC)
                     {
@@ -127,6 +133,7 @@ namespace Almostengr.FalconPiTwitter.Services
                 }
             }
         }
+        
         public async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
             if (status.Mode_Name == FppMode.Master || status.Mode_Name == FppMode.Standalone)
