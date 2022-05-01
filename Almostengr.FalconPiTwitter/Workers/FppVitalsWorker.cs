@@ -25,18 +25,10 @@ namespace Almostengr.FalconPiTwitter.Workers
             _appSettings = appSettings;
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Stopping vitals monitor");
-            return base.StopAsync(cancellationToken);
-        }
-
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string previousSecondsPlayed = string.Empty;
             string previousSecondsRemaining = string.Empty;
-
-            _logger.LogInformation("Starting vitals monitor");
 
             while (!stoppingToken.IsCancellationRequested)
             {

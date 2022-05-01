@@ -24,16 +24,8 @@ namespace Almostengr.FalconPiTwitter.Workers
             _appSettings = appSettings;
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Stopping countdown monitor");
-            return base.StopAsync(cancellationToken);
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Starting countdown monitor");
-            
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -45,7 +37,7 @@ namespace Almostengr.FalconPiTwitter.Workers
                     {
                         _logger.LogError("Fpp did not respond. Is it online?");
                         await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
-                        break;
+                        continue;
                     }
 
                     string tweetString = _fppService.TimeUntilNextLightShow(currentDateTime, status.Next_Playlist.Start_Time);
