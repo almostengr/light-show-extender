@@ -11,15 +11,6 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
         public string Seconds_Played { get; set; }
         public string Seconds_Remaining { get; set; }
         public string Status_Name { get; set; }
-
-        public string Current_Song_NotFile
-        {
-            get
-            {
-                return Current_Song.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
-                  .Replace(".mp4", "").Replace("_", " ").Replace("-", " ");
-            }
-        }
     }
 
     public class FalconFppdStatusNextPlaylist
