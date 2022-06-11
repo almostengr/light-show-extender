@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 
 namespace Almostengr.FalconPiTwitter.Clients

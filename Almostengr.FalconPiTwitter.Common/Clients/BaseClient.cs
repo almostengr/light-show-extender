@@ -1,6 +1,3 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

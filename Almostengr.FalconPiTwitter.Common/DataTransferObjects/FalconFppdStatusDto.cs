@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Almostengr.FalconPiTwitter.DataTransferObjects
 {
     public class FalconFppdStatusDto : BaseDto
