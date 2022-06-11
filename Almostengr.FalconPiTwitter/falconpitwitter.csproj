@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-falconpimonitor-3817F232-7A06-4C0C-A269-235458F451AD</UserSecretsId>
     <Company>Robinson Handy and Technology Services LLC</Company>
     <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
