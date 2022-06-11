@@ -1,6 +1,7 @@
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
+using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Exceptions;
@@ -154,13 +155,14 @@ namespace Almostengr.FalconPiTwitter.Services
 
                     FalconMediaMetaDto falconMediaMeta = await _fppClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
 
-                    falconMediaMeta.Format.Tags.Title =
+                    string songTitle =
                         string.IsNullOrEmpty(falconMediaMeta.Format.Tags.Title) ?
-                        fppStatus.Current_Song_NotFile :
+                        fppStatus.Current_Song.SongNameFromFileName() :
                         falconMediaMeta.Format.Tags.Title;
 
                     previousSong = await _twitterService.PostCurrentSongAsync(
-                        previousSong, falconMediaMeta.Format.Tags.Title,
+                        previousSong, 
+                        songTitle,
                         falconMediaMeta.Format.Tags.Artist,
                         fppStatus.Current_PlayList.Playlist);
                 }
