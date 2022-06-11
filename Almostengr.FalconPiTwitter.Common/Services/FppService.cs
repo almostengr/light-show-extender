@@ -1,11 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
-
 using Microsoft.Extensions.Logging;
+using Tweetinvi.Exceptions;
 
 namespace Almostengr.FalconPiTwitter.Services
 {
@@ -26,41 +24,7 @@ namespace Almostengr.FalconPiTwitter.Services
             _logger = logger;
         }
 
-        public bool IsPlaylistIdleOfflineOrTesting(FalconFppdStatusDto status)
-        {
-            string playlistName = status.Current_PlayList.Playlist.ToLower();
-            return (status == null || 
-            (
-                playlistName == string.Empty ||
-                playlistName.Contains(PlaylistIgnoreName.Testing) || 
-                playlistName.Contains(PlaylistIgnoreName.Offline) || 
-                playlistName.Contains(PlaylistIgnoreName.Idle)
-            ));
-        }
-
-
-
-        public double GetRandomWaitTime()
-        {
-            Random random = new();
-            double waitHours = 0;
-
-            while (waitHours < 0.75)
-            {
-                waitHours = 7 * random.NextDouble();
-            }
-
-            return waitHours;
-        }
-        
-        
-
-        public async Task<FalconFppdStatusDto> GetFppdStatusAsync(string address)
-        {
-            return await _fppClient.GetFppdStatusAsync(address);
-        }
-
-        public void ResetAlarmCount()
+        private void ResetAlarmCount()
         {
             TimeSpan currentTime = DateTime.Now.TimeOfDay;
             
@@ -71,17 +35,7 @@ namespace Almostengr.FalconPiTwitter.Services
             }
         }
 
-        public async Task<FalconFppdMultiSyncSystemsDto> GetMultiSyncStatusAsync(string address)
-        {
-            return await _fppClient.GetMultiSyncStatusAsync(address);
-        }
-
-        public async Task<FalconMediaMetaDto> GetCurrentSongMetaDataAsync(string current_Song)
-        {
-            return await _fppClient.GetCurrentSongMetaDataAsync(current_Song);
-        }
-
-        public async Task CheckCpuTemperatureAsync(FalconFppdStatusDto status)
+        private async Task CheckCpuTemperatureAsync(FalconFppdStatusDto status)
         {
             foreach (var sensor in status.Sensors)
             {
@@ -97,7 +51,7 @@ namespace Almostengr.FalconPiTwitter.Services
             }
         }
         
-        public async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
+        private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
             if (status.Mode_Name == FppMode.Master || status.Mode_Name == FppMode.Standalone)
             {
@@ -109,14 +63,120 @@ namespace Almostengr.FalconPiTwitter.Services
             }
         }
 
-        public async Task PostChristmasCountDownWhenIdleAsync(FalconFppdStatusDto status)
+        public async Task ExecuteVitalsWorkerAsync(CancellationToken stoppingToken)
         {
-            if (IsPlaylistIdleOfflineOrTesting(status))
-            {
-                string tweetString = TimeUntilChristmas(DateTime.Now);
-                tweetString += _twitterService.GetRandomChristmasHashTag();
+            string previousSecondsPlayed = string.Empty;
+            string previousSecondsRemaining = string.Empty;
 
-                await _twitterService.PostTweetAsync(tweetString);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                ResetAlarmCount();
+
+                FalconFppdMultiSyncSystemsDto syncStatus = null;
+
+                try
+                {
+                    syncStatus = await _fppClient.GetMultiSyncStatusAsync(_appSettings.FppHosts[0]);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
+
+                foreach (var fppInstance in syncStatus.RemoteSystems)
+                {
+                    try
+                    {
+                        _logger.LogInformation($"Checking vitals for {fppInstance.Hostname} ({fppInstance.Address})");
+
+                        FalconFppdStatusDto falconFppdStatus = await _fppClient.GetFppdStatusAsync(fppInstance.Address);
+
+                        if (falconFppdStatus == null)
+                        {
+                            _logger.LogError(ExceptionMessage.FppOffline);
+                            break;
+                        }
+
+                        await CheckCpuTemperatureAsync(falconFppdStatus);
+
+                        await CheckStuckSongAsync(falconFppdStatus, previousSecondsPlayed, previousSecondsRemaining);
+
+                        if (falconFppdStatus.Mode_Name == FppMode.Master || falconFppdStatus.Mode_Name == FppMode.Standalone)
+                        {
+                            previousSecondsPlayed = falconFppdStatus.Seconds_Played;
+                            previousSecondsRemaining = falconFppdStatus.Seconds_Remaining;
+                        }
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
+                    }
+                    catch (TwitterException ex)
+                    {
+                        _logger.LogError(ex, ex.Message);
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, ex.Message);
+                    }
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Long), stoppingToken);
+            }
+        }
+
+        public async Task ExecuteCurrentSongWorkerAsync(CancellationToken stoppingToken)
+        {
+            string previousSong = string.Empty;
+
+            _logger.LogInformation("Starting current song monitor");
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
+
+                try
+                {
+                    FalconFppdStatusDto fppStatus = await _fppClient.GetFppdStatusAsync(_appSettings.FppHosts[0]);
+
+                    if (fppStatus.Mode_Name == FppMode.Remote)
+                    {
+                        _logger.LogWarning("This is remote instance of FPP. Exiting");
+                        break;
+                    }
+
+                    if (fppStatus.Current_Song == string.Empty)
+                    {
+                        _logger.LogDebug("No song is currently playling");
+                        continue ;
+                    }
+
+                    FalconMediaMetaDto falconMediaMeta = await _fppClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
+
+                    falconMediaMeta.Format.Tags.Title =
+                        string.IsNullOrEmpty(falconMediaMeta.Format.Tags.Title) ?
+                        fppStatus.Current_Song_NotFile :
+                        falconMediaMeta.Format.Tags.Title;
+
+                    previousSong = await _twitterService.PostCurrentSongAsync(
+                        previousSong, falconMediaMeta.Format.Tags.Title,
+                        falconMediaMeta.Format.Tags.Artist,
+                        fppStatus.Current_PlayList.Playlist);
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
+                }
+                catch (TwitterException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
             }
         }
 

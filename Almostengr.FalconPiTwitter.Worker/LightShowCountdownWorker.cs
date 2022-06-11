@@ -2,7 +2,7 @@ using Almostengr.FalconPiTwitter.Common.Services;
 
 namespace Almostengr.FalconPiTwitter.Worker
 {
-    public class LightShowCountdownWorker : BaseWorker
+    public class LightShowCountdownWorker : BackgroundService
     {
         private readonly ICountDownService _countDownService;
 

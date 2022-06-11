@@ -1,4 +1,5 @@
 using System.Text;
+using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
@@ -9,28 +10,26 @@ namespace Almostengr.FalconPiTwitter.Common.Services
     public class CountDownService : BaseService, ICountDownService
     {
         private readonly ITwitterService _twitterService;
-        private readonly IFppService _fppService;
+        private readonly IFppClient _fppClient;
         private readonly AppSettings _appSettings;
         private readonly ILogger<CountDownService> _logger;
 
-        public CountDownService(ITwitterService twitterService, IFppService fppService,
+        public CountDownService(ITwitterService twitterService, IFppClient fppClient,
             AppSettings appSettings, ILogger<CountDownService> logger)
         {
             _twitterService = twitterService;
-            _fppService = fppService;
+            _fppClient = fppClient;
             _appSettings = appSettings;
             _logger = logger;
         }
 
         public async Task TimeUntilNextLightShowAsync()
         {
-            FalconFppdStatusDto fppStatus = await _fppService.GetFppdStatusAsync(_appSettings.FppHosts[0]);
+            FalconFppdStatusDto fppStatus = await _fppClient.GetFppdStatusAsync(_appSettings.FppHosts[0]);
 
             if (fppStatus == null)
             {
-                string message = "FPP did not provide a status";
-                _logger.LogError(message);
-                throw new ArgumentNullException(message);
+                throw new ArgumentNullException("FPP did not provide a status");
             }
 
             if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull())
@@ -91,8 +90,15 @@ namespace Almostengr.FalconPiTwitter.Common.Services
         {
             while (cancellationToken.IsCancellationRequested == false)
             {
-                await TimeUntilNextLightShowAsync();
-                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
+                try
+                {
+                    await TimeUntilNextLightShowAsync();
+                    await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
             }
         }
 
@@ -100,8 +106,15 @@ namespace Almostengr.FalconPiTwitter.Common.Services
         {
             while (cancellationToken.IsCancellationRequested == false)
             {
-                await TimeUntilChristmasAsync();
-                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
+                try
+                {
+                    await TimeUntilChristmasAsync();
+                    await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
             }
         }
 
