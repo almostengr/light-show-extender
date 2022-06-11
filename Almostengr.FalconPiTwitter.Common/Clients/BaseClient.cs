@@ -21,11 +21,10 @@ namespace Almostengr.FalconPiTwitter.Clients
             {
                 return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result);
             }
-            else
-            {
-                _logger.LogError(response.ReasonPhrase);
-                throw new Exception(response.ReasonPhrase);
-            }
+
+            _logger.LogError(response.ReasonPhrase);
+            throw new Exception(response.ReasonPhrase);
         }
+
     }
 }
