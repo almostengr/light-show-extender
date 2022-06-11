@@ -13,11 +13,7 @@ namespace Almostengr.FalconPiTwitter.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (stoppingToken.IsCancellationRequested == false)
-            {
-                await _countDownService.TimeUntilChristmasAsync();
-                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), stoppingToken);
-            }
+            await _countDownService.ExecuteChristmasCountdownAsync(stoppingToken);
         }
     }
 }

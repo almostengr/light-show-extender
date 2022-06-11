@@ -1,3 +1,4 @@
+using System.Text;
 using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Almostengr.FalconPiTwitter.Services;
@@ -5,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Common.Services
 {
-    public class CountDownService : ICountDownService
+    public class CountDownService : BaseService, ICountDownService
     {
         private readonly ITwitterService _twitterService;
         private readonly IFppService _fppService;
@@ -31,7 +32,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 _logger.LogError(message);
                 throw new ArgumentNullException(message);
             }
-            
+
             if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull())
             {
                 await Task.CompletedTask;
@@ -55,16 +56,22 @@ namespace Almostengr.FalconPiTwitter.Common.Services
         {
             DateTime christmasDateTime = new DateTime(DateTime.Now.Year, 12, 25, 0, 0, 0);
             DateTime currentDateTime = DateTime.Now;
+            StringBuilder sb = new StringBuilder();
 
             if (currentDateTime.Date == christmasDateTime.Date)
             {
-                await _twitterService.PostTweetAsync("Today is Christmas!");
+                sb.Append("Today is Christmas! ");
             }
 
             if (currentDateTime < christmasDateTime)
             {
-                await _twitterService.PostTweetAsync(
-                    $"{CalculateTimeBetween(currentDateTime, christmasDateTime)} until Christmas. ");
+                sb.Append($"{CalculateTimeBetween(currentDateTime, christmasDateTime)} until Christmas. ");
+            }
+
+            if (sb.Length > 0)
+            {
+                sb.Append(_twitterService.GetRandomChristmasHashTag());
+                await _twitterService.PostTweetAsync(sb.ToString());
             }
         }
 
@@ -78,6 +85,24 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             output += (timeDiff.Minutes > 0 ? (timeDiff.Minutes + (timeDiff.Minutes == 1 ? " minute " : " minutes ")) : string.Empty);
 
             return output;
+        }
+
+        public async Task ExecuteLightShowCountdownAsync(CancellationToken cancellationToken)
+        {
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                await TimeUntilNextLightShowAsync();
+                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
+            }
+        }
+
+        public async Task ExecuteChristmasCountdownAsync(CancellationToken cancellationToken)
+        {
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                await TimeUntilChristmasAsync();
+                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
+            }
         }
 
     }
