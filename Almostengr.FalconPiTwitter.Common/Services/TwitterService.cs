@@ -59,7 +59,7 @@ namespace Almostengr.FalconPiTwitter.Services
             }
         }
 
-        public string GetRandomChristmasHashTag()
+        public string GetRandomChristmasHashTags()
         {
             string outputTags = string.Empty;
             int numTagsUsed = 0;
@@ -82,7 +82,7 @@ namespace Almostengr.FalconPiTwitter.Services
             return outputTags;
         }
 
-        public string GetRandomNewYearHashTag()
+        public string GetRandomNewYearHashTags()
         {
             string outputTags = string.Empty;
             int numTagsUsed = 0;
@@ -123,7 +123,7 @@ namespace Almostengr.FalconPiTwitter.Services
             }
 
             tweet += $" at {DateTime.Now.ToShortTimeString()}";
-            tweet += $" {GetRandomChristmasHashTag()}";
+            tweet += $" {GetRandomChristmasHashTags()}";
 
             await PostTweetAsync(tweet);
 

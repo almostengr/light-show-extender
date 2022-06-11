@@ -69,7 +69,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
             if (sb.Length > 0)
             {
-                sb.Append(_twitterService.GetRandomChristmasHashTag());
+                sb.Append(_twitterService.GetRandomChristmasHashTags());
                 await _twitterService.PostTweetAsync(sb.ToString());
             }
         }
