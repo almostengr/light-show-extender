@@ -10,7 +10,7 @@ using Almostengr.FalconPiTwitter.Common;
 using Microsoft.Extensions.Hosting;
 using Tweetinvi.Exceptions;
 
-namespace Almostengr.FalconPiTwitter.Workers
+namespace Almostengr.FalconPiTwitter.Worker
 {
     public class FppCurrentSongWorker : BackgroundService
     {

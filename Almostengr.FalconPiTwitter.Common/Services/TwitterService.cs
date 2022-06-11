@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
-
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 

@@ -38,33 +38,6 @@ namespace Almostengr.FalconPiTwitter.Services
             ));
         }
 
-        public string TimeUntilNextLightShow(DateTime currentDateTime, string startTime)
-        {
-            string nextPlaylistDateTime = startTime.Substring(0, startTime.IndexOf(" - "));
-            nextPlaylistDateTime = nextPlaylistDateTime.Replace(" @ ", "T");
-
-            DateTime showStartDateTime = DateTime.Parse(nextPlaylistDateTime);
-
-            string dayDiff = CalculateTimeBetween(currentDateTime, showStartDateTime);
-            return $"{dayDiff} until the next Light Show. ";
-        }
-
-        public string TimeUntilChristmas(DateTime currentDateTime)
-        {
-            DateTime christmasDate = new DateTime(currentDateTime.Year, 12, 25, 00, 00, 00);
-
-            if (currentDateTime < christmasDate)
-            {
-                string dayDiff = CalculateTimeBetween(currentDateTime, christmasDate);
-                return $"{dayDiff} until Christmas. ";
-            }
-            else if (currentDateTime >= christmasDate && currentDateTime < christmasDate.AddDays(1))
-            {
-                return "Today is Christmas! ";
-            }
-
-            return string.Empty;
-        }
 
 
         public double GetRandomWaitTime()
@@ -80,17 +53,7 @@ namespace Almostengr.FalconPiTwitter.Services
             return waitHours;
         }
         
-        public string CalculateTimeBetween(DateTime startDate, DateTime endDate)
-        {
-            TimeSpan timeDiff = endDate - startDate;
-
-            string output = string.Empty;
-            output += (timeDiff.Days > 0 ? (timeDiff.Days + (timeDiff.Days == 1 ? " day " : " days ")) : string.Empty);
-            output += (timeDiff.Hours > 0 ? (timeDiff.Hours + (timeDiff.Hours == 1 ? " hour " : " hours ")) : string.Empty);
-            output += (timeDiff.Minutes > 0 ? (timeDiff.Minutes + (timeDiff.Minutes == 1 ? " minute " : " minutes ")) : string.Empty);
-
-            return output;
-        }
+        
 
         public async Task<FalconFppdStatusDto> GetFppdStatusAsync(string address)
         {

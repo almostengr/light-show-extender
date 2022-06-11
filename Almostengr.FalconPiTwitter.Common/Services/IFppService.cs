@@ -17,6 +17,6 @@ namespace Almostengr.FalconPiTwitter.Services
         Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining);
         double GetRandomWaitTime();
         Task PostChristmasCountDownWhenIdleAsync(FalconFppdStatusDto status);
-        string CalculateTimeBetween(DateTime startDate, DateTime endDate);
+        
     }
 }

@@ -26,6 +26,7 @@ namespace Almostengr.FalconPiTwitter.DataTransferObjects
 
     public class FalconFppdStatusNextPlaylist
     {
+        public string Playlist { get; set; }
         public string Start_Time { get; set; }
     }
 

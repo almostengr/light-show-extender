@@ -9,9 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Exceptions;
 
-namespace Almostengr.FalconPiTwitter.Workers
+namespace Almostengr.FalconPiTwitter.Worker
 {
-    public class CountdownWorker : BackgroundService
+    public class CountdownWorker : BaseWorker
     {
         private readonly ILogger<CountdownWorker> _logger;
         private readonly IFppService _fppService;
