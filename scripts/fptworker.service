@@ -1,12 +1,12 @@
 [Unit]
-Description=Falcon Pi Twitter
+Description=Falcon Pi Twitter Worker
 After=network.target
 Documentation=https://thealmostengineer.com/projects/falcon-pi-twitter
 
 [Service]
 Type=simple
 Restart=always
-ExecStart=/home/fpp/media/plugins/falconpitwitter/Almostengr.FalconPiTwitter
+ExecStart=/home/fpp/media/plugins/falconpitwitter/Almostengr.FalconPiTwitter.Worker
 User=fpp
 
 [Install]
