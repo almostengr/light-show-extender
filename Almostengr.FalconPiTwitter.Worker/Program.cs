@@ -9,11 +9,11 @@ Console.WriteLine(typeof(Program).Assembly.ToString());
 
 string environment = (Environment.GetEnvironmentVariable(AppConstants.DotNetEnvironment) ?? AppEnvironment.Devl).ToLower();
 
-string appSettingsFile = (environment == AppEnvironment.Prod) ?
-    AppConstants.AppSettingsProd : AppConstants.AppSettingsDevl;
-
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddJsonFile(appSettingsFile, false, true)
+    .AddJsonFile(
+        (environment == AppEnvironment.Prod) ? AppConstants.AppSettingsProdFile : AppConstants.AppSettingsDevlFile, 
+        false, 
+        true)
     .Build();
 
 IHost host = Host.CreateDefaultBuilder(args)
