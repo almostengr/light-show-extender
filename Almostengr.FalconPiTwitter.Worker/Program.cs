@@ -7,8 +7,10 @@ using Tweetinvi;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
-string appSettingsFile = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Production" ?
-     "appsettings.json" : "appsettings.Development.json";
+string environment = (Environment.GetEnvironmentVariable(AppConstants.DotNetEnvironment) ?? AppEnvironment.Devl).ToLower();
+
+string appSettingsFile = (environment == AppEnvironment.Prod) ?
+    AppConstants.AppSettingsProd : AppConstants.AppSettingsDevl;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile(appSettingsFile, false, true)
@@ -36,6 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IFppClient, FppClient>();
         services.AddTransient<ITwitterClient, TwitterClient>(tc =>
             new TwitterClient(
+                
                 appSettings.Twitter.ConsumerKey,
                 appSettings.Twitter.ConsumerSecret,
                 appSettings.Twitter.AccessToken,
@@ -46,8 +49,15 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddTransient<ICountDownService, CountDownService>();
         services.AddTransient<IFppService, FppService>();
-        // services.AddTransient<ITwitterService, TwitterService>();
-        services.AddTransient<ITwitterService, MockTwitterService>();
+
+        if (environment == AppEnvironment.Prod)
+        {
+            services.AddTransient<ITwitterService, TwitterService>();
+        }
+        else
+        {
+            services.AddTransient<ITwitterService, MockTwitterService>();
+        }
 
         // WORKERS ///////////////////////////////////////////////////////////////////////////////////////////
 
