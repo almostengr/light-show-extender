@@ -69,7 +69,7 @@ namespace Almostengr.FalconPiTwitter.Services
             string previousSecondsPlayed = string.Empty;
             string previousSecondsRemaining = string.Empty;
 
-            while (!stoppingToken.IsCancellationRequested)
+            while (stoppingToken.IsCancellationRequested == false)
             {
                 ResetAlarmCount();
 
@@ -133,7 +133,7 @@ namespace Almostengr.FalconPiTwitter.Services
 
             _logger.LogInformation("Starting current song monitor");
 
-            while (!stoppingToken.IsCancellationRequested)
+            while (stoppingToken.IsCancellationRequested == false)
             {
                 await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Short), stoppingToken);
 
