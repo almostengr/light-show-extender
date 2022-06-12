@@ -8,11 +8,11 @@ using Tweetinvi;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
-string appSettingsFile = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development" ?
-    "appsettings.Development.json" : "appsettings.json";
+string appSettingsFile = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Production" ?
+     "appsettings.json" : "appsettings.Development.json";
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddJsonFile(appSettingsFile, true, true)
+    .AddJsonFile(appSettingsFile, false, true)
     .Build();
 
 IHost host = Host.CreateDefaultBuilder(args)
