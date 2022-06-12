@@ -8,9 +8,11 @@ using Tweetinvi;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
+string appSettingsFile = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development" ?
+    "appsettings.Development.json" : "appsettings.json";
+
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", true, true)
-    .AddJsonFile("appsettings.Development.json", true, true)
+    .AddJsonFile(appSettingsFile, true, true)
     .Build();
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -28,6 +30,8 @@ IHost host = Host.CreateDefaultBuilder(args)
             appSettings.FppHosts.Add(AppConstants.Localhost);
         }
 
+        services.AddSingleton(appSettings);
+
         // CLIENT ////////////////////////////////////////////////////////////////////////////////////////////
 
         services.AddTransient<IFppClient, FppClient>();
@@ -43,7 +47,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddTransient<ICountDownService, CountDownService>();
         services.AddTransient<IFppService, FppService>();
-        services.AddTransient<ITwitterService, TwitterService>();
+        // services.AddTransient<ITwitterService, TwitterService>();
+        services.AddTransient<ITwitterService, MockTwitterService>();
 
         // WORKERS ///////////////////////////////////////////////////////////////////////////////////////////
 
