@@ -1,9 +1,8 @@
-using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
-namespace Almostengr.FalconPiTwitter.Services
+namespace Almostengr.FalconPiTwitter.Common.Services
 {
     public class TwitterService : ITwitterService
     {

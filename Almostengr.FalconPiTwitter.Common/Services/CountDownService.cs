@@ -2,7 +2,6 @@ using System.Text;
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
-using Almostengr.FalconPiTwitter.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Common.Services

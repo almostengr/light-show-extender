@@ -2,7 +2,6 @@ using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Common.Services;
-using Almostengr.FalconPiTwitter.Services;
 using Almostengr.FalconPiTwitter.Worker;
 using Tweetinvi;
 
@@ -32,7 +31,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton(appSettings);
 
-        // CLIENT ////////////////////////////////////////////////////////////////////////////////////////////
+        // CLIENTS ///////////////////////////////////////////////////////////////////////////////////////////
 
         services.AddTransient<IFppClient, FppClient>();
         services.AddTransient<ITwitterClient, TwitterClient>(tc =>

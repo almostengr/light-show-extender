@@ -1,12 +1,11 @@
 using Almostengr.FalconPiTwitter.Clients;
-using Almostengr.FalconPiTwitter.Common;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Exceptions;
 
-namespace Almostengr.FalconPiTwitter.Services
+namespace Almostengr.FalconPiTwitter.Common.Services
 {
     public class FppService : IFppService
     {

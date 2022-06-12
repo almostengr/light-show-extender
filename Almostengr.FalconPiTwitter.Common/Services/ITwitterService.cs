@@ -1,4 +1,4 @@
-namespace Almostengr.FalconPiTwitter.Services
+namespace Almostengr.FalconPiTwitter.Common.Services
 {
     public interface ITwitterService
     {
