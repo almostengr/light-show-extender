@@ -23,7 +23,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             return "#HappyNewYear";
         }
 
-        public async Task<string> PostCurrentSongAsync(string previousSong, string title, string artist, string playlist)
+        public async Task<string> PostCurrentSongAsync(string title, string artist, string playlist)
         {
             StringBuilder sb = new();
             sb.Append(title + " " + artist);

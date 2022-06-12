@@ -6,6 +6,6 @@ namespace Almostengr.FalconPiTwitter.Services
         string GetRandomNewYearHashTags();
         Task PostTweetAlarmAsync(string alarmMessage);
         Task<bool> PostTweetAsync(string tweet);
-        Task<string> PostCurrentSongAsync(string previousSong, string title, string artist, string playlist);
+        Task<string> PostCurrentSongAsync(string title, string artist, string playlist);
     }
 }

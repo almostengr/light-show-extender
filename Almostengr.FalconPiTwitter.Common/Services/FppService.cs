@@ -38,23 +38,37 @@ namespace Almostengr.FalconPiTwitter.Services
 
         private async Task CheckCpuTemperatureAsync(FalconFppdStatusDto status)
         {
+            if (status == null)
+            {
+                return;
+            }
+
             foreach (var sensor in status.Sensors)
             {
+                string alarmMessage = string.Empty;
                 if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC &&
                     sensor.ValueType.ToLower() == SensorValueType.Temperature)
                 {
-                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
-                    await _twitterService.PostTweetAlarmAsync(alarmMessage);
-                    break;
+                    alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
                 }
-            }
+
+                if (sensor.ValueType.ToLower() == SensorValueType.Temperature)
+                {
+                    _logger.LogInformation($"Temperature {sensor.Value}");
+                }
+
+                if (string.IsNullOrEmpty(alarmMessage) == false)
+                {
+                    await _twitterService.PostTweetAlarmAsync(alarmMessage);
+                }
+            } // end foreach
         }
 
         private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
-            if (status.Mode_Name == FppMode.Remote)
+            if (status.Mode_Name == FppMode.Remote || string.IsNullOrEmpty(status.Current_Song))
             {
-                await Task.CompletedTask;
+                return;
             }
 
             if (previousSecondsPlayed == status.Seconds_Played ||
@@ -78,15 +92,8 @@ namespace Almostengr.FalconPiTwitter.Services
                 try
                 {
                     syncStatus = await _fppClient.GetMultiSyncStatusAsync(_appSettings.FppHosts[0]);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                }
 
-                foreach (var fppInstance in syncStatus.Systems)
-                {
-                    try
+                    foreach (var fppInstance in syncStatus.Systems)
                     {
                         _logger.LogInformation($"Checking vitals for {fppInstance.Hostname} ({fppInstance.Address})");
 
@@ -108,19 +115,19 @@ namespace Almostengr.FalconPiTwitter.Services
                             previousSecondsRemaining = falconFppdStatus.Seconds_Remaining;
                         }
                     }
-                    catch (HttpRequestException ex)
-                    {
-                        _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
-                    }
-                    catch (TwitterException ex)
-                    {
-                        _logger.LogError(ex, ex.Message);
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, ex.Message);
-                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
+                }
+                catch (TwitterException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Long), stoppingToken);
@@ -130,8 +137,6 @@ namespace Almostengr.FalconPiTwitter.Services
         public async Task ExecuteCurrentSongWorkerAsync(CancellationToken stoppingToken)
         {
             string previousSong = string.Empty;
-
-            _logger.LogInformation("Starting current song monitor");
 
             while (stoppingToken.IsCancellationRequested == false)
             {
@@ -147,12 +152,11 @@ namespace Almostengr.FalconPiTwitter.Services
                         break;
                     }
 
-                    if (fppStatus.Current_Song == string.Empty)
+                    if (string.IsNullOrEmpty(fppStatus.Current_Song) || previousSong == fppStatus.Current_Song)
                     {
-                        _logger.LogDebug("No song is currently playling");
                         continue;
                     }
-
+                    
                     FalconMediaMetaDto falconMediaMeta = await _fppClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
 
                     string songTitle =
@@ -160,24 +164,25 @@ namespace Almostengr.FalconPiTwitter.Services
                         fppStatus.Current_Song.SongNameFromFileName() :
                         falconMediaMeta.Format.Tags.Title;
 
-                    previousSong = await _twitterService.PostCurrentSongAsync(
-                        previousSong,
+                    await _twitterService.PostCurrentSongAsync(
                         songTitle,
                         falconMediaMeta.Format.Tags.Artist,
                         fppStatus.Current_PlayList.Playlist);
+
+                    previousSong = fppStatus.Current_Song;
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(ExceptionMessage.NoInternetConnection + ex.Message);
+                    _logger.LogError(ex.InnerException.ToString(), ExceptionMessage.NoInternetConnection + ex.Message);
                 }
                 catch (TwitterException ex)
                 {
-                    _logger.LogError(ex, ex.Message);
+                    _logger.LogError(ex.InnerException.ToString(), ex.Message);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, ex.Message);
+                    _logger.LogError(ex.InnerException.ToString(), ex.Message);
                 }
             }
         }

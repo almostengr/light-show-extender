@@ -105,16 +105,8 @@ namespace Almostengr.FalconPiTwitter.Services
             return outputTags;
         }
 
-        public async Task<string> PostCurrentSongAsync(string previousTitle, string currentTitle, string artist, string playlist)
+        public async Task<string> PostCurrentSongAsync(string currentTitle, string artist, string playlist)
         {
-            _logger.LogDebug("Preparing to post current song");
-
-            if (previousTitle == currentTitle || string.IsNullOrEmpty(currentTitle))
-            {
-                _logger.LogDebug("Not posting song information");
-                return previousTitle;
-            }
-
             string tweet = $"Playing \"{currentTitle}\"";
 
             if (string.IsNullOrEmpty(artist) == false)
