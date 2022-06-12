@@ -5,31 +5,14 @@
     "tasks": [
         {
             "label": "build",
-            "command": "/bin/bash",
-            "type": "shell",
+            "command": "dotnet",
+            "type": "process",
             "args": [
-                "-c",
-                "\"",
-                "cp",
-                "-p",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Debug/net6.0/",
-                "&&",
-                "dotnet",
                 "build",
-                // Ask dotnet build to generate full paths for file names.
+                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj",
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
-                "/consoleloggerparameters:NoSummary",
-                "\""
+                "/consoleloggerparameters:NoSummary"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "silent"
-            },
             "problemMatcher": "$msCompile"
         },
         {
@@ -65,8 +48,8 @@
             "type": "shell",
             "args": [
                 "-p",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net6.0/linux-arm/publish/*",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter.Common/appsettings.json",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter.Common/bin/Release/net6.0/linux-arm/publish/*",
                 "${workspaceRoot}/falconpitwitter.service",
                 "fpp@falconpi://home/fpp/media/plugins/falconpitwitter",
             ],
@@ -98,6 +81,30 @@
                 "\"version $(date +%Y.%m.%d)\""
             ],
             "dependsOn": ["Package Release"],
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
