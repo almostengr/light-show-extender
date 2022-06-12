@@ -29,22 +29,23 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
             if (fppStatus == null)
             {
-                throw new ArgumentNullException("FPP did not provide a status");
+                _logger.LogError("FPP did not provide a status");
+                return;
             }
 
             if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull())
             {
-                await Task.CompletedTask;
+                return;
             }
 
             string nextPlaylistDateTime = fppStatus.Next_Playlist.Start_Time
                 .Substring(0, fppStatus.Next_Playlist.Start_Time.IndexOf(" - "))
                 .Replace(" @ ", "T");
 
-            if (DateTime.TryParse(nextPlaylistDateTime, out DateTime showStartDateTime))
+            if (DateTime.TryParse(nextPlaylistDateTime, out DateTime showStartDateTime) == false)
             {
                 _logger.LogError("Invalid date time or did not match expected format");
-                await Task.CompletedTask;
+                return;
             }
 
             await _twitterService.PostTweetAsync(
