@@ -52,13 +52,15 @@ namespace Almostengr.FalconPiTwitter.Services
 
         private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
-            if (status.Mode_Name == FppMode.Master || status.Mode_Name == FppMode.Standalone)
+            if (status.Mode_Name == FppMode.Remote)
             {
-                if (previousSecondsPlayed == status.Seconds_Played ||
-                    previousSecondsRemaining == status.Seconds_Remaining)
-                {
-                    await _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen);
-                }
+                await Task.CompletedTask;
+            }
+
+            if (previousSecondsPlayed == status.Seconds_Played ||
+                previousSecondsRemaining == status.Seconds_Remaining)
+            {
+                await _twitterService.PostTweetAlarmAsync(ExceptionMessage.FppFrozen);
             }
         }
 
