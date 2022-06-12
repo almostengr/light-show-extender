@@ -84,7 +84,7 @@ namespace Almostengr.FalconPiTwitter.Services
                     _logger.LogError(ex, ex.Message);
                 }
 
-                foreach (var fppInstance in syncStatus.RemoteSystems)
+                foreach (var fppInstance in syncStatus.Systems)
                 {
                     try
                     {
