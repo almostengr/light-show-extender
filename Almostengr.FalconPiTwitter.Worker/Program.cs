@@ -9,7 +9,8 @@ using Tweetinvi;
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings.json", true, true)
+    .AddJsonFile("appsettings.Development.json", true, true)
     .Build();
 
 IHost host = Host.CreateDefaultBuilder(args)
