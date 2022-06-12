@@ -5,6 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Almostengr.FalconPiTwitter.Worker-7269b9fb-8c56-4bbc-87f4-4f770ae64381</UserSecretsId>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>Falcon Pi Twitter</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.FalconPiTwitter.Worker</AssemblyName>
+    <RootNamespace>Almostengr.FalconPiTwitter</RootNamespace>
+    <Version>6.$([System.DateTime]::UtcNow.ToString(yy.MM.dd))</Version>
   </PropertyGroup>
 
   <ItemGroup>
