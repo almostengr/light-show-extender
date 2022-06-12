@@ -28,7 +28,7 @@ namespace Almostengr.FalconPiTwitter.Services
         private void ResetAlarmCount()
         {
             TimeSpan currentTime = DateTime.Now.TimeOfDay;
-            
+
             if (AlarmCount > 0 && currentTime.Minutes >= 55)
             {
                 _logger.LogWarning($"Alarm count reset. Previous count: {AlarmCount}");
@@ -40,18 +40,16 @@ namespace Almostengr.FalconPiTwitter.Services
         {
             foreach (var sensor in status.Sensors)
             {
-                if (sensor.ValueType.ToLower() == SensorValueType.Temperature)
+                if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC &&
+                    sensor.ValueType.ToLower() == SensorValueType.Temperature)
                 {
-                    if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC)
-                    {
-                        string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
-                        await _twitterService.PostTweetAlarmAsync(alarmMessage);
-                    }
+                    string alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
+                    await _twitterService.PostTweetAlarmAsync(alarmMessage);
                     break;
                 }
             }
         }
-        
+
         private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
             if (status.Mode_Name == FppMode.Master || status.Mode_Name == FppMode.Standalone)
@@ -150,7 +148,7 @@ namespace Almostengr.FalconPiTwitter.Services
                     if (fppStatus.Current_Song == string.Empty)
                     {
                         _logger.LogDebug("No song is currently playling");
-                        continue ;
+                        continue;
                     }
 
                     FalconMediaMetaDto falconMediaMeta = await _fppClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
@@ -161,7 +159,7 @@ namespace Almostengr.FalconPiTwitter.Services
                         falconMediaMeta.Format.Tags.Title;
 
                     previousSong = await _twitterService.PostCurrentSongAsync(
-                        previousSong, 
+                        previousSong,
                         songTitle,
                         falconMediaMeta.Format.Tags.Artist,
                         fppStatus.Current_PlayList.Playlist);
