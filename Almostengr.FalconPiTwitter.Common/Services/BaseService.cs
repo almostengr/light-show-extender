@@ -2,7 +2,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 {
     public abstract class BaseService : IBaseService
     {
-        public double GetRandomWaitTime()
+        public virtual double GetRandomWaitTime()
         {
             Random random = new();
             double waitHours = 0;
