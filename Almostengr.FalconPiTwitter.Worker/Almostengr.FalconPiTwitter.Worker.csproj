@@ -19,6 +19,7 @@
     <Content Include="../scripts/fptworker.service" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../scripts/install.sh" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../scripts/uninstall.sh" CopyToPublishDirectory="PreserveNewest" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
