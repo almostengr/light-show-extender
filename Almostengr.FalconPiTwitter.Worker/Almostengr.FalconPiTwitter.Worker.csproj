@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <Content Include="../scripts/fptworker.service" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../scripts/install.sh" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../scripts/uninstall.sh" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

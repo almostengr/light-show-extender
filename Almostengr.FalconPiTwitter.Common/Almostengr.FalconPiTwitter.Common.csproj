@@ -20,9 +20,6 @@
     <Content Remove="appsettings.json" />
     <Content Remove="appsettings.Development.json" />
     <Content Include="../README.md" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="../scripts/falconpitwitter.service" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="../scripts/install.sh" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="../scripts/uninstall.sh" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
