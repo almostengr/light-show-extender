@@ -23,7 +23,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             _logger = logger;
         }
 
-        public async Task TimeUntilNextLightShowAsync()
+        private async Task TimeUntilNextLightShowAsync()
         {
             FalconFppdStatusDto fppStatus = await _fppClient.GetFppdStatusAsync(_appSettings.FppHosts[0]);
 
@@ -51,7 +51,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 $"{CalculateTimeBetween(DateTime.Now, showStartDateTime)} until the next Light Show. ");
         }
 
-        public async Task TimeUntilChristmasAsync()
+        private async Task TimeUntilChristmasAsync()
         {
             DateTime christmasDateTime = new DateTime(DateTime.Now.Year, 12, 25, 0, 0, 0);
             DateTime currentDateTime = DateTime.Now;
