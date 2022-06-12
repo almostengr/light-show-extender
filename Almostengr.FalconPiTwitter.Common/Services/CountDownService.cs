@@ -40,11 +40,11 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             string nextPlaylistDateTime = fppStatus.Next_Playlist.Start_Time
                 .Substring(0, fppStatus.Next_Playlist.Start_Time.IndexOf(" - "))
                 .Replace(" @ ", "T");
-            // nextPlaylistDateTime = nextPlaylistDateTime.Replace(" @ ", "T");
 
             if (DateTime.TryParse(nextPlaylistDateTime, out DateTime showStartDateTime))
             {
                 _logger.LogError("Invalid date time or did not match expected format");
+                await Task.CompletedTask;
             }
 
             await _twitterService.PostTweetAsync(
@@ -61,8 +61,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             {
                 sb.Append("Today is Christmas! ");
             }
-
-            if (currentDateTime < christmasDateTime)
+            else if (currentDateTime < christmasDateTime)
             {
                 sb.Append($"{CalculateTimeBetween(currentDateTime, christmasDateTime)} until Christmas. ");
             }
