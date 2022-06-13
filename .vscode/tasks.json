@@ -34,8 +34,8 @@
                 "publish",
                 "-r",
                 "linux-arm",
-                "-c",
                 "--self-contained",
+                "-c",
                 "Release",
                 "*sln"
             ],
@@ -48,8 +48,8 @@
             "type": "shell",
             "args": [
                 "-p",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter.Common/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter.Common/bin/Release/net6.0/linux-arm/publish/*",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter.Worker/appsettings.json",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter.Worker/bin/Release/net6.0/linux-arm/publish/*",
                 "${workspaceRoot}/falconpitwitter.service",
                 "fpp@falconpi://home/fpp/media/plugins/falconpitwitter",
             ],
@@ -62,7 +62,7 @@
             "type": "shell",
             "args": [
                 "-C",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter/bin/Release/net6.0/linux-arm/publish/",
+                "${workspaceRoot}/Almostengr.FalconPiTwitter.Worker/bin/Release/net6.0/linux-arm/publish/",
                 "-czf",
                 "/home/almostengineer/Downloads/falconpitwitter.tar.gz",
                 "."
