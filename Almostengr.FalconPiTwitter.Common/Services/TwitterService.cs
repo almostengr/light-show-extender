@@ -1,3 +1,4 @@
+using System.Text;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
@@ -106,17 +107,17 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
         public async Task<string> PostCurrentSongAsync(string currentTitle, string artist, string playlist)
         {
-            string tweet = $"Playing \"{currentTitle}\"";
+            StringBuilder sb = new StringBuilder($"Playing \"{currentTitle}\"");
 
             if (string.IsNullOrEmpty(artist) == false)
             {
-                tweet += $" by {artist}";
+                sb.Append($" by {artist}");
             }
 
-            tweet += $" at {DateTime.Now.ToShortTimeString()}";
-            tweet += $" {GetRandomChristmasHashTags()}";
+            sb.Append($" at {DateTime.Now.ToShortTimeString()}");
+            sb.Append($" {GetRandomChristmasHashTags()}");
 
-            await PostTweetAsync(tweet);
+            await PostTweetAsync(sb.ToString());
 
             return currentTitle;
         }

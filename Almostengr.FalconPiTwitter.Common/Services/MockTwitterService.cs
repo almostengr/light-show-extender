@@ -25,7 +25,9 @@ namespace Almostengr.FalconPiTwitter.Common.Services
         public async Task<string> PostCurrentSongAsync(string title, string artist, string playlist)
         {
             StringBuilder sb = new();
-            sb.Append(title + " " + artist);
+            sb.Append(title);
+            sb.Append(" by ");
+            sb.Append(artist);
             await PostTweetAsync(sb.ToString());
             return title;
         }
