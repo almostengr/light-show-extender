@@ -9,18 +9,17 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Almostengr.FalconPiTwitter/bin/Debug/net5.0/Almostengr.FalconPiTwitter.dll",
-            "args": [
-            ],
-            "cwd": "${workspaceFolder}/Almostengr.FalconPiTwitter",
+            "program": "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/bin/Debug/net6.0/Almostengr.FalconPiTwitter.Worker.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker",
             "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "requireExactSource": false
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
+            "request": "attach"
         }
     ]
 }
