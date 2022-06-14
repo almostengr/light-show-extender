@@ -101,7 +101,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                         if (falconFppdStatus == null)
                         {
                             _logger.LogError(ExceptionMessage.FppOffline);
-                            break;
+                            continue;
                         }
 
                         await CheckCpuTemperatureAsync(falconFppdStatus);
