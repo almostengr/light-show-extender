@@ -1,4 +1,5 @@
 using Almostengr.FalconPiTwitter.Common;
+using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 
@@ -21,10 +22,10 @@ namespace Almostengr.FalconPiTwitter.Clients
         {
             _logger.LogDebug("Getting current song meta data");
 
-            if (string.IsNullOrEmpty(currentSong))
+            if (currentSong.IsNullOrEmpty())
             {
                 _logger.LogWarning("No song provided");
-                return new FalconMediaMetaDto();
+                return null;
             }
 
             string hostname = GetUrlWithProtocol(_appSettings.FppHosts[0]);

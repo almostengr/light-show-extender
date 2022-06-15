@@ -1,5 +1,5 @@
-using System.Text;
 using Almostengr.FalconPiTwitter.Common.Constants;
+using Almostengr.FalconPiTwitter.Common.Extensions;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 
@@ -23,14 +23,13 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
         public async Task<bool> PostTweetAsync(string tweet)
         {
-            if (string.IsNullOrEmpty(tweet))
+            if (tweet.IsNullOrEmpty())
             {
                 _logger.LogWarning("Nothing to tweet");
                 return false;
             }
 
-            tweet = tweet.Trim();
-            tweet = tweet.Replace("  ", " ");
+            tweet = tweet.Trim().Replace("  ", " ");
 
             while (tweet.Length > TwitterConstants.TweetCharacterLimit)
             {
@@ -43,6 +42,11 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
         public async Task PostTweetAlarmAsync(string alarmMessage)
         {
+            if (alarmMessage.IsNullOrEmpty())
+            {
+                return;
+            }
+
             _logger.LogWarning(alarmMessage);
             AlarmCount++;
 
@@ -105,21 +109,21 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             return outputTags;
         }
 
-        public async Task<string> PostCurrentSongAsync(string currentTitle, string artist, string playlist)
+        public async Task<string> PostCurrentSongAsync(string currentTitle, string artist)
         {
-            StringBuilder sb = new StringBuilder($"Playing \"{currentTitle}\"");
+            string tweet = $"Playing \"{currentTitle}\"";
 
-            if (string.IsNullOrEmpty(artist) == false)
+            if (artist.IsNullOrEmpty() == false)
             {
-                sb.Append($" by {artist}");
+                tweet += $" by {artist}";
             }
 
-            sb.Append($" at {DateTime.Now.ToShortTimeString()}");
-            sb.Append($" {GetRandomChristmasHashTags()}");
+            tweet += $" at {DateTime.Now.ToShortTimeString()} {GetRandomChristmasHashTags()}";
 
-            await PostTweetAsync(sb.ToString());
+            await PostTweetAsync(tweet);
 
             return currentTitle;
         }
+
     }
 }

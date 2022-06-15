@@ -10,13 +10,13 @@ cd /home/fpp/media/plugins/
 
 echo "Stopping the system service"
 
-sudo systemctl stop falconpitwitter
+sudo /bin/systemctl stop falconpitwitter
 
 echo "Disabling the system service"
 
-sudo systemctl disable falconpitwitter
+sudo /bin/systemctl disable falconpitwitter
 
-sudo systemctl daemon-reload
+sudo /bin/systemctl daemon-reload
 
 echo "Removing the application service"
 

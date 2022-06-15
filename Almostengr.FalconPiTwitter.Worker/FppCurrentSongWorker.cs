@@ -4,16 +4,16 @@ namespace Almostengr.FalconPiTwitter.Worker
 {
     public class FppCurrentSongWorker : BackgroundService
     {
-        private readonly IFppService _fppService;
+        private readonly IFppCurrentSongService _currentSongService;
 
-        public FppCurrentSongWorker(IFppService fppService)
+        public FppCurrentSongWorker(IFppCurrentSongService currentSongService)
         {
-            _fppService = fppService;
+            _currentSongService = currentSongService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _fppService.ExecuteCurrentSongWorkerAsync(stoppingToken);
+            await _currentSongService.ExecuteCurrentSongWorkerAsync(stoppingToken);
         }
 
     }

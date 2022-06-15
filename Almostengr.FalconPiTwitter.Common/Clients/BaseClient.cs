@@ -23,7 +23,7 @@ namespace Almostengr.FalconPiTwitter.Clients
             }
 
             _logger.LogError(response.ReasonPhrase);
-            throw new Exception(response.ReasonPhrase);
+            return null;
         }
 
     }

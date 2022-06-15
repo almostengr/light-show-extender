@@ -25,8 +25,8 @@ tar -xf /home/fpp/media/uploads/falconpitwitter.tar --directory /home/fpp/media/
 echo "Installing service"
 
 sudo cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
-sudo systemctl daemon-reload
-sudo systemctl enable falconpitwitter
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable falconpitwitter
 
 echo "Installation complete."
 
