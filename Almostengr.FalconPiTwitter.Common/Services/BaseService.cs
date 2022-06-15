@@ -7,7 +7,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             Random random = new();
             double waitHours = 0;
 
-            while (waitHours < 0.75)
+            while (waitHours < 3)
             {
                 waitHours = 7 * random.NextDouble();
             }
