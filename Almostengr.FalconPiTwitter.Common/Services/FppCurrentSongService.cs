@@ -20,7 +20,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             _fppClient = fppClient;
             _logger = logger;
             _appSettings = appSettings;
-            _twitterService  = twitterService;
+            _twitterService = twitterService;
         }
 
         public async Task ExecuteCurrentSongWorkerAsync(CancellationToken stoppingToken)
@@ -35,28 +35,29 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 {
                     FalconFppdStatusDto fppStatus = await _fppClient.GetFppdStatusAsync(_appSettings.FppHosts[0]);
 
-                    if (fppStatus.Mode_Name == FppMode.Remote)
+                    if (fppStatus.Mode_Name.IsRemoteInstance())
                     {
                         _logger.LogWarning("This is remote instance of FPP. Exiting");
                         break;
                     }
 
-                    if (string.IsNullOrEmpty(fppStatus.Current_Song) || previousSong == fppStatus.Current_Song)
+                    if (fppStatus.Current_Song.IsNullOrEmpty() || previousSong == fppStatus.Current_Song)
                     {
                         continue;
                     }
-                    
+
                     FalconMediaMetaDto falconMediaMeta = await _fppClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
 
-                    string songTitle =
-                        string.IsNullOrEmpty(falconMediaMeta.Format.Tags.Title) ?
-                        fppStatus.Current_Song.SongNameFromFileName() :
+                    if (falconMediaMeta.IsNull())
+                    {
+                        continue;
+                    }
+
+                    string songTitle = string.IsNullOrEmpty(falconMediaMeta.Format.Tags.Title) ?
+                        fppStatus.Current_Song.GetSongNameFromFileName() :
                         falconMediaMeta.Format.Tags.Title;
 
-                    await _twitterService.PostCurrentSongAsync(
-                        songTitle,
-                        falconMediaMeta.Format.Tags.Artist,
-                        fppStatus.Current_PlayList.Playlist);
+                    await _twitterService.PostCurrentSongAsync(songTitle, falconMediaMeta.Format.Tags.Artist);
 
                     previousSong = fppStatus.Current_Song;
                 }

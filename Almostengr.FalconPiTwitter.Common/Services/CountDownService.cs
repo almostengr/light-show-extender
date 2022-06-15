@@ -1,4 +1,3 @@
-using System.Text;
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
@@ -26,7 +25,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
         {
             FalconFppdStatusDto fppStatus = await _fppClient.GetFppdStatusAsync(_appSettings.FppHosts[0]);
 
-            if (fppStatus == null)
+            if (fppStatus.IsNull())
             {
                 _logger.LogError("FPP did not provide a status");
                 return;
@@ -55,21 +54,21 @@ namespace Almostengr.FalconPiTwitter.Common.Services
         {
             DateTime christmasDateTime = new DateTime(DateTime.Now.Year, 12, 25, 0, 0, 0);
             DateTime currentDateTime = DateTime.Now;
-            StringBuilder sb = new StringBuilder();
+            string tweet = string.Empty;
 
             if (currentDateTime.Date == christmasDateTime.Date)
             {
-                sb.Append("Today is Christmas! ");
+                tweet = "Today is Christmas! ";
             }
             else if (currentDateTime < christmasDateTime)
             {
-                sb.Append($"{CalculateTimeBetween(currentDateTime, christmasDateTime)} until Christmas. ");
+                tweet = $"{CalculateTimeBetween(currentDateTime, christmasDateTime)} until Christmas. ";
             }
 
-            if (sb.Length > 0)
+            if (tweet.Length > 0)
             {
-                sb.Append(_twitterService.GetRandomChristmasHashTags());
-                await _twitterService.PostTweetAsync(sb.ToString());
+                tweet += _twitterService.GetRandomChristmasHashTags();
+                await _twitterService.PostTweetAsync(tweet);
             }
         }
 

@@ -4,7 +4,7 @@ namespace Almostengr.FalconPiTwitter.Common.Extensions
 {
     public static class Extensions
     {
-        public static bool IsPlaylistIdleOfflineOrTesting(this string value)
+        public static bool ContainsIdleOfflineOrTesting(this string value)
         {
             value = value.ToLower();
             return string.IsNullOrEmpty(value) ||
@@ -21,11 +21,36 @@ namespace Almostengr.FalconPiTwitter.Common.Extensions
                 string.IsNullOrEmpty(value);
         }
 
-        public static string SongNameFromFileName(this string value)
+        public static string GetSongNameFromFileName(this string value)
         {
             value = value.ToLower();
             return value.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
               .Replace(".mp4", "").Replace("_", " ").Replace("-", " ");
+        }
+
+        public static bool IsNull<T>(this T value)
+        {
+            if (value == null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsRemoteInstance(this string value)
+        {
+            if (value == FppMode.Remote)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsNullOrEmpty(this string value)
+        {
+            return string.IsNullOrEmpty(value);
         }
 
     }

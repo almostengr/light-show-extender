@@ -1,4 +1,4 @@
-using System.Text;
+using Almostengr.FalconPiTwitter.Common.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace Almostengr.FalconPiTwitter.Common.Services
@@ -22,13 +22,15 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             return "#HappyNewYear";
         }
 
-        public async Task<string> PostCurrentSongAsync(string title, string artist, string playlist)
+        public async Task<string> PostCurrentSongAsync(string title, string artist)
         {
-            StringBuilder sb = new();
-            sb.Append(title);
-            sb.Append(" by ");
-            sb.Append(artist);
-            await PostTweetAsync(sb.ToString());
+            string tweet = title;
+            if (artist.IsNull() == false)
+            {
+                tweet += " by " + artist;
+            }
+
+            await PostTweetAsync(tweet);
             return title;
         }
 

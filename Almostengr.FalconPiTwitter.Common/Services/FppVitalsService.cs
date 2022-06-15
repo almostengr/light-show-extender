@@ -1,5 +1,6 @@
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Constants;
+using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Exceptions;
@@ -36,7 +37,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
         private async Task CheckCpuTemperatureAsync(FalconFppdStatusDto status)
         {
-            if (status == null)
+            if (status.IsNull())
             {
                 return;
             }
@@ -55,16 +56,13 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                     _logger.LogInformation($"Temperature {sensor.Value}");
                 }
 
-                if (string.IsNullOrEmpty(alarmMessage) == false)
-                {
-                    await _twitterService.PostTweetAlarmAsync(alarmMessage);
-                }
+                await _twitterService.PostTweetAlarmAsync(alarmMessage);
             } // end foreach
         }
 
         private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)
         {
-            if (status.Mode_Name == FppMode.Remote || string.IsNullOrEmpty(status.Current_Song))
+            if (status.Mode_Name.IsRemoteInstance() || status.Current_Song.IsNull())
             {
                 return;
             }
@@ -85,11 +83,10 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             {
                 ResetAlarmCount();
 
-                FalconFppdMultiSyncSystemsDto syncStatus = null;
-
                 try
                 {
-                    syncStatus = await _fppClient.GetMultiSyncStatusAsync(_appSettings.FppHosts[0]);
+                    FalconFppdMultiSyncSystemsDto syncStatus =
+                        await _fppClient.GetMultiSyncStatusAsync(_appSettings.FppHosts[0]);
 
                     foreach (var fppInstance in syncStatus.Systems)
                     {
@@ -97,7 +94,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
                         FalconFppdStatusDto falconFppdStatus = await _fppClient.GetFppdStatusAsync(fppInstance.Address);
 
-                        if (falconFppdStatus == null)
+                        if (falconFppdStatus.IsNull())
                         {
                             _logger.LogError(ExceptionMessage.FppOffline);
                             continue;
@@ -107,7 +104,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
                         await CheckStuckSongAsync(falconFppdStatus, previousSecondsPlayed, previousSecondsRemaining);
 
-                        if (falconFppdStatus.Mode_Name == FppMode.Master || falconFppdStatus.Mode_Name == FppMode.Standalone)
+                        if (falconFppdStatus.Mode_Name.IsRemoteInstance() == false)
                         {
                             previousSecondsPlayed = falconFppdStatus.Seconds_Played;
                             previousSecondsRemaining = falconFppdStatus.Seconds_Remaining;
@@ -131,5 +128,6 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 await Task.Delay(TimeSpan.FromSeconds(DelaySeconds.Long), stoppingToken);
             }
         }
+
     }
 }
