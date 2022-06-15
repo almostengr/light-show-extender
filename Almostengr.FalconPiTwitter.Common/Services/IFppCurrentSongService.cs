@@ -1,8 +1,7 @@
 namespace Almostengr.FalconPiTwitter.Common.Services
 {
-    public interface IFppService
+    public interface IFppCurrentSongService
     {
-        Task ExecuteVitalsWorkerAsync(CancellationToken cancellationToken);
         Task ExecuteCurrentSongWorkerAsync(CancellationToken cancellationToken);
     }
 }

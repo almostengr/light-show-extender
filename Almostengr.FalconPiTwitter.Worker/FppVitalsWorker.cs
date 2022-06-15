@@ -4,16 +4,14 @@ namespace Almostengr.FalconPiTwitter.Worker
 {
     public class FppVitalsWorker : BackgroundService
     {
-        private readonly IFppService _fppService;
+        private readonly IFppVitalsService _fppVitalsService;
         private readonly ISystemdService _systemdService;
 
-        public FppVitalsWorker(IFppService fppService, ISystemdService systemdService)
+        public FppVitalsWorker(IFppVitalsService fppService, ISystemdService systemdService)
         {
-            _fppService = fppService;
+            _fppVitalsService = fppService;
             _systemdService = systemdService;
         }
-
-        public override Task ExecuteTask => base.ExecuteTask;
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
@@ -23,7 +21,7 @@ namespace Almostengr.FalconPiTwitter.Worker
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _fppService.ExecuteVitalsWorkerAsync(stoppingToken);
+            await _fppVitalsService.ExecuteVitalsWorkerAsync(stoppingToken);
         }
 
     }
