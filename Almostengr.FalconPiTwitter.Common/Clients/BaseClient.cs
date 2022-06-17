@@ -1,4 +1,4 @@
-using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Common.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 

@@ -1,4 +1,4 @@
-namespace Almostengr.FalconPiTwitter.DataTransferObjects
+namespace Almostengr.FalconPiTwitter.Common.DataTransferObjects
 {
     public class FalconMediaMetaDto : BaseDto
     {

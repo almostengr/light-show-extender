@@ -1,7 +1,7 @@
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Common.Extensions;
-using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Common.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Exceptions;
 

@@ -1,4 +1,4 @@
-using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Common.DataTransferObjects;
 
 namespace Almostengr.FalconPiTwitter.Clients
 {
