@@ -38,7 +38,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IFppClient, FppClient>();
         services.AddTransient<ITwitterClient, TwitterClient>(tc =>
             new TwitterClient(
-                
                 appSettings.Twitter.ConsumerKey,
                 appSettings.Twitter.ConsumerSecret,
                 appSettings.Twitter.AccessToken,
