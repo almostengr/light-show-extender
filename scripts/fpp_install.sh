@@ -10,19 +10,19 @@ cd /home/fpp/media/uploads
 
 echo "Downloading application"
 
-wget https://github.com/almostengr/falconpitwitter/releases/latest/download/falconpitwitter.tar.gz -O falconpitwitter.tar.gz
+/bin/wget https://github.com/almostengr/falconpitwitter/releases/latest/download/falconpitwitter.tar.gz -O falconpitwitter.tar.gz
 
 echo "Unpacking application files to project directory"
 
-mkdir -p /home/fpp/media/plugins/falconpitwitter
+/bin/mkdir -p /home/fpp/media/plugins/falconpitwitter
 
-tar -xf /home/fpp/media/uploads/falconpitwitter.tar.gz --directory /home/fpp/media/plugins/falconpitwitter
+/bin/tar -xf /home/fpp/media/uploads/falconpitwitter.tar.gz --directory /home/fpp/media/plugins/falconpitwitter
 
-cp -p /home/fpp/media/plugins/falconpitwitter/appsettings.template.json /home/fpp/media/uploads/falconpitwitter.json
+/bin/cp -p /home/fpp/media/plugins/falconpitwitter/appsettings.template.json /home/fpp/media/uploads/falconpitwitter.json
 
 echo "Installing service"
 
-sudo cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
+sudo /bin/cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
 
 sudo /bin/systemctl daemon-reload
 
