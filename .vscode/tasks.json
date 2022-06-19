@@ -42,7 +42,9 @@
                 "*sln"
             ],
             "group": "none",
-            "dependsOn": ["Clean Release Project"]
+            "dependsOn": [
+                "Clean Release Project"
+            ]
         },
         {
             "label": "watch",
@@ -55,6 +57,21 @@
                 "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "Tag Release",
+            "command": "git",
+            "type": "shell",
+            "args": [
+                "tag",
+                "-a",
+                "\"v$(date +%Y.%m.%d)\"",
+                "-m",
+                "\"version $(date +%Y.%m.%d)\""
+            ],
+            "dependsOn": [
+                "Publish Release"
+            ],
+        },
     ]
 }
