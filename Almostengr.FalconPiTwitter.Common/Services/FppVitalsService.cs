@@ -45,19 +45,27 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             foreach (var sensor in status.Sensors)
             {
                 string alarmMessage = string.Empty;
-                if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC &&
-                    sensor.ValueType.ToLower() == SensorValueType.Temperature)
-                {
-                    alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
-                }
 
                 if (sensor.ValueType.ToLower() == SensorValueType.Temperature)
                 {
-                    _logger.LogInformation($"Temperature {sensor.Value}");
+                    double fahrenheit = ConvertCelsiusToFahrenheit(sensor.Value);
+                    double limitF = ConvertCelsiusToFahrenheit(_appSettings.Monitoring.MaxCpuTemperatureC);
+
+                    _logger.LogInformation($"Temperature {sensor.Value}C, {fahrenheit}F");
+
+                    if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC)
+                    {
+                        alarmMessage = $"Temperature warning! Temperature: {sensor.Value}C, {fahrenheit}F; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}C, {limitF}F";
+                    }
                 }
 
                 await _twitterService.PostTweetAlarmAsync(alarmMessage);
             } // end foreach
+        }
+
+        private double ConvertCelsiusToFahrenheit(double celsius)
+        {
+            return (celsius * 1.8) + 32;
         }
 
         private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)

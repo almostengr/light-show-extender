@@ -46,9 +46,10 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         // SERVICES //////////////////////////////////////////////////////////////////////////////////////////
 
-        services.AddTransient<IFppCurrentSongService, FppCurrentSongService>();
         services.AddTransient<ICountDownService, CountDownService>();
+        services.AddTransient<IFppCurrentSongService, FppCurrentSongService>();
         services.AddTransient<IFppVitalsService, FppVitalsService>();
+        services.AddTransient<ISystemdService, SystemdService>();
 
         if (environment == AppEnvironment.Prod)
         {

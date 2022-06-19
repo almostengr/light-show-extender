@@ -1,25 +1,27 @@
+using Almostengr.FalconPiTwitter.Common.Constants;
+
 namespace Almostengr.FalconPiTwitter.Common
 {
     public class AppSettings
     {
         public List<string> FppHosts { get; set; } = new();
-        public int MaxHashTags { get; set; } = 3;
-        public Monitoring Monitoring { get; set; } = new();
-        public Twitter Twitter { get; set; } = new();
+        public int MaxHashTags { get; init; } = 3;
+        public Monitoring Monitoring { get; init; } = new();
+        public Twitter Twitter { get; init; } = new();
     }
 
     public class Twitter
     {
-        public string AccessSecret { get; set; }
-        public string AccessToken { get; set; }
-        public string ConsumerKey { get; set; }
-        public string ConsumerSecret { get; set; }
+        public string AccessSecret { get; init; }
+        public string AccessToken { get; init; }
+        public string ConsumerKey { get; init; }
+        public string ConsumerSecret { get; init; }
     }
 
     public class Monitoring
     {
-        public List<string> AlarmUsernames { get; set; } = new();
-        public int MaxAlarmsPerHour { get; set; } = 3;
-        public double MaxCpuTemperatureC { get; set; } = 60.0;
+        public List<string> AlarmUsernames { get; init; } = new();
+        public int MaxAlarmsPerHour { get; init; } = 3;
+        public double MaxCpuTemperatureC { get; init; } = 60.0;
     }
 }
