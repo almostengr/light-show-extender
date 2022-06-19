@@ -14,25 +14,23 @@ wget https://github.com/almostengr/falconpitwitter/releases/latest/download/falc
 
 echo "Unpacking application files to project directory"
 
-mkdir -p /home/fpp/media/plugins
-
-gunzip /home/fpp/media/uploads/falconpitwitter.tar.gz
-
 mkdir -p /home/fpp/media/plugins/falconpitwitter
 
-tar -xf /home/fpp/media/uploads/falconpitwitter.tar --directory /home/fpp/media/plugins/falconpitwitter
+tar -xf /home/fpp/media/uploads/falconpitwitter.tar.gz --directory /home/fpp/media/plugins/falconpitwitter
+
+cp -p /home/fpp/media/plugins/falconpitwitter/appsettings.template.json /home/fpp/media/uploads/falconpitwitter.json
 
 echo "Installing service"
 
 sudo cp /home/fpp/media/plugins/falconpitwitter/falconpitwitter.service /lib/systemd/system
+
 sudo /bin/systemctl daemon-reload
+
 sudo /bin/systemctl enable falconpitwitter
 
 echo "Installation complete."
 
-echo "First time users, you will need to enter your configuration settings." 
-echo "This can be done by copying appsettings.template.json to appsettings.json"
-echo "and entering your configuration values in appsettings.json."
+echo "First time users, you will need to enter your configuration settings in the Uploads directory." 
 echo "After updating the configuration, you will need to restart the service"
 echo "or reboot the Pi."
 echo ""
