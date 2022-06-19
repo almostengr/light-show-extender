@@ -2,6 +2,7 @@ using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Extensions;
 using Almostengr.FalconPiTwitter.Common.DataTransferObjects;
 using Microsoft.Extensions.Logging;
+using Almostengr.FalconPiTwitter.Common.Constants;
 
 namespace Almostengr.FalconPiTwitter.Common.Services
 {
@@ -31,7 +32,8 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 return;
             }
 
-            if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull())
+            if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull() || 
+                fppStatus.Next_Playlist.Playlist == AppConstants.NoPlaylistScheduled)
             {
                 return;
             }
