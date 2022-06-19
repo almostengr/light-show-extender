@@ -20,10 +20,10 @@ sudo /bin/systemctl daemon-reload
 
 echo "Removing the application service"
 
-sudo rm -f /lib/systemd/system/falconpitwitter.service
+sudo /bin/rm -f /lib/systemd/system/falconpitwitter.service
 
 echo "Removing the application files"
 
-sudo rm -rf /home/fpp/media/plugins/falconpitwitter
+sudo /bin/rm -rf /home/fpp/media/plugins/falconpitwitter
 
-sudo rm -rf /home/fpp/media/uploads/falconpitwitter.json
+sudo /bin/rm -rf /home/fpp/media/uploads/falconpitwitter.json

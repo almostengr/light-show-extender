@@ -2,7 +2,7 @@
     "repoName": "falconpitwitter",
     "name": "Falcon Pi Twitter",
     "author": "Kenny Robinson, Robinson Handy and Technology Services",
-    "description": "Post song information and system alarms to Twitter",
+    "description": "Post current song information, upcoming light show details, and system alarms to Twitter.",
     "homeURL": "https://github.com/almostengr/falconpitwitter",
     "srcURL": "https://github.com/almostengr/falconpitwitter.git",
     "bugURL": "https://github.com/almostengr/falconpitwitter/issues",
