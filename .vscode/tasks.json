@@ -37,62 +37,14 @@
                 "--self-contained",
                 "-c",
                 "Release",
+                "-o",
+                "/home/almostengineer/fptrelease",
                 "*sln"
             ],
             "group": "none",
-            "dependsOn": ["Clean Release Project"]
-        },
-        {
-            "label": "Deploy Local",
-            "command": "scp",
-            "type": "shell",
-            "args": [
-                "-p",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter.Worker/appsettings.json",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter.Worker/bin/Release/net6.0/linux-arm/publish/*",
-                "${workspaceRoot}/falconpitwitter.service",
-                "fpp@falconpi://home/fpp/media/plugins/falconpitwitter",
-            ],
-            "group": "none",
-            "dependsOn": ["Publish Release"]
-        },
-        {
-            "label": "Package Release",
-            "command": "tar",
-            "type": "shell",
-            "args": [
-                "-C",
-                "${workspaceRoot}/Almostengr.FalconPiTwitter.Worker/bin/Release/net6.0/linux-arm/publish/",
-                "-czf",
-                "/home/almostengineer/Downloads/falconpitwitter.tar.gz",
-                "."
-            ],
-            "dependsOn": ["Publish Release"],
-        },
-        {
-            "label": "Tag Release",
-            "command" : "git",
-            "type": "shell",
-            "args": [
-                "tag",
-                "-a",
-                "\"v$(date +%Y.%m.%d)\"",
-                "-m",
-                "\"version $(date +%Y.%m.%d)\""
-            ],
-            "dependsOn": ["Package Release"],
-        },
-        {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
+            "dependsOn": [
+                "Clean Release Project"
+            ]
         },
         {
             "label": "watch",
@@ -105,6 +57,21 @@
                 "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "Tag Release",
+            "command": "git",
+            "type": "shell",
+            "args": [
+                "tag",
+                "-a",
+                "\"v$(date +%Y.%m.%d)\"",
+                "-m",
+                "\"version $(date +%Y.%m.%d)\""
+            ],
+            "dependsOn": [
+                "Publish Release"
+            ],
+        },
     ]
 }

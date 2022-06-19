@@ -61,14 +61,10 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
                     previousSong = fppStatus.Current_Song;
                 }
-                catch (HttpRequestException ex)
-                {
-                    _logger.LogError(ex.InnerException.ToString(), ExceptionMessage.NoInternetConnection + ex.Message);
-                }
                 catch (TwitterException ex)
                 {
                     _logger.LogError(ex.InnerException.ToString(), ex.Message);
-                    break;
+                    await Task.Delay(TimeSpan.FromHours(6), stoppingToken);
                 }
                 catch (Exception ex)
                 {

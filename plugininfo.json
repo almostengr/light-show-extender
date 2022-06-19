@@ -11,7 +11,7 @@
       {
         "minFPPVersion": "4.6",
         "maxFPPVersion": "0",
-        "branch": "main",
+        "branch": "release",
         "sha": ""
       }
     ]

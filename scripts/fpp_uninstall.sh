@@ -10,20 +10,18 @@ cd /home/fpp/media/plugins/
 
 echo "Stopping the system service"
 
-sudo /bin/systemctl stop falconpitwitter
+sudo /bin/systemctl stop fptworker
 
 echo "Disabling the system service"
 
-sudo /bin/systemctl disable falconpitwitter
+sudo /bin/systemctl disable fptworker
 
 sudo /bin/systemctl daemon-reload
 
 echo "Removing the application service"
 
-sudo /bin/rm -f /lib/systemd/system/falconpitwitter.service
+sudo /bin/rm -f /lib/systemd/system/fptworker.service
 
 echo "Removing the application files"
-
-sudo /bin/rm -rf /home/fpp/media/plugins/falconpitwitter
 
 sudo /bin/rm -rf /home/fpp/media/uploads/falconpitwitter.json

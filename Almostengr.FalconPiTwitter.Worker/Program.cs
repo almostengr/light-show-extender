@@ -7,7 +7,13 @@ using Tweetinvi;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
-string environment = (Environment.GetEnvironmentVariable(AppConstants.DotNetEnvironment) ?? AppEnvironment.Devl).ToLower();
+string environment = string.Empty;
+
+#if RELEASE
+    environment = AppEnvironment.Prod;
+#else
+    environment = AppEnvironment.Devl;
+#endif
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile(
