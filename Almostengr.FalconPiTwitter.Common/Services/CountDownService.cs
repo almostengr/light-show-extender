@@ -91,12 +91,13 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 try
                 {
                     await TimeUntilNextLightShowAsync();
-                    await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
                 }
+                
+                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
             }
         }
 
@@ -107,12 +108,13 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 try
                 {
                     await TimeUntilChristmasAsync();
-                    await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
                 }
+                
+                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
             }
         }
 
