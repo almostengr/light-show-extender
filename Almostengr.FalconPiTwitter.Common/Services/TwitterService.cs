@@ -36,6 +36,7 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 tweet = tweet.Substring(0, tweet.LastIndexOf(" "));
             }
 
+            _logger.LogInformation($"Sending tweet: {tweet}");
             var response = await _twitterClient.Tweets.PublishTweetAsync(tweet);
             return response.CreatedBy.Name.Length > 0 ? true : false;
         }

@@ -121,14 +121,9 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                         }
                     }
                 }
-                catch (HttpRequestException ex)
-                {
-                    _logger.LogError(ex, ExceptionMessage.NoInternetConnection + ex.Message);
-                }
                 catch (TwitterException ex)
                 {
                     _logger.LogError(ex, ex.Message);
-                    break;
                 }
                 catch (Exception ex)
                 {
