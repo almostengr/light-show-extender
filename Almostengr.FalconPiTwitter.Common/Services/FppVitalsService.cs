@@ -1,7 +1,7 @@
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Constants;
 using Almostengr.FalconPiTwitter.Common.Extensions;
-using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Common.DataTransferObjects;
 using Microsoft.Extensions.Logging;
 using Tweetinvi.Exceptions;
 
@@ -45,19 +45,29 @@ namespace Almostengr.FalconPiTwitter.Common.Services
             foreach (var sensor in status.Sensors)
             {
                 string alarmMessage = string.Empty;
-                if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC &&
-                    sensor.ValueType.ToLower() == SensorValueType.Temperature)
-                {
-                    alarmMessage = $"Temperature warning! Temperature: {sensor.Value}; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}";
-                }
 
                 if (sensor.ValueType.ToLower() == SensorValueType.Temperature)
                 {
-                    _logger.LogInformation($"Temperature {sensor.Value}");
+                    string celsius = sensor.Value.ToDoubleString();
+                    string fahrenheit = ConvertCelsiusToFahrenheit(sensor.Value).ToDoubleString();
+                    string limitC = _appSettings.Monitoring.MaxCpuTemperatureC.ToDoubleString();
+                    string limitF = ConvertCelsiusToFahrenheit(_appSettings.Monitoring.MaxCpuTemperatureC).ToDoubleString();
+
+                    _logger.LogInformation($"Temperature {celsius}C, {fahrenheit}F");
+
+                    if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC)
+                    {
+                        alarmMessage = $"Temperature warning! Temperature: {celsius}C, {fahrenheit}F; limit: {limitC}C, {limitF}F";
+                    }
                 }
 
                 await _twitterService.PostTweetAlarmAsync(alarmMessage);
             } // end foreach
+        }
+
+        private double ConvertCelsiusToFahrenheit(double celsius)
+        {
+            return (celsius * 1.8) + 32;
         }
 
         private async Task CheckStuckSongAsync(FalconFppdStatusDto status, string previousSecondsPlayed, string previousSecondsRemaining)

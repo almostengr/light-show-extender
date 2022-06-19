@@ -1,7 +1,8 @@
 using Almostengr.FalconPiTwitter.Clients;
 using Almostengr.FalconPiTwitter.Common.Extensions;
-using Almostengr.FalconPiTwitter.DataTransferObjects;
+using Almostengr.FalconPiTwitter.Common.DataTransferObjects;
 using Microsoft.Extensions.Logging;
+using Almostengr.FalconPiTwitter.Common.Constants;
 
 namespace Almostengr.FalconPiTwitter.Common.Services
 {
@@ -31,7 +32,8 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 return;
             }
 
-            if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull())
+            if (fppStatus.Next_Playlist.Playlist.ContainsOfflineTestOrNull() || 
+                fppStatus.Next_Playlist.Playlist == AppConstants.NoPlaylistScheduled)
             {
                 return;
             }
@@ -91,12 +93,13 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 try
                 {
                     await TimeUntilNextLightShowAsync();
-                    await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
                 }
+                
+                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
             }
         }
 
@@ -107,12 +110,13 @@ namespace Almostengr.FalconPiTwitter.Common.Services
                 try
                 {
                     await TimeUntilChristmasAsync();
-                    await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
                 }
+                
+                await Task.Delay(TimeSpan.FromHours(base.GetRandomWaitTime()), cancellationToken);
             }
         }
 

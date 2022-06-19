@@ -445,3 +445,6 @@ $RECYCLE.BIN/
 *appsettings*.json
 !*appsettings.template.json
 latestrelease/*
+
+*fptsettings*.json
+!*fptsettings.template.json
