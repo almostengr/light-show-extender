@@ -53,5 +53,10 @@ namespace Almostengr.FalconPiTwitter.Common.Extensions
             return string.IsNullOrEmpty(value);
         }
 
+        public static string ToDoubleString(this double value)
+        {
+            return value.ToString("0.00");
+        }
+
     }
 }

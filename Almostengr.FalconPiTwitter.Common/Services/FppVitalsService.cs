@@ -48,14 +48,16 @@ namespace Almostengr.FalconPiTwitter.Common.Services
 
                 if (sensor.ValueType.ToLower() == SensorValueType.Temperature)
                 {
-                    double fahrenheit = ConvertCelsiusToFahrenheit(sensor.Value);
-                    double limitF = ConvertCelsiusToFahrenheit(_appSettings.Monitoring.MaxCpuTemperatureC);
+                    string celsius = sensor.Value.ToDoubleString();
+                    string fahrenheit = ConvertCelsiusToFahrenheit(sensor.Value).ToDoubleString();
+                    string limitC = _appSettings.Monitoring.MaxCpuTemperatureC.ToDoubleString();
+                    string limitF = ConvertCelsiusToFahrenheit(_appSettings.Monitoring.MaxCpuTemperatureC).ToDoubleString();
 
-                    _logger.LogInformation($"Temperature {sensor.Value}C, {fahrenheit}F");
+                    _logger.LogInformation($"Temperature {celsius}C, {fahrenheit}F");
 
                     if (sensor.Value >= _appSettings.Monitoring.MaxCpuTemperatureC)
                     {
-                        alarmMessage = $"Temperature warning! Temperature: {sensor.Value}C, {fahrenheit}F; limit: {_appSettings.Monitoring.MaxCpuTemperatureC}C, {limitF}F";
+                        alarmMessage = $"Temperature warning! Temperature: {celsius}C, {fahrenheit}F; limit: {limitC}C, {limitF}F";
                     }
                 }
 
