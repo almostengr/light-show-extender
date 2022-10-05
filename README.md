@@ -154,6 +154,16 @@ Once you have finished updating the appsettings.json file, it should look simila
 
 ## FAQs (Frequently Asked Questions)
 
+### System Service Output / Log
+
+To see the logged output from the system service, login to FPP via SSH and run the command: 
+
+```sh
+journalctl -u falconpitwitter -b
+```
+
+If any errors occur with the application, they wil show up in the system service log.
+
 ### Tweeting Song Information
 
 This application calls the Falcon Pi Player API to get the meta data for the song that is current playing. 
