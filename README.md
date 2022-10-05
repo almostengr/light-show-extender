@@ -7,12 +7,19 @@ are detected.
 This application is designed to run on Falcon Pi Players that are installed on Raspberry Pi.
 
 For more information about this project, visit the
-<a href="https://thealmostengineer.com/projects/falcon-pi-twitter" target="_blank">project page</a>.
+[project page](https://thealmostengineer.com/projects/falcon-pi-twitter).
+
+## Table of Contents
+
+* [Example](#example)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Frequently Asked Questions](#faqs-frequently-asked-questions)
 
 ## Example
 
 To see what the tweets will look like, visit the
-<a href="https://twitter.com/hplightshow" target='_blank'>HP Light Show page</a>.
+[HP Light Show Twitter page](https://twitter.com/hplightshow).
 
 ## Installation
 
@@ -25,7 +32,7 @@ To see what the tweets will look like, visit the
 falconpitwitter.json.  Download this file to your computer.
 * Open this falconpitwitter.json in the text editor of your choice.
 * Create a [Twitter](https://twitter.com) account.
-* Sign up for the [Twitter Developer Platform](https://developer.twitter.com) with the TWitter account that
+* Sign up for the [Twitter Developer Platform](https://developer.twitter.com) with the Twitter account that
 you just created. Once logged in and approved, you will need to create a new project and generate the
 Consumer Key, Consumer Secret, Access Token, and Access Secrets. Paste each of values in the corresponding
 field in the falconpitwitter.json file.
@@ -111,6 +118,7 @@ has been reached, you will not be notified again until the next hour. The alarms
 in the application log. To receive infinite alerts, set this value to ```0```.
 When no value has been provided, this will default to 3 alerts per hour.
 
+
 ### Example appsettings.json File
 
 Once you have finished updating the appsettings.json file, it should look similar to the example below.
@@ -144,18 +152,60 @@ Once you have finished updating the appsettings.json file, it should look simila
 }
 ```
 
+## FAQs (Frequently Asked Questions)
 
-## Troubleshooting
+### Tweeting Song Information
 
-### System Service Output / Log
+This application calls the Falcon Pi Player API to get the meta data for the song that is current playing. 
+Then it uses that information to compose a tweet. If the song that is playing does not have ID3 tag 
+information entered, then will not display part or all of the song data. If you need to add the song 
+meta data to the file, you can use a program like 
+[Audacity](https://www.audacityteam.org) to do so.
 
-To see the logged output from the system service, login to FPP via SSH and run the command:
+### Tweeting Alarms (or Alerts)
 
-```sh
-journalctl -u fptworker -b
-```
+The application calls the Falcon Pi Player API to get the current temperature of the Raspberry Pi. 
+If it is above the threshold that is specified in the [appsettings.json](#configuration)
+file, then it will send a tweet
+that mentions the users specified in the [appsettings.json](#configuration)
+file a message to let them know if the 
+current temperature.
+
+### How frequently are checks done? 
+
+Songs are checked every 15 seconds to see if it has changed. If the same song is playing from the
+previous check, then no tweet is posted. 
+
+Vitals are checked every 15 minutes. Alarms are based on the settings that you have defined in the
+[configuration file](#configuration).
+
+### I don't want certain playlists to post song information. How do I accomplish this? 
+
+Any playlist that has "offline" or "testing" (case insensitive) in the name of it, will not post 
+the song information to 
+Twitter. The vitals alarms can still be triggered when "offline" or "testing" playlists are active.
+
+### Where is the source code?
+
+Source code for this project is hosted on 
+[Github](https://github.com/almostengr/falconpitwitter). The latest release
+can also be downloaded from here.
+
+### "Are you connected to internet? HttpRequest Exception occured" shows in the log. What does this mean? 
+
+This means that your Falcon Pi Player instance attempted to connect to the internet or another device but 
+was not able to do so. Double check your network and internet connection to ensure that data can be sent.
+Also double check your configuration file as the hostname(s) may be incorrect or mistyped.
+
+### Why did you build a standalone application instead of an FPP plugin?
+
+I work as a software developer primarily building web-based applications in C#. 
+Based on what I have seen, most (if not all) of the FPP plugins are build with PHP. While I do know PHP and
+have worked with it in the past, I chose to go with building a C# application. 
+as it gave me an opportunity to use my existing skills and 
+expand them by applying them to something different than what I am used to.
 
 ### Additional Questions and Answers
 
-Visit the <a href="https://thealmostengineer.com/projects/falcon-pi-twitter" target="_blank">project page</a>
+Visit the [project page](https://thealmostengineer.com/projects/falcon-pi-twitter)
 for more information to common questions and answers.
