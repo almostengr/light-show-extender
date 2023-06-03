@@ -9,6 +9,13 @@ This application is designed to run on Falcon Pi Players that are installed on R
 For more information about this project, visit the
 [project page](https://thealmostengineer.com/projects/falcon-pi-twitter).
 
+
+## Project Archived
+
+Due to significant changes in the Twitter API, including charging for tweets over a certain volume and 
+other restrictions, this project has been archived. 
+
+
 ## Table of Contents
 
 * [Example](#example)
