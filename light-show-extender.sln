@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.DomainService", "Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj", "{86E5B575-D15D-4127-AD00-CB76D083215D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Infrastructure", "Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj", "{FBBC7BEF-7494-4911-A255-2B85F2629C85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Worker", "Almostengr.LightShowExtender.Worker\Almostengr.LightShowExtender.Worker.csproj", "{909F444B-7F7B-4F39-8FBC-DC6EE3D7F765}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86E5B575-D15D-4127-AD00-CB76D083215D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86E5B575-D15D-4127-AD00-CB76D083215D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86E5B575-D15D-4127-AD00-CB76D083215D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86E5B575-D15D-4127-AD00-CB76D083215D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBBC7BEF-7494-4911-A255-2B85F2629C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBBC7BEF-7494-4911-A255-2B85F2629C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBBC7BEF-7494-4911-A255-2B85F2629C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBBC7BEF-7494-4911-A255-2B85F2629C85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{909F444B-7F7B-4F39-8FBC-DC6EE3D7F765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{909F444B-7F7B-4F39-8FBC-DC6EE3D7F765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{909F444B-7F7B-4F39-8FBC-DC6EE3D7F765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{909F444B-7F7B-4F39-8FBC-DC6EE3D7F765}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

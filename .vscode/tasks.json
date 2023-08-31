@@ -9,7 +9,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj",
+                "${workspaceFolder}/Almostengr.LightShowExtender.Worker/Almostengr.LightShowExtender.Worker.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -54,7 +54,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj"
+                "${workspaceFolder}/Almostengr.LightShowExtender.Worker/Almostengr.LightShowExtender.Worker.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
