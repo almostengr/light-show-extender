@@ -5,7 +5,7 @@ using Almostengr.LightShowExtender.Infrastructure.Common;
 
 namespace Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 
-internal sealed class FppHttpClient : BaseClient, IFppHttpClient
+internal sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 {
     private readonly ILoggingService<FppHttpClient> _logger;
     private readonly HttpClient _httpClient;
@@ -14,6 +14,7 @@ internal sealed class FppHttpClient : BaseClient, IFppHttpClient
     {
         _logger = logger;
         _httpClient = new HttpClient();
+        _httpClient.BaseAddress = Uri(GetUrlWithProtocol(AppConstants.Localhost));
     }
 
     public async Task<FppMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
@@ -26,20 +27,19 @@ internal sealed class FppHttpClient : BaseClient, IFppHttpClient
             return null;
         }
 
-        string hostname = GetUrlWithProtocol(AppConstants.Localhost);
-        return await HttpGetAsync<FppMediaMetaDto>(_httpClient, $"{hostname}api/media/{currentSong}/meta");
+        string route = $"api/media/{currentSong}/meta";
+        return await HttpGetAsync<FppMediaMetaDto>(_httpClient, route);
     }
 
     public async Task<FppStatusDto> GetFppdStatusAsync(string address)
     {
-        string hostname = GetUrlWithProtocol(address);
-        return await HttpGetAsync<FppStatusDto>(_httpClient, $"{hostname}api/fppd/status");
+        string route = "api/fppd/status";
+        return await HttpGetAsync<FppStatusDto>(_httpClient, route);
     }
 
     public async Task GetInsertPlaylistAfterCurrent(string playlistName)
     {
-        string hostname = GetUrlWithProtocol(AppConstants.Localhost);
-        string route = $"{hostname}/Insert Playlist After Current/${playlistName}";
+        string route = $"Insert Playlist After Current/${playlistName}";
         await HttpGetAsync<FppCommandDto>(_httpClient, route);
     }
 }

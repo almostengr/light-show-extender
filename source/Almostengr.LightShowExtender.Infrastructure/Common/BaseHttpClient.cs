@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Almostengr.LightShowExtender.Infrastructure.Common;
 
 
-internal abstract class BaseClient : IBaseHttpClient
+internal abstract class BaseHttpClient : IBaseHttpClient
 {
     internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
     {
