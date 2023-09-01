@@ -8,16 +8,19 @@ namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 public sealed class TheAlmostEngineerService : ITheAlmostEngineerService
 {
     private readonly IFppHttpClient _fppHttpClient;
+    private readonly ITaeHttpClient _taeHttpClient;
     private readonly ILoggingService<TheAlmostEngineerService> _logger;
 
     public TheAlmostEngineerService(IFppHttpClient fppHttpClient,
+        ITaeHttpClient taeHttpClient,
         ILoggingService<TheAlmostEngineerService> logger)
     {
         _fppHttpClient = fppHttpClient;
         _logger = logger;
+        _taeHttpClient = taeHttpClient;
     }
 
-    public async Task<(string lastSong, TimeSpan delay)> UpdateCurrentSongAsync(string lastSong)
+    public async Task<FppLatestStatusResult> UpdateCurrentSongAsync(FppLatestStatusResult fppLatestStatusResult)
     {
         try
         {
@@ -25,7 +28,12 @@ public sealed class TheAlmostEngineerService : ITheAlmostEngineerService
 
             TimeSpan secondsRemaining = TimeSpan.FromSeconds(Double.Parse(fppStatus.Seconds_Remaining));
 
-            if (fppStatus.Current_Song == lastSong ||
+            if (fppLatestStatusResult.LastPlaylist == "" && fppStatus.Current_PlayList.Playlist != "")
+            {
+                await _taeHttpClient.DeleteAllSongsInQueueAsync();
+            }
+
+            if (fppStatus.Current_Song == fppLatestStatusResult.LastSong ||
                 fppStatus.Current_PlayList.Playlist.IsNullOrEmpty())
             {
                 if (fppStatus.Status_Name == "idle")
@@ -33,23 +41,27 @@ public sealed class TheAlmostEngineerService : ITheAlmostEngineerService
                     secondsRemaining = TimeSpan.FromSeconds(15);
                 }
 
-                return new(fppStatus.Current_Song, secondsRemaining);
+                return new FppLatestStatusResult(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
             }
 
             FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
             if (fppMediaMetaDto.IsNull())
             {
-                return new(fppStatus.Current_Song, secondsRemaining);
+                return new FppLatestStatusResult(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
             }
 
-            // post call to website
+            var settingDto = new TaeSettingDto(TaeSettingKey.CurrentSong.Value, fppMediaMetaDto.Format.Tags.Title);
+            await _taeHttpClient.UpdateSettingAsync(settingDto);
 
-            return new(string.Empty, secondsRemaining);
+            return new FppLatestStatusResult(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
         }
         catch (Exception ex)
         {
             _logger.Error(ex, ex.Message);
-            return new(string.Empty, TimeSpan.FromSeconds(AppConstants.ErrorDelaySeconds));
+            return new FppLatestStatusResult(
+                TimeSpan.FromSeconds(AppConstants.ErrorDelaySeconds),
+                string.Empty,
+                string.Empty);
         }
     }
 
@@ -57,9 +69,8 @@ public sealed class TheAlmostEngineerService : ITheAlmostEngineerService
     {
         try
         {
-            // get latest request from website
-
-            string songName = "";
+            TaeResponseDto response = await _taeHttpClient.GetFirstUnplayedRequestAsync();
+            string songName = "";  // todo update below when response data is finalized
             await _fppHttpClient.GetInsertPlaylistAfterCurrent(songName);
         }
         catch (Exception ex)
@@ -79,9 +90,10 @@ public sealed class TheAlmostEngineerService : ITheAlmostEngineerService
                 return TimeSpan.FromMinutes(15);
             }
 
-            var settingDto = new TaeSettingDto("cputemperature", status.Sensors[0].Value.ToString());
+            var settingDto = new TaeSettingDto(
+                TaeSettingKey.CpuTemperature.Value, status.Sensors[0].Value.ToString());
 
-            // make call to website
+            await _taeHttpClient.UpdateSettingAsync(settingDto);
 
             return TimeSpan.FromMinutes(5);
         }

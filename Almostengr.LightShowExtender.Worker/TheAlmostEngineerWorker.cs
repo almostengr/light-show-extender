@@ -13,12 +13,11 @@ internal sealed class TheAlmostEngineerWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        string lastSong = string.Empty;
+        FppLatestStatusResult fppLatestStatusDto = new(TimeSpan.FromSeconds(5), string.Empty, string.Empty);
         while (!stoppingToken.IsCancellationRequested)
         {
-            var result = await _theAlmostEngineerService.UpdateCurrentSongAsync(lastSong);
-            lastSong = result.lastSong;
-            await Task.Delay(result.delay);
+            fppLatestStatusDto = await _theAlmostEngineerService.UpdateCurrentSongAsync(fppLatestStatusDto);
+            await Task.Delay(fppLatestStatusDto.WorkerDelay);
         }
     }
 }
