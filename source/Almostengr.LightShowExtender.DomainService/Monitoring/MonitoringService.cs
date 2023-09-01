@@ -8,16 +8,16 @@ namespace Almostengr.LightShowExtender.DomainService.Monitoring;
 
 public sealed class MonitoringService : IMonitoringService
 {
-    private readonly ITaeHttpClient _taeHttpClient;
+    private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<MonitoringService> _logging;
 
     public MonitoringService(IFppHttpClient fppHttpClient,
-        ITaeHttpClient taeHttpClient,
+        IEngineerHttpClient engineerHttpClient,
         ILoggingService<MonitoringService> logging)
     {
         _fppHttpClient = fppHttpClient;
-        _taeHttpClient = taeHttpClient;
+        _engineerHttpClient = engineerHttpClient;
         _logging = logging;
     }
 
@@ -32,10 +32,10 @@ public sealed class MonitoringService : IMonitoringService
                 return TimeSpan.FromMinutes(15);
             }
 
-            var settingDto = new TaeSettingDto(
-                TaeSettingKey.CpuTemperature.Value, status.Sensors[0].Value.ToString());
+            var settingDto = new EngineerSettingDto(
+                EngineerSettingKey.CpuTempC.Value, status.Sensors[0].Value.ToString());
 
-            await _taeHttpClient.UpdateSettingAsync(settingDto);
+            await _engineerHttpClient.UpdateSettingAsync(settingDto);
 
             return TimeSpan.FromMinutes(5);
         }

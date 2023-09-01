@@ -9,16 +9,16 @@ namespace Almostengr.LightShowExtender.DomainService.Jukebox;
 public sealed class JukeboxService : IJukeboxService
 {
     private readonly IFppHttpClient _fppHttpClient;
-    private readonly ITaeHttpClient _taeHttpClient;
+    private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly ILoggingService<JukeboxService> _logger;
 
     public JukeboxService(IFppHttpClient fppHttpClient,
-        ITaeHttpClient taeHttpClient,
+        IEngineerHttpClient engineerHttpClient,
         ILoggingService<JukeboxService> logger)
     {
         _fppHttpClient = fppHttpClient;
         _logger = logger;
-        _taeHttpClient = taeHttpClient;
+        _engineerHttpClient = engineerHttpClient;
     }
 
     public async Task<LatestJukeboxStateDto> UpdateCurrentSongAsync(LatestJukeboxStateDto latestJukeboxStateDto)
@@ -31,7 +31,7 @@ public sealed class JukeboxService : IJukeboxService
 
             if (latestJukeboxStateDto.LastPlaylist == "" && fppStatus.Current_PlayList.Playlist != "")
             {
-                await _taeHttpClient.DeleteAllSongsInQueueAsync();
+                await _engineerHttpClient.DeleteAllSongsInQueueAsync();
             }
 
             if (fppStatus.Current_Song == latestJukeboxStateDto.LastSong ||
@@ -51,8 +51,8 @@ public sealed class JukeboxService : IJukeboxService
                 return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
             }
 
-            var settingDto = new TaeSettingDto(TaeSettingKey.CurrentSong.Value, fppMediaMetaDto.Format.Tags.Title);
-            await _taeHttpClient.UpdateSettingAsync(settingDto);
+            var settingDto = new EngineerSettingDto(EngineerSettingKey.CurrentSong.Value, fppMediaMetaDto.Format.Tags.Title);
+            await _engineerHttpClient.UpdateSettingAsync(settingDto);
 
             return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
         }
@@ -70,7 +70,7 @@ public sealed class JukeboxService : IJukeboxService
     {
         try
         {
-            TaeResponseDto response = await _taeHttpClient.GetFirstUnplayedRequestAsync();
+            EngineerResponseDto response = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
             string songName = "";  // todo update below when response data is finalized
             await _fppHttpClient.GetInsertPlaylistAfterCurrent(songName);
         }

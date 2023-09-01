@@ -1,8 +1,8 @@
 namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
-public sealed class TaeSettingDto
+public sealed class EngineerSettingDto
 {
-    public TaeSettingDto(string key, string value)
+    public EngineerSettingDto(string key, string value)
     {
         Key = key;
         Value = value;

@@ -14,8 +14,6 @@ internal abstract class BaseHttpClient : IBaseHttpClient
 
     internal string GetUrlWithProtocol(string address)
     {
-        address = address.ToLower();
-
         if (!address.StartsWith("http://") && !address.StartsWith("https://"))
         {
             address = "http://" + address;
