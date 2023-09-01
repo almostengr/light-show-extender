@@ -1,8 +1,8 @@
-namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
+namespace Almostengr.LightShowExtender.DomainService.Jukebox;
 
-public sealed class FppLatestStatusResult
+public sealed class LatestJukeboxStateDto
 {
-    public FppLatestStatusResult(TimeSpan workerDelay, string lastSong, string lastPlaylist)
+    public LatestJukeboxStateDto(TimeSpan workerDelay, string lastSong, string lastPlaylist)
     {
         WorkerDelay = workerDelay;
         LastSong = lastSong;

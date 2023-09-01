@@ -14,7 +14,7 @@ internal sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
     {
         _logger = logger;
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = Uri(GetUrlWithProtocol(AppConstants.Localhost));
+        _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(AppConstants.Localhost));
     }
 
     public async Task<FppMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
@@ -39,7 +39,7 @@ internal sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 
     public async Task GetInsertPlaylistAfterCurrent(string playlistName)
     {
-        string route = $"Insert Playlist After Current/${playlistName}";
+        string route = $"api/command/Insert Playlist After Current/${playlistName}";
         await HttpGetAsync<FppCommandDto>(_httpClient, route);
     }
 }

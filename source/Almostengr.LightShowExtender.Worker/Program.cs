@@ -1,6 +1,8 @@
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.Infrastructure.Logging;
+using Almostengr.LightShowExtender.DomainService.Jukebox;
+using Almostengr.LightShowExtender.DomainService.Monitoring;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, config) =>
@@ -9,8 +11,11 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices(services =>
     {
-        services.AddHostedService<FppMonitoringWorker>();
-        services.AddHostedService<TheAlmostEngineerWorker>();
+        services.AddHostedService<MonitoringWorker>();
+        services.AddHostedService<JukeboxWorker>();
+
+        services.AddSingleton<IMonitoringService, MonitoringService>();
+        services.AddSingleton<IJukeboxService, JukeboxService>();
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
     })
