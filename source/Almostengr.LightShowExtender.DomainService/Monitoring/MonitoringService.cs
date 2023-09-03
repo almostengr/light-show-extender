@@ -32,8 +32,9 @@ public sealed class MonitoringService : IMonitoringService
                 return TimeSpan.FromMinutes(15);
             }
 
-            var settingDto = new EngineerSettingDto(
-                EngineerSettingKey.CpuTempC.Value, status.Sensors[0].Value.ToString());
+            var settingDto = new EngineerSettingRequestDto(
+                EngineerSettingKey.CpuTempC.Value, 
+                status.Sensors[0].Value.ToString());
 
             await _engineerHttpClient.UpdateSettingAsync(settingDto);
 

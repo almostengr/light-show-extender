@@ -12,4 +12,5 @@ public sealed class EngineerSettingKey
     public static readonly EngineerSettingKey CurrentSong = new("currentsong");
     public static readonly EngineerSettingKey CpuTempC = new("cputempc");
     public static readonly EngineerSettingKey OutdoorTempC  = new("outdoortempc");
+    public static readonly EngineerSettingKey NwsTempC = new("nwstempc");
 }

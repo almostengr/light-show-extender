@@ -2,9 +2,8 @@ using Almostengr.LightShowExtender.DomainService.Common;
 
 namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
-public sealed class EngineerResponseDto : BaseDto
+public class EngineerResponseDto : BaseDto
 {
-    public string Message { get; init; }
-    public int ResponseCode { get; init; }
-    public Array Data { get; init; }
+    public int Code { get; init; }
+    public string Message { get; init; } = string.Empty;
 }

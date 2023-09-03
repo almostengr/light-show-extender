@@ -1,8 +1,10 @@
+using Almostengr.LightShowExtender.DomainService.Common;
+
 namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
-public sealed class EngineerSettingDto
+public sealed class EngineerSettingRequestDto : BaseDto
 {
-    public EngineerSettingDto(string key, string value)
+    public EngineerSettingRequestDto(string key, string value)
     {
         Key = key;
         Value = value;

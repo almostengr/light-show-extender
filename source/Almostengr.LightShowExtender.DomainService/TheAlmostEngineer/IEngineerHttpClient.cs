@@ -4,7 +4,7 @@ namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
 public interface IEngineerHttpClient : IBaseHttpClient
 {
-    Task UpdateSettingAsync(EngineerSettingDto currentSongDto);
     Task<EngineerResponseDto> GetFirstUnplayedRequestAsync();
     Task DeleteAllSongsInQueueAsync();
+    Task<EngineerSettingResponseDto> UpdateSettingAsync(EngineerSettingRequestDto engineerSettingDto);
 }
