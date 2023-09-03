@@ -23,8 +23,7 @@ internal sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 
         if (string.IsNullOrWhiteSpace(currentSong))
         {
-            _logger.Warning("No song provided");
-            return null;
+            throw new ArgumentNullException(nameof(currentSong));
         }
 
         string route = $"api/media/{currentSong}/meta";
