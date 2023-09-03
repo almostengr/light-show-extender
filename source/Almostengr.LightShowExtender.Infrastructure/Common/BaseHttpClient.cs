@@ -12,7 +12,6 @@ internal abstract class BaseHttpClient : IBaseHttpClient
     {
         HttpResponseMessage response = await httpClient.GetAsync(route);
         response.EnsureSuccessStatusCode();
-        // return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result);
         var result = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<T>(result);
     }

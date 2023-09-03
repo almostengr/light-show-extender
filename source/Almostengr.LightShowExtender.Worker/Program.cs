@@ -11,6 +11,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices(services =>
     {
+        services.AddSingleton<AppSettings>(); // todo review for correctness
+
         services.AddHostedService<MonitoringWorker>();
         services.AddHostedService<JukeboxWorker>();
 
