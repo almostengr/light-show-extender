@@ -37,9 +37,9 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
-
-        services.AddHostedService<MonitoringWorker>();
         services.AddHostedService<JukeboxWorker>();
+        services.AddHostedService<MonitoringWorker>();
+        services.AddHostedService<WeatherWorker>();
     })
     .UseSystemd()
     .Build();

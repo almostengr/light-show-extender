@@ -12,6 +12,8 @@ internal sealed class EngineerHttpClient : BaseHttpClient, IEngineerHttpClient
     {
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri("http://lightshow.thealmostengineer.com/");
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("X-Auth-Token", "");
     }
 
     public async Task DeleteAllSongsInQueueAsync()

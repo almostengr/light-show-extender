@@ -79,6 +79,4 @@ public sealed class JukeboxService : IJukeboxService
             _logger.Error(ex, ex.Message);
         }
     }
-
-
 }

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtende
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Worker", "source\Almostengr.LightShowExtender.Worker\Almostengr.LightShowExtender.Worker.csproj", "{995D1D6A-89CA-4641-8E01-5FCBDB44C960}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{83785DA9-BFF8-4EBE-A73F-A29455083187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.DomainService.Tests", "tests\Almostengr.LightShowExtender.DomainService.Tests\Almostengr.LightShowExtender.DomainService.Tests.csproj", "{21DC8EDA-A5DF-4995-9BCD-BFC771808067}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +36,15 @@ Global
 		{995D1D6A-89CA-4641-8E01-5FCBDB44C960}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{995D1D6A-89CA-4641-8E01-5FCBDB44C960}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{995D1D6A-89CA-4641-8E01-5FCBDB44C960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21DC8EDA-A5DF-4995-9BCD-BFC771808067}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21DC8EDA-A5DF-4995-9BCD-BFC771808067}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21DC8EDA-A5DF-4995-9BCD-BFC771808067}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21DC8EDA-A5DF-4995-9BCD-BFC771808067}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A60727E2-1FFD-4636-A84C-CD077C9FD5B0} = {AE314DB9-52B9-4DFF-8E37-2E77D9073386}
 		{4F1694FC-C643-4AD7-964F-6678E263D454} = {AE314DB9-52B9-4DFF-8E37-2E77D9073386}
 		{995D1D6A-89CA-4641-8E01-5FCBDB44C960} = {AE314DB9-52B9-4DFF-8E37-2E77D9073386}
+		{21DC8EDA-A5DF-4995-9BCD-BFC771808067} = {83785DA9-BFF8-4EBE-A73F-A29455083187}
 	EndGlobalSection
 EndGlobal

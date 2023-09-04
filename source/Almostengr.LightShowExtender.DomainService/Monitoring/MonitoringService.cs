@@ -28,23 +28,16 @@ public sealed class MonitoringService : IMonitoringService
         _appSettings = appSettings;
     }
 
-    public async Task<DateTime> LatestWeatherObservationAsync(DateTime lastWeatherCheck)
+    public async Task LatestWeatherObservationAsync()
     {
         try
         {
-            if (lastWeatherCheck.AddHours(1) < DateTime.Now)
-            {
-                return lastWeatherCheck;
-            }
-
             var latestObservation = await GetLatestObservationAsync(_appSettings.Monitoring.NwsStationId);
             await PutLatestObservationAsync(latestObservation);
-            return DateTime.Now;
         }
         catch (Exception ex)
         {
             _logging.Error(ex, ex.Message);
-            return lastWeatherCheck;
         }
     }
 

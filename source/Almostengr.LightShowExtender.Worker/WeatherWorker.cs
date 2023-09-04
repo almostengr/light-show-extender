@@ -2,11 +2,11 @@ using Almostengr.LightShowExtender.DomainService.Monitoring;
 
 namespace Almostengr.LightShowExtender.Worker;
 
-public class MonitoringWorker : BackgroundService
+public class WeatherWorker : BackgroundService
 {
     private readonly IMonitoringService _monitoringService;
 
-    public MonitoringWorker(IMonitoringService monitoringService)
+    public WeatherWorker(IMonitoringService monitoringService)
     {
         _monitoringService = monitoringService;
     }
@@ -15,8 +15,8 @@ public class MonitoringWorker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delayTime = await _monitoringService.UpdateCpuTemperatureAsync();
-            await Task.Delay(delayTime, stoppingToken);
+            await _monitoringService.LatestWeatherObservationAsync();
+            await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
         }
     }
 }
