@@ -28,6 +28,11 @@ public sealed class MonitoringService : IMonitoringService
         _appSettings = appSettings;
     }
 
+    private double ConvertCelsiusToFahrenheit(double celsius)
+    {
+        return (celsius * 1.8) + 32;
+    }
+
     public async Task LatestWeatherObservationAsync()
     {
         try
@@ -55,10 +60,6 @@ public sealed class MonitoringService : IMonitoringService
         string windChill = observationDto.Properties.WindChill.Value.ToString() ?? string.Empty;
         engineerSettingDto = new EngineerSettingRequestDto(
             EngineerSettingKey.WindChill.Value, windChill);
-        await _engineerHttpClient.UpdateSettingAsync(engineerSettingDto);
-
-        engineerSettingDto = new EngineerSettingRequestDto(
-            EngineerSettingKey.NwsDescription.Value, observationDto.Properties.TextDescription);
         await _engineerHttpClient.UpdateSettingAsync(engineerSettingDto);
     }
 

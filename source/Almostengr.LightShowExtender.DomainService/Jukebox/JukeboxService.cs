@@ -51,7 +51,8 @@ public sealed class JukeboxService : IJukeboxService
                 return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
             }
 
-            var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, fppMediaMetaDto.Format.Tags.Title);
+            string requestValue = $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
+            var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
             await _engineerHttpClient.UpdateSettingAsync(settingDto);
 
             return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
