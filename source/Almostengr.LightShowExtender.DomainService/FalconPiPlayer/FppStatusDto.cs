@@ -13,22 +13,22 @@ public sealed class FppStatusDto : BaseDto
     public string Seconds_Played { get; init; } = string.Empty;
     public string Seconds_Remaining { get; init; } = string.Empty;
     public string Status_Name { get; init; } = string.Empty;
-}
 
-public class FalconFppdStatusNextPlaylist
-{
-    public string Playlist { get; init; } = string.Empty;
-    public string Start_Time { get; init; } = string.Empty;
-}
+    public class FalconFppdStatusNextPlaylist
+    {
+        public string Playlist { get; init; } = string.Empty;
+        public string Start_Time { get; init; } = string.Empty;
+    }
 
-public class FalconFppdStatusSensor
-{
-    public string Label { get; init; } = string.Empty;
-    public double Value { get; init; }
-    public string ValueType { get; init; } = string.Empty;
-}
+    public class FalconFppdStatusSensor
+    {
+        public string Label { get; init; } = string.Empty;
+        public double Value { get; init; }
+        public string ValueType { get; init; } = string.Empty;
+    }
 
-public class FalconFppdStatusCurrentPlayList
-{
-    public string Playlist { get; init; } = string.Empty;
+    public class FalconFppdStatusCurrentPlayList
+    {
+        public string Playlist { get; init; } = string.Empty;
+    }
 }
