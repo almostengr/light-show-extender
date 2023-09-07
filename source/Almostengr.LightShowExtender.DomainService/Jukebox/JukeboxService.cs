@@ -25,37 +25,37 @@ public sealed class JukeboxService : IJukeboxService
     {
         try
         {
-            var fppStatus = await _fppHttpClient.GetFppdStatusAsync(AppConstants.Localhost);
+            var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
 
             TimeSpan secondsRemaining = TimeSpan.FromSeconds(Double.Parse(fppStatus.Seconds_Remaining));
 
-            if (latestJukeboxStateDto.LastPlaylist == "" && fppStatus.Current_PlayList.Playlist != "")
+            if (latestJukeboxStateDto.LastPlaylist == "" && fppStatus.Current_Playlist.Playlist != "")
             {
                 await _engineerHttpClient.DeleteAllSongsInQueueAsync();
             }
 
             if (fppStatus.Current_Song == latestJukeboxStateDto.LastSong ||
-                fppStatus.Current_PlayList.Playlist.IsNullOrEmpty())
+                fppStatus.Current_Playlist.Playlist.IsNullOrEmpty())
             {
                 if (fppStatus.Status_Name == "idle")
                 {
                     secondsRemaining = TimeSpan.FromSeconds(15);
                 }
 
-                return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
+                return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_Playlist.Playlist);
             }
 
             FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
             if (fppMediaMetaDto.IsNull())
             {
-                return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
+                return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_Playlist.Playlist);
             }
 
             string requestValue = $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
             var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
             await _engineerHttpClient.UpdateSettingAsync(settingDto);
 
-            return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_PlayList.Playlist);
+            return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_Playlist.Playlist);
         }
         catch (Exception ex)
         {

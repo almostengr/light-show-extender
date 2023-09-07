@@ -37,7 +37,7 @@ public sealed class MonitoringService : IMonitoringService
     {
         try
         {
-            var latestObservation = await GetLatestObservationAsync(_appSettings.Monitoring.NwsStationId);
+            var latestObservation = await GetLatestObservationAsync(_appSettings.NwsStationId);
             await PutLatestObservationAsync(latestObservation);
         }
         catch (Exception ex)
@@ -67,18 +67,22 @@ public sealed class MonitoringService : IMonitoringService
     {
         try
         {
-            var status = await _fppHttpClient.GetFppdStatusAsync(AppConstants.Localhost);
-
+            var status = await _fppHttpClient.GetFppdStatusAsync();
             if (status.Current_Song.IsNullOrWhiteSpace())
             {
                 return TimeSpan.FromMinutes(15);
             }
 
+            double temperature = status.Sensors[0].Value;
             var settingDto = new EngineerSettingRequestDto(
-                EngineerSettingKey.CpuTempC.Value,
-                status.Sensors[0].Value.ToString());
+                EngineerSettingKey.CpuTempC.Value, temperature.ToString());
 
-            await _engineerHttpClient.UpdateSettingAsync(settingDto);
+            // await _engineerHttpClient.UpdateSettingAsync(settingDto);
+
+            if (temperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
+            {
+                _logging.Warning($"CPU temperature alert: {temperature.ToString()}");
+            }
 
             return TimeSpan.FromMinutes(5);
         }

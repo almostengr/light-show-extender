@@ -4,16 +4,24 @@ using System.Text;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Common;
 
-internal abstract class BaseHttpClient : IBaseHttpClient
+public abstract class BaseHttpClient : IBaseHttpClient
 {
     private const string JsonMediaType = "application/json";
+
+    internal JsonSerializerOptions SerializerOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+    }
 
     internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
     {
         HttpResponseMessage response = await httpClient.GetAsync(route);
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(result);
+        return JsonSerializer.Deserialize<T>(result, SerializerOptions());
     }
 
     internal async Task HttpDeleteAsync(HttpClient httpClient, string route)
@@ -30,7 +38,7 @@ internal abstract class BaseHttpClient : IBaseHttpClient
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<X>(result);
+        return JsonSerializer.Deserialize<X>(result, SerializerOptions());
     }
 
     internal async Task<T> HttpPutAsync<T>(HttpClient httpClient, string route, T transferObject) where T : BaseDto
@@ -41,7 +49,7 @@ internal abstract class BaseHttpClient : IBaseHttpClient
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(result);
+        return JsonSerializer.Deserialize<T>(result, SerializerOptions());
     }
 
     internal async Task<T> HttpPostAsync<T>(HttpClient httpClient, string route, T transferObject) where T : BaseDto
@@ -52,7 +60,7 @@ internal abstract class BaseHttpClient : IBaseHttpClient
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(result);
+        return JsonSerializer.Deserialize<T>(result, SerializerOptions());
     }
 
     internal string GetUrlWithProtocol(string address)

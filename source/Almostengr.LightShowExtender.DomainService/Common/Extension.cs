@@ -1,5 +1,3 @@
-using Almostengr.LightShowExtender.DomainService.Common.Constants;
-
 namespace Almostengr.LightShowExtender.DomainService.Common.Extensions;
 
 public static class Extensions
@@ -13,7 +11,7 @@ public static class Extensions
     {
         return string.IsNullOrWhiteSpace(value);
     }
-    
+
     public static bool IsNull<T>(this T value)
     {
         if (value == null)
@@ -46,5 +44,12 @@ public static class Extensions
         value = value.ToLower();
         return value.Replace(".mp3", "").Replace(".m4a", "").Replace(".ogg", "")
           .Replace(".mp4", "").Replace("_", " ").Replace("-", " ");
+    }
+
+    internal sealed class PlaylistIgnoreName
+    {
+        public const string Offline = "offline";
+        public const string Testing = "testing";
+        public const string Idle = "idle";
     }
 }

@@ -1,20 +1,21 @@
 using Almostengr.LightShowExtender.DomainService.Common;
-using Almostengr.LightShowExtender.DomainService.Common.Constants;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.Common;
 
 namespace Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 
-internal sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
+public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 {
+    private readonly AppSettings _appSettings;
     private readonly ILoggingService<FppHttpClient> _logger;
     private readonly HttpClient _httpClient;
 
-    public FppHttpClient(ILoggingService<FppHttpClient> logger)
+    public FppHttpClient(ILoggingService<FppHttpClient> logger, AppSettings appSettings)
     {
+        _appSettings = appSettings;
         _logger = logger;
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(AppConstants.Localhost));
+        _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(_appSettings.FalconPlayer.ApiUrl));
     }
 
     public async Task<FppMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
@@ -30,7 +31,7 @@ internal sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         return await HttpGetAsync<FppMediaMetaDto>(_httpClient, route);
     }
 
-    public async Task<FppStatusDto> GetFppdStatusAsync(string address)
+    public async Task<FppStatusDto> GetFppdStatusAsync()
     {
         string route = "api/fppd/status";
         return await HttpGetAsync<FppStatusDto>(_httpClient, route);
