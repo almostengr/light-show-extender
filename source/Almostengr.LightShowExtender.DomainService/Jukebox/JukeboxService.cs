@@ -27,35 +27,27 @@ public sealed class JukeboxService : IJukeboxService
         {
             var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
 
-            TimeSpan secondsRemaining = TimeSpan.FromSeconds(Double.Parse(fppStatus.Seconds_Remaining));
-
-            if (latestJukeboxStateDto.LastPlaylist == "" && fppStatus.Current_Playlist.Playlist != "")
+            if (latestJukeboxStateDto.StatusName == StatusName.Idle &&
+                fppStatus.Status_Name == StatusName.Playing)
             {
                 await _engineerHttpClient.DeleteAllSongsInQueueAsync();
             }
 
-            if (fppStatus.Current_Song == latestJukeboxStateDto.LastSong ||
-                fppStatus.Current_Playlist.Playlist.IsNullOrEmpty())
-            {
-                if (fppStatus.Status_Name == "idle")
-                {
-                    secondsRemaining = TimeSpan.FromSeconds(15);
-                }
+            TimeSpan secondsRemaining = TimeSpan.FromSeconds(Double.Parse(fppStatus.Seconds_Remaining));
 
-                return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_Playlist.Playlist);
+            if (fppStatus.Current_Song != latestJukeboxStateDto.LastSong)
+            {
+                FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
+
+                string requestValue = fppMediaMetaDto == null ?
+                    fppStatus.Current_Song.Replace(".mp3", "") :
+                    $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
+
+                var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
+                await _engineerHttpClient.UpdateSettingAsync(settingDto);
             }
 
-            FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
-            if (fppMediaMetaDto.IsNull())
-            {
-                return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_Playlist.Playlist);
-            }
-
-            string requestValue = $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
-            var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
-            await _engineerHttpClient.UpdateSettingAsync(settingDto);
-
-            return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Current_Playlist.Playlist);
+            return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Status_Name);
         }
         catch (Exception ex)
         {
@@ -72,7 +64,7 @@ public sealed class JukeboxService : IJukeboxService
         try
         {
             EngineerResponseDto response = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
-            string songName = "";  // todo update below when response data is finalized
+            string songName = response.Message;
             await _fppHttpClient.GetInsertPlaylistAfterCurrent(songName);
         }
         catch (Exception ex)
@@ -80,4 +72,12 @@ public sealed class JukeboxService : IJukeboxService
             _logger.Error(ex, ex.Message);
         }
     }
+
+    internal static class StatusName
+    {
+        public static string Idle = "Idle";
+        public static string Playing = "Playing";
+    }
 }
+
+

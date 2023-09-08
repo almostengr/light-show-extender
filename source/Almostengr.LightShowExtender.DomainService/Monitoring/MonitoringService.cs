@@ -77,7 +77,7 @@ public sealed class MonitoringService : IMonitoringService
             var settingDto = new EngineerSettingRequestDto(
                 EngineerSettingKey.CpuTempC.Value, temperature.ToString());
 
-            // await _engineerHttpClient.UpdateSettingAsync(settingDto);
+            await _engineerHttpClient.UpdateSettingAsync(settingDto);
 
             if (temperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
             {
