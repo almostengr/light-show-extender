@@ -6,5 +6,6 @@ public interface IFppHttpClient : IBaseHttpClient
 {
     Task<FppMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong);
     Task<FppStatusDto> GetFppdStatusAsync();
-    Task GetInsertPlaylistAfterCurrent(string playlistName);
+    Task<string> GetInsertPlaylistAfterCurrent(string playlistName);
+    Task StopPlaylistGracefully();
 }

@@ -14,7 +14,6 @@ public class FppMediaMetaDto : BaseDto
         {
             public string Title { get; init; } = string.Empty;
             public string Artist { get; init; } = string.Empty;
-            public string Album { get; init; } = string.Empty;
         }
     }
 }

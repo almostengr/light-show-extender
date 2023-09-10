@@ -1,12 +1,11 @@
 using Almostengr.LightShowExtender.DomainService.Common.Constants;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.LightShowExtender.DomainService.Common.Extensions;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
 namespace Almostengr.LightShowExtender.DomainService.Jukebox;
 
-public sealed class JukeboxService : IJukeboxService
+public sealed class JukeboxService : BaseService, IJukeboxService
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly IEngineerHttpClient _engineerHttpClient;
@@ -21,41 +20,62 @@ public sealed class JukeboxService : IJukeboxService
         _engineerHttpClient = engineerHttpClient;
     }
 
-    public async Task<LatestJukeboxStateDto> UpdateCurrentSongAsync(LatestJukeboxStateDto latestJukeboxStateDto)
+    public async Task<PreviousJukeboxStateDto> UpdateJukeboxAsync(PreviousJukeboxStateDto previousJukeboxStateDto)
     {
         try
         {
             var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
-
-            if (latestJukeboxStateDto.StatusName == StatusName.Idle &&
-                fppStatus.Status_Name == StatusName.Playing)
-            {
-                await _engineerHttpClient.DeleteAllSongsInQueueAsync();
-            }
+            await ClearSongsInQueueAsync(previousJukeboxStateDto, fppStatus);
+            await UpdateCurrentSongDisplayAsync(previousJukeboxStateDto, fppStatus);
 
             TimeSpan secondsRemaining = TimeSpan.FromSeconds(Double.Parse(fppStatus.Seconds_Remaining));
-
-            if (fppStatus.Current_Song != latestJukeboxStateDto.LastSong)
-            {
-                FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
-
-                string requestValue = fppMediaMetaDto == null ?
-                    fppStatus.Current_Song.Replace(".mp3", "") :
-                    $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
-
-                var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
-                await _engineerHttpClient.UpdateSettingAsync(settingDto);
-            }
-
-            return new LatestJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Status_Name);
+            return new PreviousJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Status_Name);
         }
         catch (Exception ex)
         {
             _logger.Error(ex, ex.Message);
-            return new LatestJukeboxStateDto(
+            return new PreviousJukeboxStateDto(
                 TimeSpan.FromSeconds(AppConstants.ErrorDelaySeconds),
-                string.Empty,
-                string.Empty);
+                previousJukeboxStateDto.LastSong,
+                previousJukeboxStateDto.StatusName);
+        }
+    }
+
+    private string GetSongNameFromFileName(string value)
+    {
+        value = Path.GetFileNameWithoutExtension(value)
+            .Replace("_", " ").Replace("-", " ");
+        return value;
+    }
+
+    private async Task UpdateCurrentSongDisplayAsync(PreviousJukeboxStateDto previousJukeboxStateDto, FppStatusDto fppStatus)
+    {
+        if (fppStatus.Current_Song == previousJukeboxStateDto.LastSong)
+        {
+            return;
+        }
+
+        string requestValue = string.Empty;
+
+        if (fppStatus.Current_Song != string.Empty)
+        {
+            FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
+
+            requestValue = fppMediaMetaDto == null ?
+                GetSongNameFromFileName(fppStatus.Current_Song) :
+                $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
+        }
+
+        var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
+        await _engineerHttpClient.UpdateSettingAsync(settingDto);
+    }
+
+    private async Task ClearSongsInQueueAsync(PreviousJukeboxStateDto previousJukeboxStateDto, FppStatusDto fppStatus)
+    {
+        if (previousJukeboxStateDto.StatusName == StatusName.Idle &&
+            fppStatus.Status_Name == StatusName.Playing)
+        {
+            await _engineerHttpClient.DeleteAllSongsInQueueAsync();
         }
     }
 
@@ -64,8 +84,16 @@ public sealed class JukeboxService : IJukeboxService
         try
         {
             EngineerResponseDto response = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
-            string songName = response.Message;
-            await _fppHttpClient.GetInsertPlaylistAfterCurrent(songName);
+            if (response.Message == string.Empty)
+            {
+                return;
+            }
+
+            var fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrent(response.Message);
+            if (fppResponse.ToLower() != "playlist inserted")
+            {
+                throw new InvalidDataException($"Unexpected response from FPP. {fppResponse}");
+            }
         }
         catch (Exception ex)
         {
@@ -73,11 +101,6 @@ public sealed class JukeboxService : IJukeboxService
         }
     }
 
-    internal static class StatusName
-    {
-        public static string Idle = "Idle";
-        public static string Playing = "Playing";
-    }
 }
 
 

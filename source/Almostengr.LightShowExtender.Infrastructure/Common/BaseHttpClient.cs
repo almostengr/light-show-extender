@@ -16,11 +16,17 @@ public abstract class BaseHttpClient : IBaseHttpClient
         };
     }
 
-    internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route) where T : BaseDto
+    internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route)
     {
         HttpResponseMessage response = await httpClient.GetAsync(route);
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadAsStringAsync();
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (typeof(T) == typeof(string))
+        {
+            return (T)Convert.ChangeType(result, typeof(T));
+        }
+
         return JsonSerializer.Deserialize<T>(result, SerializerOptions());
     }
 

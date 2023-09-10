@@ -1,13 +1,11 @@
 using Almostengr.LightShowExtender.DomainService.Common;
-using Almostengr.LightShowExtender.DomainService.Common.Constants;
-using Almostengr.LightShowExtender.DomainService.Common.Extensions;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.DomainService.NwsWeather;
 using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
 namespace Almostengr.LightShowExtender.DomainService.Monitoring;
 
-public sealed class MonitoringService : IMonitoringService
+public sealed class MonitoringService : BaseService, IMonitoringService
 {
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly IFppHttpClient _fppHttpClient;
@@ -28,16 +26,11 @@ public sealed class MonitoringService : IMonitoringService
         _appSettings = appSettings;
     }
 
-    private double ConvertCelsiusToFahrenheit(double celsius)
-    {
-        return (celsius * 1.8) + 32;
-    }
-
     public async Task LatestWeatherObservationAsync()
     {
         try
         {
-            var latestObservation = await GetLatestObservationAsync(_appSettings.NwsStationId);
+            var latestObservation = await _nwsHttpClient.GetLatestObservation(_appSettings.NwsStationId);
             await PutLatestObservationAsync(latestObservation);
         }
         catch (Exception ex)
@@ -46,13 +39,13 @@ public sealed class MonitoringService : IMonitoringService
         }
     }
 
-    private async Task<NwsLatestObservationDto> GetLatestObservationAsync(string stationId)
-    {
-        return await _nwsHttpClient.GetLatestObservation(stationId);
-    }
-
     private async Task PutLatestObservationAsync(NwsLatestObservationDto observationDto)
     {
+        if (observationDto == null)
+        {
+            throw new ArgumentNullException(nameof(observationDto));
+        }
+
         var engineerSettingDto = new EngineerSettingRequestDto(
             EngineerSettingKey.NwsTempC.Value, observationDto.Properties.Temperature.Value.ToString());
         await _engineerHttpClient.UpdateSettingAsync(engineerSettingDto);
@@ -63,25 +56,17 @@ public sealed class MonitoringService : IMonitoringService
         await _engineerHttpClient.UpdateSettingAsync(engineerSettingDto);
     }
 
-    public async Task<TimeSpan> UpdateCpuTemperatureAsync()
+    public async Task<TimeSpan> CheckFppStatus()
     {
         try
         {
-            var status = await _fppHttpClient.GetFppdStatusAsync();
-            if (status.Current_Song.IsNullOrWhiteSpace())
+            var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
+            await StopCurrentPlaylistGracefullyAsync(fppStatus);
+            await UpdateCpuTemperatureAsync(fppStatus);
+
+            if (fppStatus.Scheduler.CurrentPlaylist == null)
             {
                 return TimeSpan.FromMinutes(15);
-            }
-
-            double temperature = status.Sensors[0].Value;
-            var settingDto = new EngineerSettingRequestDto(
-                EngineerSettingKey.CpuTempC.Value, temperature.ToString());
-
-            await _engineerHttpClient.UpdateSettingAsync(settingDto);
-
-            if (temperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
-            {
-                _logging.Warning($"CPU temperature alert: {temperature.ToString()}");
             }
 
             return TimeSpan.FromMinutes(5);
@@ -89,7 +74,42 @@ public sealed class MonitoringService : IMonitoringService
         catch (Exception ex)
         {
             _logging.Error(ex, ex.Message);
-            return TimeSpan.FromSeconds(AppConstants.ErrorDelaySeconds);
+            return TimeSpan.FromMinutes(5);
+        }
+    }
+
+    private async Task StopCurrentPlaylistGracefullyAsync(FppStatusDto fppStatusDto)
+    {
+        if (fppStatusDto == null)
+        {
+            throw new ArgumentNullException(nameof(fppStatusDto));
+        }
+
+        TimeSpan currentTime = DateTime.Now.TimeOfDay;
+        TimeSpan showEndTime = new TimeSpan(22, 00, 00);
+        if (fppStatusDto.Status_Name.ToLower() == StatusName.Playing && currentTime >= showEndTime)
+        {
+            _logging.Warning("Stopping playlist gracefully");
+            await _fppHttpClient.StopPlaylistGracefully();
+        }
+    }
+
+    private async Task UpdateCpuTemperatureAsync(FppStatusDto fppStatusDto)
+    {
+        if (fppStatusDto == null)
+        {
+            throw new ArgumentNullException(nameof(fppStatusDto));
+        }
+
+        double temperature = fppStatusDto.Sensors[0].Value;
+        var settingDto = new EngineerSettingRequestDto(
+            EngineerSettingKey.CpuTempC.Value, temperature.ToString());
+
+        await _engineerHttpClient.UpdateSettingAsync(settingDto);
+
+        if (temperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
+        {
+            _logging.Warning($"CPU temperature alert: {temperature.ToString()}");
         }
     }
 }

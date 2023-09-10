@@ -1,8 +1,8 @@
 namespace Almostengr.LightShowExtender.DomainService.Jukebox;
 
-public sealed class LatestJukeboxStateDto
+public sealed class PreviousJukeboxStateDto
 {
-    public LatestJukeboxStateDto(TimeSpan workerDelay, string lastSong, string statusName)
+    public PreviousJukeboxStateDto(TimeSpan workerDelay, string lastSong, string statusName)
     {
         WorkerDelay = workerDelay;
         LastSong = lastSong;

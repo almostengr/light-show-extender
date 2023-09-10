@@ -15,7 +15,7 @@ public class MonitoringWorker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delayTime = await _monitoringService.UpdateCpuTemperatureAsync();
+            TimeSpan delayTime = await _monitoringService.CheckFppStatus();
             await Task.Delay(delayTime, stoppingToken);
         }
     }
