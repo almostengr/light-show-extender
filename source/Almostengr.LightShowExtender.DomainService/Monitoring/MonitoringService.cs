@@ -30,7 +30,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
     {
         try
         {
-            var latestObservation = await _nwsHttpClient.GetLatestObservation(_appSettings.NwsStationId);
+            NwsLatestObservationDto latestObservation = await _nwsHttpClient.GetLatestObservation(_appSettings.NwsStationId);
             await PutLatestObservationAsync(latestObservation);
         }
         catch (Exception ex)
@@ -46,21 +46,21 @@ public sealed class MonitoringService : BaseService, IMonitoringService
             throw new ArgumentNullException(nameof(observationDto));
         }
 
-        var engineerSettingDto = new EngineerSettingRequestDto(
-            EngineerSettingKey.NwsTempC.Value, observationDto.Properties.Temperature.Value.ToString());
-        await _engineerHttpClient.UpdateSettingAsync(engineerSettingDto);
+        EngineerSettingRequestDto temperatureDto =
+            new(EngineerSettingKey.NwsTempC.Value, observationDto.Properties.Temperature.Value.ToString());
+        await _engineerHttpClient.UpdateSettingAsync(temperatureDto);
 
         string windChill = observationDto.Properties.WindChill.Value.ToString() ?? string.Empty;
-        engineerSettingDto = new EngineerSettingRequestDto(
-            EngineerSettingKey.WindChill.Value, windChill);
-        await _engineerHttpClient.UpdateSettingAsync(engineerSettingDto);
+        EngineerSettingRequestDto windChillDto =
+            new EngineerSettingRequestDto(EngineerSettingKey.WindChill.Value, windChill);
+        await _engineerHttpClient.UpdateSettingAsync(windChillDto);
     }
 
     public async Task<TimeSpan> CheckFppStatus()
     {
         try
         {
-            var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
+            FppStatusDto fppStatus = await _fppHttpClient.GetFppdStatusAsync();
             if (fppStatus.Status_Name == StatusName.Playing)
             {
                 await StopCurrentPlaylistGracefullyAsync(fppStatus);
@@ -89,7 +89,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         }
 
         TimeSpan currentTime = DateTime.Now.TimeOfDay;
-        TimeSpan showEndTime = new TimeSpan(22, 00, 00);
+        TimeSpan showEndTime = new TimeSpan(22, 15, 00);
         if (fppStatusDto.Status_Name.ToLower() == StatusName.Playing && currentTime >= showEndTime)
         {
             _logging.Warning("Stopping playlist gracefully");
@@ -105,8 +105,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         }
 
         double temperature = fppStatusDto.Sensors[0].Value;
-        var settingDto = new EngineerSettingRequestDto(
-            EngineerSettingKey.CpuTempC.Value, temperature.ToString());
+        EngineerSettingRequestDto settingDto = new(EngineerSettingKey.CpuTempC.Value, temperature.ToString());
 
         await _engineerHttpClient.UpdateSettingAsync(settingDto);
 

@@ -24,7 +24,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
     {
         try
         {
-            var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
+            FppStatusDto fppStatus = await _fppHttpClient.GetFppdStatusAsync();
             await ClearSongsInQueueAsync(previousJukeboxStateDto, fppStatus);
             await UpdateCurrentSongDisplayAsync(previousJukeboxStateDto, fppStatus);
 
@@ -70,7 +70,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
             }
         }
 
-        var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);
+        EngineerSettingRequestDto settingDto = new(EngineerSettingKey.CurrentSong.Value, requestValue);
         await _engineerHttpClient.UpdateSettingAsync(settingDto);
     }
 
@@ -93,7 +93,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
                 return;
             }
 
-            var fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrent(response.Message);
+            string fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrent(response.Message);
             if (fppResponse.ToLower() != "playlist inserted")
             {
                 throw new InvalidDataException($"Unexpected response from FPP. {fppResponse}");
