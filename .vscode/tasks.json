@@ -9,7 +9,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj",
+                "${workspaceFolder}/source/Almostengr.LightShowExtender.Worker/Almostengr.LightShowExtender.Worker.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -37,26 +37,12 @@
                 "--self-contained",
                 "-c",
                 "Release",
-                "-o",
-                "/home/almostengineer/fptrelease",
                 "*sln"
             ],
             "group": "none",
             "dependsOn": [
                 "Clean Release Project"
             ]
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/Almostengr.FalconPiTwitter.Worker.csproj"
-            ],
-            "problemMatcher": "$msCompile"
         },
         {
             "label": "Tag Release",
@@ -72,6 +58,19 @@
             "dependsOn": [
                 "Publish Release"
             ],
+        },
+        {
+            "label": "Deploy Production",
+            "command": "scp",
+            "type": "shell",
+            "args": [
+                "-pr",
+                "${workspaceRoot}/scripts/lightshowextender.service",
+                "${workspaceRoot}/source/Almostengr.LightShowExtender.Worker/bin/Release/net6.0/linux-arm/publish/*",
+                "fpp@10.10.107.116://home/fpp/lightshowextender"
+            ],
+            "group": "none",
+            "dependsOn": ["Tag Release"],
         },
     ]
 }

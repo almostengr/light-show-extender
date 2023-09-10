@@ -1,0 +1,13 @@
+[Unit]
+Description=Light Show Extender
+After=network.target
+Documentation=https://thealmostengineer.com/projects/light-show-extender
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/home/fpp/lightshowextender/Almostengr.LightShowExtender.Worker
+User=fpp
+
+[Install]
+WantedBy=multi-user.target

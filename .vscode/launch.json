@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker/bin/Debug/net6.0/Almostengr.FalconPiTwitter.Worker.dll",
+            "program": "${workspaceFolder}/source/Almostengr.LightShowExtender.Worker/bin/Debug/net6.0/Almostengr.LightShowExtender.Worker.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Almostengr.FalconPiTwitter.Worker",
+            "cwd": "${workspaceFolder}/source/Almostengr.LightShowExtender.Worker",
             "console": "internalConsole",
             "stopAtEntry": false,
             "requireExactSource": false

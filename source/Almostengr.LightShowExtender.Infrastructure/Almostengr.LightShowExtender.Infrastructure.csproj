@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>Lihgt Show Extender</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.LightShowExtender.Infrastructure</AssemblyName>
+    <RootNamespace>Almostengr.LightShowExtender</RootNamespace>
+    <Version>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
+  </PropertyGroup>
+
+</Project>

@@ -1,228 +1,72 @@
-# Falcon Pi Twitter
+# Light Show Extender
 
-This project is designed for Falcon Pi Player to provide updates via Twitter on the light show that
-you are running. Those updates include posting the current song and providing alerts when problems
-are detected.
+## Problem
 
-This application is designed to run on Falcon Pi Players that are installed on Raspberry Pi.
+I wanted to have a way that visitors to the light show would be able to interact with the light show. While researching what others were doing, I found a way for this to be done.
+
+## Solution
+
+I found a project called Remote Falcon that allows visitors to do some of the similar things that I wanted. However, it did lack some features. Remote Falcon is maintained by one of the individuals in the light show community. It is a personal project of his and he does not charge fees for the service. I debated with whether to fork the existing repository and make changes to the existing code, but it was apprehensive about doing so.
+
+What I decided to do was to create my own jukebox implementation of the light show using my website. My implementation of this project, was designed to have only the features that I desired to be included. This mainly consisted of users being able pick one of the songs that that they wanted to hear and the Falcon Pi Player, play those songs in the order in which they were requested.
+
+## More Information
 
 For more information about this project, visit the
-[project page](https://thealmostengineer.com/projects/falcon-pi-twitter).
+[project page](https://thealmostengineer.com/projects/light-show-extender).
 
+## System Service Configuration
 
-## Project Archived
+Below are the commands and expected output when setting up the system service for the Light Show
+Extender application. By using a system service, this will ensure that the application always starts when the
+device is powered on and that if the appllication unexpectedly crashes, that it is restarted automatically.
 
-Due to significant changes in the Twitter API, including charging for tweets over a certain volume and 
-other restrictions, this project has been archived. 
-
-
-## Table of Contents
-
-* [Example](#example)
-* [Installation](#installation)
-* [Configuration](#configuration)
-* [Frequently Asked Questions](#faqs-frequently-asked-questions)
-
-## Example
-
-To see what the tweets will look like, visit the
-[HP Light Show Twitter page](https://twitter.com/hplightshow).
-
-## Installation
-
-* Go to the Plugins Manager in your FPP setup.
-* Paste the following URL in the box at the top of the page:
-[https://raw.githubusercontent.com/almostengr/falconpitwitter/release/plugininfo.json](https://raw.githubusercontent.com/almostengr/falconpitwitter/release/plugininfo.json)
-* Click "Get Plugin Info"
-* The plugin will apppear underneath the text box. Click "Install"
-* After installation has completed, go to File Manager > Uploads. You will see a file named
-falconpitwitter.json.  Download this file to your computer.
-* Open this falconpitwitter.json in the text editor of your choice.
-* Create a [Twitter](https://twitter.com) account.
-* Sign up for the [Twitter Developer Platform](https://developer.twitter.com) with the Twitter account that
-you just created. Once logged in and approved, you will need to create a new project and generate the
-Consumer Key, Consumer Secret, Access Token, and Access Secrets. Paste each of values in the corresponding
-field in the falconpitwitter.json file.
-* Update the remaining configuration values. See the Configuration section below for more details.
-* Upload the edited file to your Falcon Pi Player.
-* Restart FPPD
-* Play a song from one of your playlists. If things are working correctly, you will see the song information
-as a tweet. If things are NOT working correctly, go to the File Manager > Logs and check the system log
-for errors.
-
-## Configuration
-
-### Logging
-
-To change the logging done by the application, you may lower or raise the logging level. By default,
-only Information or higher severity messages are logged. We suggest that Debug logging not be turned
-on unless you are experiencing a recurring problem.
-
-```json
-"LogLevel": {
-    "Default": "Information",
-    "Microsoft": "Warning",
-    "Microsoft.Hosting.Lifetime": "Information"
-}
-```
-
-### FppHosts
-
-List each of the Falcon Player instances that you want to be monitored. The first instance is considered
-to the primary instance. This instance should be set to ```master``` or ```standalone``` within
-the Falcon Player settings. Each additional instance will be treated as a remote instance.
-When no hosts are listed in this section, this will default to "http://localhost".
-
-```json
-"FppHosts": [
-    "http://localhost/"
-],
-```
-
-### Twitter Credentials
-
-This section holds the values to access the Twitter API. Visit the
-[Twitter for Developers](https://developer.twitter.com) page to sign up and get the needed keys and tokens.
-You will need to get a Consumer Key (aka API Key), Consumer Secret (aka API Secret), Access Token and Access Secret
-for this section.
-
-```json
-"Twitter": {
-    "ConsumerKey": "8W4tZQ6xp7",
-    "ConsumerSecret": "qJz6nDw2T7",
-    "AccessToken": "KBiEB6jn28",
-    "AccessSecret": "8nftJzHOAI",
-},
-```
-
-When no value is provided for any of the properties, the application will experience issues and
-stop running. Errors will show up in the application log.
-
-
-### Monitoring
-
-```json
-"Monitoring": {
-    "AlarmUserNames": [
-        "@twitteruser"
-    ],
-    "MaxAlarmsPerHour": 3,
-    "MaxCpuTemperatureC": 62.0
-},
-```
-
-```AlarmUsernames``` should be the name of the Twitter account(s) that can be mentioned if
-there is an issue with the show (e.g. Raspberry Pi having high CPU temperature). Value needs to include
-the at (@) symbol. Each Twitter handle should be listed as a separate item in this file.
-When no value has been provided, then alerts will show up as public tweets instead of mentions.
-```MaxCpuTemperatureC``` should be the threshold that has to be reached before a high temperature alert is triggered.
-In warmer climates, you will want to set this value higher to prevent false alerts.
-This value needs to be in degrees Celsius. Per the Raspberry Pi documentation, 60 to 65
-degrees Celsius is close to the safe upper operating limit of the Pi.
-When no value has been provided, this will default to 60.0 degrees.
-```MaxAlarmsPerHour``` is the number alarms that you will be notified about within an hour. Once this threshold
-has been reached, you will not be notified again until the next hour. The alarms will still be reported
-in the application log. To receive infinite alerts, set this value to ```0```.
-When no value has been provided, this will default to 3 alerts per hour.
-
-
-### Example appsettings.json File
-
-Once you have finished updating the appsettings.json file, it should look similar to the example below.
-```json
-{
-    "Logging": {
-        "LogLevel": {
-            "Default": "Information",
-            "Microsoft": "Warning",
-            "Microsoft.Hosting.Lifetime": "Information"
-        }
-    },
-    "AppSettings": {
-        "FppHosts": [
-            "http://localhost/"
-        ],
-        "Monitoring": {
-            "AlarmUserNames": [
-                "@twitteruser"
-            ],
-            "MaxAlarmsPerHour": 3,
-            "MaxCpuTemperatureC": 62.0
-        },
-        "Twitter": {
-            "ConsumerKey": "8W4tZQ6xp7",
-            "ConsumerSecret": "qJz6nDw2T7",
-            "AccessToken": "KBiEB6jn28",
-            "AccessSecret": "8nftJzHOAI",
-        }
-    }
-}
-```
-
-## FAQs (Frequently Asked Questions)
-
-### System Service Output / Log
-
-To see the logged output from the system service, login to FPP via SSH and run the command: 
+To set up the system service, you will need to copy the service file to the "systemd" directory. Then run
+the rest of the commands listed.
 
 ```sh
-journalctl -u falconpitwitter -b
+fpp@fppyard:~/lightshowextender $ cat lightshowextender.service
+[Unit]
+Description=Light Show Extender
+After=network.target
+Documentation=https://thealmostengineer.com/projects/light-show-extender
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/home/fpp/lightshowextender/Almostengr.LightShowExtender.Worker
+User=fpp
+
+[Install]
+WantedBy=multi-user.target
+
+fpp@fppyard:~/lightshowextender $ sudo cp lightshowextender.service /lib/systemd/system
+fpp@fppyard:~/lightshowextender $ sudo systemctl daemon-reload
+fpp@fppyard:~/lightshowextender $ sudo systemctl enable lightshowextender
+Created symlink /etc/systemd/system/multi-user.target.wants/lightshowextender.service → /lib/systemd/system/lightshowextender.service.
+fpp@fppyard:~/lightshowextender $ sudo systemctl status lightshowextender
+● lightshowextender.service - Light Show Extender
+     Loaded: loaded (/lib/systemd/system/lightshowextender.service; enabled; vendor preset: enabled)
+     Active: inactive (dead)
+       Docs: https://thealmostengineer.com/projects/light-show-extender
+fpp@fppyard:~/lightshowextender $ sudo systemctl start lightshowextender
+fpp@fppyard:~/lightshowextender $ sudo systemctl status lightshowextender
+● lightshowextender.service - Light Show Extender
+     Loaded: loaded (/lib/systemd/system/lightshowextender.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2023-09-10 16:16:33 CDT; 3s ago
+       Docs: https://thealmostengineer.com/projects/light-show-extender
+   Main PID: 23055 (Almostengr.Ligh)
+      Tasks: 17 (limit: 1934)
+        CPU: 4.067s
+     CGroup: /system.slice/lightshowextender.service
+             └─23055 /home/fpp/lightshowextender/Almostengr.LightShowExtender.Worker
+
+Sep 10 16:16:33 fppyard systemd[1]: Started Light Show Extender.
+Sep 10 16:16:33 fppyard Almostengr.LightShowExtender.Worker[23055]: Almostengr.LightShowExtender.Worker, Version=2023.9.10.0, Culture=neutral, PublicKeyToken=null
+Sep 10 16:16:35 fppyard Almostengr.LightShowExtender.Worker[23055]: Microsoft.Hosting.Lifetime[0] Application started. Hosting environment: Production; Content root path: /
+fpp@fppyard:~/lightshowextender $ journalctl -u lightshowextender -b
+-- Journal begins at Fri 2023-06-30 06:44:53 CDT, ends at Sun 2023-09-10 16:17:04 CDT. --
+Sep 10 16:16:33 fppyard systemd[1]: Started Light Show Extender.
+Sep 10 16:16:33 fppyard Almostengr.LightShowExtender.Worker[23055]: Almostengr.LightShowExtender.Worker, Version=2023.9.10.0, Culture=neutral, PublicKeyToken=null
+Sep 10 16:16:35 fppyard Almostengr.LightShowExtender.Worker[23055]: Microsoft.Hosting.Lifetime[0] Application started. Hosting environment: Production; Content root path: /
 ```
-
-If any errors occur with the application, they wil show up in the system service log.
-
-### Tweeting Song Information
-
-This application calls the Falcon Pi Player API to get the meta data for the song that is current playing. 
-Then it uses that information to compose a tweet. If the song that is playing does not have ID3 tag 
-information entered, then will not display part or all of the song data. If you need to add the song 
-meta data to the file, you can use a program like 
-[Audacity](https://www.audacityteam.org) to do so.
-
-### Tweeting Alarms (or Alerts)
-
-The application calls the Falcon Pi Player API to get the current temperature of the Raspberry Pi. 
-If it is above the threshold that is specified in the [appsettings.json](#configuration)
-file, then it will send a tweet
-that mentions the users specified in the [appsettings.json](#configuration)
-file a message to let them know if the 
-current temperature.
-
-### How frequently are checks done? 
-
-Songs are checked every 15 seconds to see if it has changed. If the same song is playing from the
-previous check, then no tweet is posted. 
-
-Vitals are checked every 15 minutes. Alarms are based on the settings that you have defined in the
-[configuration file](#configuration).
-
-### I don't want certain playlists to post song information. How do I accomplish this? 
-
-Any playlist that has "offline" or "testing" (case insensitive) in the name of it, will not post 
-the song information to 
-Twitter. The vitals alarms can still be triggered when "offline" or "testing" playlists are active.
-
-### Where is the source code?
-
-Source code for this project is hosted on 
-[Github](https://github.com/almostengr/falconpitwitter). The latest release
-can also be downloaded from here.
-
-### "Are you connected to internet? HttpRequest Exception occured" shows in the log. What does this mean? 
-
-This means that your Falcon Pi Player instance attempted to connect to the internet or another device but 
-was not able to do so. Double check your network and internet connection to ensure that data can be sent.
-Also double check your configuration file as the hostname(s) may be incorrect or mistyped.
-
-### Why did you build a standalone application instead of an FPP plugin?
-
-I work as a software developer primarily building web-based applications in C#. 
-Based on what I have seen, most (if not all) of the FPP plugins are build with PHP. While I do know PHP and
-have worked with it in the past, I chose to go with building a C# application. 
-as it gave me an opportunity to use my existing skills and 
-expand them by applying them to something different than what I am used to.
-
-### Additional Questions and Answers
-
-Visit the [project page](https://thealmostengineer.com/projects/falcon-pi-twitter)
-for more information to common questions and answers.
