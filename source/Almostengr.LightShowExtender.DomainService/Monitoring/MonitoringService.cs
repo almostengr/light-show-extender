@@ -61,8 +61,11 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         try
         {
             var fppStatus = await _fppHttpClient.GetFppdStatusAsync();
-            await StopCurrentPlaylistGracefullyAsync(fppStatus);
-            await UpdateCpuTemperatureAsync(fppStatus);
+            if (fppStatus.Status_Name == StatusName.Playing)
+            {
+                await StopCurrentPlaylistGracefullyAsync(fppStatus);
+                await UpdateCpuTemperatureAsync(fppStatus);
+            }
 
             if (fppStatus.Scheduler.CurrentPlaylist == null)
             {
