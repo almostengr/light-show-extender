@@ -5,11 +5,19 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Almostengr.LightShowExtender.Worker-72077C7B-EF10-4C06-B664-2E71786896CB</UserSecretsId>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>Lihgt Show Extender</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.LightShowExtender.Worker</AssemblyName>
+    <RootNamespace>Almostengr.LightShowExtender</RootNamespace>
+    <Version>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="../appsettings.template.json" CopyToPublishDirectory="PreserveNewest" />
     <Content Remove="appsettings.json" />
+    <Content Remove="appsettings.Development.json" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <ProjectReference Include="..\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj" />
     <ProjectReference Include="..\Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj" />
