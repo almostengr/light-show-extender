@@ -15,9 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="../appsettings.template.json" CopyToPublishDirectory="PreserveNewest" />
     <Content Remove="appsettings.json" />
-    <Content Remove="appsettings.Development.json" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <ProjectReference Include="..\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj" />
     <ProjectReference Include="..\Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj" />

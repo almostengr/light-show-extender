@@ -6,7 +6,7 @@ Documentation=https://thealmostengineer.com/projects/light-show-extender
 [Service]
 Type=simple
 Restart=always
-ExecStart=/home/fpp/light-show-extender/Almostengr.LightShowExtender.Worker
+ExecStart=/home/fpp/lightshowextender/Almostengr.LightShowExtender.Worker
 User=fpp
 
 [Install]
