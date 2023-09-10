@@ -59,11 +59,15 @@ public sealed class JukeboxService : BaseService, IJukeboxService
 
         if (fppStatus.Current_Song != string.Empty)
         {
-            FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
+            const int TESTING_VOLUME_THRESHOLD = 50;
+            if (fppStatus.Volume > TESTING_VOLUME_THRESHOLD)
+            {
+                FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
 
-            requestValue = fppMediaMetaDto == null ?
-                GetSongNameFromFileName(fppStatus.Current_Song) :
-                $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
+                requestValue = fppMediaMetaDto == null ?
+                    GetSongNameFromFileName(fppStatus.Current_Song) :
+                    $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
+            }
         }
 
         var settingDto = new EngineerSettingRequestDto(EngineerSettingKey.CurrentSong.Value, requestValue);

@@ -15,6 +15,7 @@ public sealed class FppStatusDto : BaseDto
 
     public string Status_Name { get; init; } = string.Empty;
     public ScheduleDetail Scheduler { get; init; } = new();
+    public uint Volume { get; init; }
 
     public class ScheduleDetail
     {
