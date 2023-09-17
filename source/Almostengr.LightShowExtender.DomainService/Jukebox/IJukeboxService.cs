@@ -2,6 +2,7 @@ namespace Almostengr.LightShowExtender.DomainService.Jukebox;
 
 public interface IJukeboxService
 {
+    Task DelayBetweenRequestsAsync();
     Task GetLatestJukeboxRequest();
-    Task<PreviousJukeboxStateDto> UpdateJukeboxAsync(PreviousJukeboxStateDto latestJukeboxStateDto);
+    Task UpdateJukeboxAsync();
 }

@@ -8,7 +8,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
 {
     internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route)
     {
-        int attempts = 0;
+        int attempt = 0;
 
     SendRequest:
         try
@@ -26,14 +26,14 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
         catch (ServerErrorException ex)
         {
-            attempts = await HandleServerErrorAsync(attempts, ex);
+            attempt = await HandleServerErrorAsync(attempt, ex);
             goto SendRequest;
         }
     }
 
     internal async Task HttpDeleteAsync(HttpClient httpClient, string route)
     {
-        int attempts = 0;
+        int attempt = 0;
 
     SendRequest:
         try
@@ -43,14 +43,14 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
         catch (ServerErrorException ex)
         {
-            attempts = await HandleServerErrorAsync(attempts, ex);
+            attempt = await HandleServerErrorAsync(attempt, ex);
             goto SendRequest;
         }
     }
 
     internal async Task<X> HttpPutAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseDto where X : BaseDto
     {
-        int attempts = 0;
+        int attempt = 0;
 
     SendRequest:
         try
@@ -64,14 +64,14 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
         catch (ServerErrorException ex)
         {
-            attempts = await HandleServerErrorAsync(attempts, ex);
+            attempt = await HandleServerErrorAsync(attempt, ex);
             goto SendRequest;
         }
     }
 
     internal async Task<T> HttpPutAsync<T>(HttpClient httpClient, string route, T transferObject) where T : BaseDto
     {
-        int attempts = 0;
+        int attempt = 0;
 
     SendRequest:
         try
@@ -85,14 +85,14 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
         catch (ServerErrorException ex)
         {
-            attempts = await HandleServerErrorAsync(attempts, ex);
+            attempt = await HandleServerErrorAsync(attempt, ex);
             goto SendRequest;
         }
     }
 
     internal async Task<T> HttpPostAsync<T>(HttpClient httpClient, string route, T transferObject) where T : BaseDto
     {
-        int attempts = 0;
+        int attempt = 0;
 
     SendRequest:
         try
@@ -106,23 +106,23 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
         catch (ServerErrorException ex)
         {
-            attempts = await HandleServerErrorAsync(attempts, ex);
+            attempt = await HandleServerErrorAsync(attempt, ex);
             goto SendRequest;
         }
     }
 
-    private async Task<int> HandleServerErrorAsync(int attempts, ServerErrorException exception)
+    private async Task<int> HandleServerErrorAsync(int attempt, ServerErrorException exception)
     {
         const int MAX_RETRIES = 3;
-        if (attempts > MAX_RETRIES)
+        if (attempt > MAX_RETRIES)
         {
             throw exception;
         }
 
-        attempts++;
-        await Task.Delay(TimeSpan.FromSeconds(attempts * 2));
+        attempt++;
+        await Task.Delay(TimeSpan.FromSeconds(attempt * 2));
 
-        return attempts;
+        return attempt;
     }
 
     private StringContent SerializeRequestBody<T>(T transferObject) where T : BaseDto
