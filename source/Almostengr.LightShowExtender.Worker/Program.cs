@@ -47,7 +47,6 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddHostedService<JukeboxWorker>();
         services.AddHostedService<MonitoringWorker>();
-        services.AddHostedService<WeatherWorker>();
     })
     .UseSystemd()
     .Build();

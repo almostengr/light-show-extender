@@ -12,6 +12,8 @@ public sealed class MonitoringService : BaseService, IMonitoringService
     private readonly ILoggingService<MonitoringService> _logging;
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly AppSettings _appSettings;
+    private NwsLatestObservationResponseDto? _observationDto;
+    private DateTime? _weatherRefreshTime;
 
     public MonitoringService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
@@ -26,45 +28,24 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         _appSettings = appSettings;
     }
 
-    public async Task LatestWeatherObservationAsync()
+    public async Task<TimeSpan> UpdateSensorDataAsync()
     {
         try
         {
-            NwsLatestObservationDto latestObservation = await _nwsHttpClient.GetLatestObservation(_appSettings.NwsStationId);
-            await PutLatestObservationAsync(latestObservation);
-        }
-        catch (Exception ex)
-        {
-            _logging.Error(ex, ex.Message);
-        }
-    }
-
-    private async Task PutLatestObservationAsync(NwsLatestObservationDto observationDto)
-    {
-        if (observationDto == null)
-        {
-            throw new ArgumentNullException(nameof(observationDto));
-        }
-
-        EngineerSettingRequestDto temperatureDto =
-            new(EngineerSettingKey.NwsTempC.Value, observationDto.Properties.Temperature.Value.ToString());
-        await _engineerHttpClient.UpdateSettingAsync(temperatureDto);
-
-        string windChill = observationDto.Properties.WindChill.Value.ToString() ?? string.Empty;
-        EngineerSettingRequestDto windChillDto =
-            new EngineerSettingRequestDto(EngineerSettingKey.WindChill.Value, windChill);
-        await _engineerHttpClient.UpdateSettingAsync(windChillDto);
-    }
-
-    public async Task<TimeSpan> CheckFppStatus()
-    {
-        try
-        {
-            FppStatusDto fppStatus = await _fppHttpClient.GetFppdStatusAsync();
+            FppStatusResponseDto fppStatus = await _fppHttpClient.GetFppdStatusAsync();
             if (fppStatus.Status_Name == StatusName.Playing)
             {
                 await StopCurrentPlaylistGracefullyAsync(fppStatus);
-                await UpdateCpuTemperatureAsync(fppStatus);
+            }
+            else
+            {
+                EngineerLightShowVitalsRequestDto vitalsDto = await GetAllPlayerCpuTemperaturesAsync();
+                await LatestWeatherObservationAsync();
+
+                vitalsDto.SetNwsTempC(_observationDto!.Properties.Temperature.Value.ToDisplayTemperature());
+                vitalsDto.SetWindChill(_observationDto!.Properties.WindChill.Value.ToDisplayTemperature());
+
+                await _engineerHttpClient.PostLatestVitalsAsync(vitalsDto);
             }
 
             if (fppStatus.Scheduler.CurrentPlaylist == null)
@@ -81,7 +62,49 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         }
     }
 
-    private async Task StopCurrentPlaylistGracefullyAsync(FppStatusDto fppStatusDto)
+    private async Task LatestWeatherObservationAsync()
+    {
+        try
+        {
+            DateTime currentTime = DateTime.Now;
+            if (_observationDto == null || _weatherRefreshTime < currentTime)
+            {
+                _observationDto = await _nwsHttpClient.GetLatestObservation(_appSettings.NwsStationId);
+                _weatherRefreshTime = currentTime.AddHours(1);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logging.Error(ex, ex.Message);
+        }
+    }
+
+    private async Task<EngineerLightShowVitalsRequestDto> GetAllPlayerCpuTemperaturesAsync()
+    {
+        EngineerLightShowVitalsRequestDto vitalsDto = new();
+
+        FppMultiSyncSystemsResponseDto fppMultiSyncSystemsDto = await _fppHttpClient.GetMultiSyncSystemsAsync();
+        foreach (var system in fppMultiSyncSystemsDto.Systems)
+        {
+            var status = await _fppHttpClient.GetFppdStatusAsync(system.Address);
+
+            float cpuTemperature = (float)status.Sensors
+                .Where(s => s.Label.ToUpper().StartsWith("CPU"))
+                .Select(s => s.Value)
+                .Single();
+
+            vitalsDto.AddCpuTemperature(cpuTemperature.ToDisplayTemperature());
+
+            if (cpuTemperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
+            {
+                _logging.Warning($"CPU temperature alert: {cpuTemperature.ToString()} for host {system.Hostname}");
+            }
+        }
+
+        return vitalsDto;
+    }
+
+    private async Task StopCurrentPlaylistGracefullyAsync(FppStatusResponseDto fppStatusDto)
     {
         if (fppStatusDto == null)
         {
@@ -97,21 +120,4 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         }
     }
 
-    private async Task UpdateCpuTemperatureAsync(FppStatusDto fppStatusDto)
-    {
-        if (fppStatusDto == null)
-        {
-            throw new ArgumentNullException(nameof(fppStatusDto));
-        }
-
-        double temperature = fppStatusDto.Sensors[0].Value;
-        EngineerSettingRequestDto settingDto = new(EngineerSettingKey.CpuTempC.Value, temperature.ToString());
-
-        await _engineerHttpClient.UpdateSettingAsync(settingDto);
-
-        if (temperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
-        {
-            _logging.Warning($"CPU temperature alert: {temperature.ToString()}");
-        }
-    }
 }

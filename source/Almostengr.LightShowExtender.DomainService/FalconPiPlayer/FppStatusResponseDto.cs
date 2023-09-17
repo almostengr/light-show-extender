@@ -3,7 +3,7 @@ using Almostengr.LightShowExtender.DomainService.Common;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class FppStatusDto : BaseDto
+public sealed class FppStatusResponseDto : BaseResponseDto
 {
     public List<Sensor> Sensors { get; init; } = new();
 
@@ -17,7 +17,7 @@ public sealed class FppStatusDto : BaseDto
     public ScheduleDetail Scheduler { get; init; } = new();
     public uint Volume { get; init; }
 
-    public class ScheduleDetail
+    public sealed class ScheduleDetail
     {
         [JsonPropertyName("currentPlaylist")]
         public ActivePlaylist CurrentPlaylist { get; init; } = new();
@@ -29,7 +29,7 @@ public sealed class FppStatusDto : BaseDto
         }
     }
 
-    public class Sensor
+    public sealed class Sensor
     {
         public string Label { get; init; } = string.Empty;
         public double Value { get; init; }

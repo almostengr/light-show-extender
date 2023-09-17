@@ -4,8 +4,10 @@ namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 public interface IFppHttpClient : IBaseHttpClient
 {
-    Task<FppMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong);
-    Task<FppStatusDto> GetFppdStatusAsync();
+    Task<FppMediaMetaResponseDto> GetCurrentSongMetaDataAsync(string currentSong);
+    Task<FppStatusResponseDto> GetFppdStatusAsync();
+    Task<FppStatusResponseDto> GetFppdStatusAsync(string hostname);
     Task<string> GetInsertPlaylistAfterCurrent(string playlistName);
+    Task<FppMultiSyncSystemsResponseDto> GetMultiSyncSystemsAsync();
     Task StopPlaylistGracefully();
 }

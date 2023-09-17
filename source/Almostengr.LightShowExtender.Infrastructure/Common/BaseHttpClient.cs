@@ -48,7 +48,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
     }
 
-    internal async Task<X> HttpPutAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseDto where X : BaseDto
+    internal async Task<X> HttpPutAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseRequestDto where X : BaseResponseDto
     {
         int attempt = 0;
 

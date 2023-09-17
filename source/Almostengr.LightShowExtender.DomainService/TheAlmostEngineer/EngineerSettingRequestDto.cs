@@ -3,7 +3,7 @@ using Almostengr.LightShowExtender.DomainService.Common;
 
 namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
-public sealed class EngineerSettingRequestDto : BaseDto
+public sealed class EngineerSettingRequestDto : BaseRequestDto
 {
     public EngineerSettingRequestDto(string key, string value)
     {

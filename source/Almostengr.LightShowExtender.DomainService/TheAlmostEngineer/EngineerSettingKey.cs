@@ -9,8 +9,5 @@ public sealed class EngineerSettingKey
 
     public string Value { get; init; }
 
-    public static readonly EngineerSettingKey CpuTempC = new("cputempc");
     public static readonly EngineerSettingKey CurrentSong = new("currentsong");
-    public static readonly EngineerSettingKey NwsTempC = new("nwstempc");
-    public static readonly EngineerSettingKey WindChill = new("windchill");
 }

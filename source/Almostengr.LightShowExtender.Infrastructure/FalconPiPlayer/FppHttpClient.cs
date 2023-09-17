@@ -18,7 +18,7 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(_appSettings.FalconPlayer.ApiUrl));
     }
 
-    public async Task<FppMediaMetaDto> GetCurrentSongMetaDataAsync(string currentSong)
+    public async Task<FppMediaMetaResponseDto> GetCurrentSongMetaDataAsync(string currentSong)
     {
         _logger.Debug("Getting current song meta data");
 
@@ -28,13 +28,26 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         }
 
         string route = $"api/media/{currentSong}/meta";
-        return await HttpGetAsync<FppMediaMetaDto>(_httpClient, route);
+        return await HttpGetAsync<FppMediaMetaResponseDto>(_httpClient, route);
     }
 
-    public async Task<FppStatusDto> GetFppdStatusAsync()
+    public async Task<FppStatusResponseDto> GetFppdStatusAsync()
     {
         string route = "api/fppd/status";
-        return await HttpGetAsync<FppStatusDto>(_httpClient, route);
+        return await HttpGetAsync<FppStatusResponseDto>(_httpClient, route);
+    }
+
+    public async Task<FppStatusResponseDto> GetFppdStatusAsync(string hostname)
+    {
+        hostname = GetUrlWithProtocol(hostname);
+        string route = $"{hostname}api/fppd/status";
+        return await HttpGetAsync<FppStatusResponseDto>(_httpClient, route);
+    }
+
+    public async Task<FppMultiSyncSystemsResponseDto> GetMultiSyncSystemsAsync()
+    {
+        string route = "api/fppd/multisyncsystems";
+        return await HttpGetAsync<FppMultiSyncSystemsResponseDto>(_httpClient, route);
     }
 
     public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName)

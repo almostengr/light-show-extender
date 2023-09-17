@@ -9,8 +9,8 @@ public sealed class JukeboxService : BaseService, IJukeboxService
     private readonly IFppHttpClient _fppHttpClient;
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly ILoggingService<JukeboxService> _logger;
-    private FppStatusDto _previousStatus;
-    private FppStatusDto _currentStatus;
+    private FppStatusResponseDto _previousStatus;
+    private FppStatusResponseDto _currentStatus;
 
     public JukeboxService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
@@ -72,7 +72,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
             const int TESTING_VOLUME_THRESHOLD = 50;
             if (_previousStatus.Volume > TESTING_VOLUME_THRESHOLD)
             {
-                FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(_previousStatus.Current_Song);
+                FppMediaMetaResponseDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(_previousStatus.Current_Song);
 
                 requestValue = fppMediaMetaDto == null ?
                     GetSongNameFromFileName(_previousStatus.Current_Song) :
