@@ -39,49 +39,13 @@ public sealed class JukeboxService : BaseService, IJukeboxService
         try
         {
             _currentStatus = await _fppHttpClient.GetFppdStatusAsync();
-
             await ClearSongsInQueueAsync();
-            await UpdateCurrentSongDisplayAsync();
-
             _previousStatus = _currentStatus;
         }
         catch (Exception ex)
         {
             _logger.Error(ex, ex.Message);
         }
-    }
-
-    private string GetSongNameFromFileName(string value)
-    {
-        value = Path.GetFileNameWithoutExtension(value)
-            .Replace("_", " ").Replace("-", " ");
-        return value;
-    }
-
-    private async Task UpdateCurrentSongDisplayAsync()
-    {
-        if (_previousStatus.Current_Song == this._previousStatus.Current_Song)
-        {
-            return;
-        }
-
-        string requestValue = string.Empty;
-
-        if (_previousStatus.Current_Song != string.Empty)
-        {
-            const int TESTING_VOLUME_THRESHOLD = 50;
-            if (_previousStatus.Volume > TESTING_VOLUME_THRESHOLD)
-            {
-                FppMediaMetaResponseDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(_previousStatus.Current_Song);
-
-                requestValue = fppMediaMetaDto == null ?
-                    GetSongNameFromFileName(_previousStatus.Current_Song) :
-                    $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
-            }
-        }
-
-        EngineerSettingRequestDto settingDto = new(EngineerSettingKey.CurrentSong.Value, requestValue);
-        await _engineerHttpClient.UpdateSettingAsync(settingDto);
     }
 
     private async Task ClearSongsInQueueAsync()

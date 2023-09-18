@@ -2,12 +2,14 @@ using Almostengr.LightShowExtender.DomainService.Common;
 
 namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
-public sealed class EngineerLightShowVitalsRequestDto : BaseRequestDto
+public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
 {
     public string WindChill { get; private set; } = string.Empty;
     public string NwsTemperature { get; private set; } = string.Empty;
     private List<CpuTempSensor> _cpuTempSensors { get; set; } = new();
     public IReadOnlyList<CpuTempSensor> CpuTempSensors { get { return _cpuTempSensors; } }
+    public string Artist { get; private set; } = string.Empty;
+    public string Title { get; private set; } = string.Empty;
 
     public sealed class CpuTempSensor
     {
@@ -19,19 +21,29 @@ public sealed class EngineerLightShowVitalsRequestDto : BaseRequestDto
         public string Text { get; private set; } = string.Empty;
     }
 
-    public void AddCpuTemperature(string displayText)
+    internal void AddCpuTemperature(string displayText)
     {
         CpuTempSensor sensor = new(displayText);
         _cpuTempSensors.Add(sensor);
     }
 
-    public void SetWindChill(string displayText)
+    internal void SetWindChill(string displayText)
     {
         WindChill = displayText;
     }
 
-    public void SetNwsTempC(string displayText)
+    internal void SetNwsTempC(string displayText)
     {
         NwsTemperature = displayText;
+    }
+
+    internal void SetTitle(string title)
+    {
+        Title = title;
+    }
+
+    internal void setArtist(string artist)
+    {
+        Artist = artist;
     }
 }

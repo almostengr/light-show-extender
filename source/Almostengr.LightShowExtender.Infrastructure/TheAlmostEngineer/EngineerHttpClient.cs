@@ -29,13 +29,8 @@ public sealed class EngineerHttpClient : BaseHttpClient, IEngineerHttpClient
         return await HttpGetAsync<EngineerResponseDto>(_httpClient, FppApiRoute);
     }
 
-    public async Task<EngineerSettingResponseDto> UpdateSettingAsync(EngineerSettingRequestDto engineerSettingDto)
+    public async Task PostDisplayInfoAsync(EngineerLightShowDisplayRequestDto vitalsDto)
     {
-        return await HttpPutAsync<EngineerSettingRequestDto, EngineerSettingResponseDto>(_httpClient, FppApiRoute, engineerSettingDto);
-    }
-
-    public async Task PostLatestVitalsAsync(EngineerLightShowVitalsRequestDto vitalsDto)
-    {
-        await HttpPostAsync<EngineerLightShowVitalsRequestDto>(_httpClient, FppApiRoute, vitalsDto);
+        await HttpPostAsync<EngineerLightShowDisplayRequestDto>(_httpClient, FppApiRoute, vitalsDto);
     }
 }
