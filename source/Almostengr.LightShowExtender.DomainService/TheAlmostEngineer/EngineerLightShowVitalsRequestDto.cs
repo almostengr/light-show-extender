@@ -6,25 +6,30 @@ public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
 {
     public string WindChill { get; private set; } = string.Empty;
     public string NwsTemperature { get; private set; } = string.Empty;
-    private List<CpuTempSensor> _cpuTempSensors { get; set; } = new();
-    public IReadOnlyList<CpuTempSensor> CpuTempSensors { get { return _cpuTempSensors; } }
+    public string CpuTemp { get; private set; } = string.Empty;
+    // private List<CpuTempSensor> _cpuTempSensors { get; set; } = new();
+    // public IReadOnlyList<CpuTempSensor> CpuTempSensors { get { return _cpuTempSensors; } }
     public string Artist { get; private set; } = string.Empty;
     public string Title { get; private set; } = string.Empty;
 
-    public sealed class CpuTempSensor
-    {
-        public CpuTempSensor(string displayText)
-        {
-            Text = displayText;
-        }
+    // public sealed class CpuTempSensor
+    // {
+    //     public CpuTempSensor(string displayText)
+    //     {
+    //         Text = displayText;
+    //     }
 
-        public string Text { get; private set; } = string.Empty;
-    }
+    //     public string Text { get; private set; } = string.Empty;
+    // }
 
     internal void AddCpuTemperature(string displayText)
     {
-        CpuTempSensor sensor = new(displayText);
-        _cpuTempSensors.Add(sensor);
+        if (!string.IsNullOrWhiteSpace(CpuTemp))
+        {
+            CpuTemp += ", ";
+        }
+
+        CpuTemp += displayText;
     }
 
     internal void SetWindChill(string displayText)

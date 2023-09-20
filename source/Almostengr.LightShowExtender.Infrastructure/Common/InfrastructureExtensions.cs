@@ -6,7 +6,7 @@ internal static class InfrastructureExtensions
 {
     internal static async Task<HttpResponseMessage> WasRequestSuccessfulAsync(this HttpResponseMessage response)
     {
-        if (response.StatusCode >= HttpStatusCode.InternalServerError || 
+        if (response.StatusCode >= HttpStatusCode.InternalServerError ||
             response.StatusCode == HttpStatusCode.RequestTimeout)
         {
             string body = await response.Content.ReadAsStringAsync()!;

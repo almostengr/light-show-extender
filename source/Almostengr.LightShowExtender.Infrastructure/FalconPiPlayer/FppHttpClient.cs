@@ -46,7 +46,7 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 
     public async Task<FppMultiSyncSystemsResponseDto> GetMultiSyncSystemsAsync()
     {
-        string route = "api/fppd/multisyncsystems";
+        string route = "api/fppd/multiSyncSystems";
         return await HttpGetAsync<FppMultiSyncSystemsResponseDto>(_httpClient, route);
     }
 
@@ -59,6 +59,6 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
     public async Task StopPlaylistGracefully()
     {
         string route = "api/playlists/stopgracefully";
-        await HttpGetAsync<string>(_httpClient, route);
+        // await HttpGetAsync<string>(_httpClient, route);
     }
 }

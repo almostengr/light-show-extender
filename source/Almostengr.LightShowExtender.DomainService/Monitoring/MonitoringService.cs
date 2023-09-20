@@ -42,18 +42,23 @@ public sealed class MonitoringService : BaseService, IMonitoringService
             _currentFppStatus = await _fppHttpClient.GetFppdStatusAsync();
             await StopPlaylistAfterEndTimeAsync();
 
-            EngineerLightShowDisplayRequestDto displayDto = new();
-            await GetAllPlayerCpuTemperaturesAsync(displayDto);
-            displayDto.SetNwsTempC(_weatherObservation!.Properties.Temperature.Value.ToDisplayTemperature());
-            displayDto.SetWindChill(_weatherObservation!.Properties.WindChill.Value.ToDisplayTemperature());
+            if (_previousFppStatus != null &&
+                _currentFppStatus.Current_Song != _previousFppStatus.Current_Song)
+            {
+                EngineerLightShowDisplayRequestDto displayDto = new();
+                await GetAllPlayerCpuTemperaturesAsync(displayDto);
+                displayDto.SetNwsTempC(_weatherObservation!.Properties.Temperature.Value.ToDisplayTemperature());
+                displayDto.SetWindChill(_weatherObservation!.Properties.WindChill.Value.ToDisplayTemperature());
 
-            await SetTitleAndArtist(displayDto);
-            await _engineerHttpClient.PostDisplayInfoAsync(displayDto);
+                await SetTitleAndArtist(displayDto);
+                await _engineerHttpClient.PostDisplayInfoAsync(displayDto);
+            }
 
             _previousFppStatus = _currentFppStatus;
-            const int MINUTES_15_IN_SECONDS = 900;
-            delayTime = _currentFppStatus.Scheduler.CurrentPlaylist == null ?
+            const int MINUTES_15_IN_SECONDS = 60;
+            delayTime = _currentFppStatus.Status_Name == StatusName.Idle ?
                 MINUTES_15_IN_SECONDS : Int32.Parse(_currentFppStatus.Seconds_Remaining + 1);
+                delayTime = 5;
         }
         catch (Exception ex)
         {
@@ -65,6 +70,11 @@ public sealed class MonitoringService : BaseService, IMonitoringService
 
     private async Task SetTitleAndArtist(EngineerLightShowDisplayRequestDto displayDto)
     {
+        if (string.IsNullOrWhiteSpace(_currentFppStatus!.Current_Song))
+        {
+            return;
+        }
+
         FppMediaMetaResponseDto currentSong =
             await _fppHttpClient.GetCurrentSongMetaDataAsync(_currentFppStatus!.Current_Song);
 

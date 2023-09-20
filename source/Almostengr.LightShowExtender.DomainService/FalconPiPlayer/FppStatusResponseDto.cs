@@ -15,8 +15,9 @@ public sealed class FppStatusResponseDto : BaseResponseDto
 
     [JsonPropertyName("status_name")]
     public string Status_Name { get; init; } = string.Empty;
+
+    [JsonPropertyName("scheduler")]
     public ScheduleDetail Scheduler { get; init; } = new();
-    public uint Volume { get; init; }
 
     public sealed class ScheduleDetail
     {
