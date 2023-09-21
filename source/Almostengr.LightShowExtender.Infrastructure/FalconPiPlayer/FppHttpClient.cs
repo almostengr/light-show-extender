@@ -7,21 +7,17 @@ namespace Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 {
     private readonly AppSettings _appSettings;
-    private readonly ILoggingService<FppHttpClient> _logger;
     private readonly HttpClient _httpClient;
 
-    public FppHttpClient(ILoggingService<FppHttpClient> logger, AppSettings appSettings)
+    public FppHttpClient(AppSettings appSettings)
     {
         _appSettings = appSettings;
-        _logger = logger;
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(_appSettings.FalconPlayer.ApiUrl));
     }
 
     public async Task<FppMediaMetaResponseDto> GetCurrentSongMetaDataAsync(string currentSong)
     {
-        _logger.Debug("Getting current song meta data");
-
         if (string.IsNullOrWhiteSpace(currentSong))
         {
             throw new ArgumentNullException(nameof(currentSong));

@@ -13,7 +13,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly AppSettings _appSettings;
     private NwsLatestObservationResponseDto? _weatherObservation;
-    private FppStatusResponseDto? _previousFppStatus;
+    private FppStatusResponseDto _previousFppStatus;
     private FppStatusResponseDto? _currentFppStatus;
 
     public MonitoringService(IFppHttpClient fppHttpClient,
@@ -27,6 +27,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         _logging = logging;
         _nwsHttpClient = nwsHttpClient;
         _appSettings = appSettings;
+        _previousFppStatus = new FppStatusResponseDto();
     }
 
     public async Task<TimeSpan> MonitoringCheckAsync()
@@ -42,8 +43,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
             _currentFppStatus = await _fppHttpClient.GetFppdStatusAsync();
             await StopPlaylistAfterEndTimeAsync();
 
-            if (_previousFppStatus != null &&
-                _currentFppStatus.Current_Song != _previousFppStatus.Current_Song)
+            if (_currentFppStatus.Current_Song != _previousFppStatus.Current_Song)
             {
                 EngineerLightShowDisplayRequestDto displayDto = new();
                 await GetAllPlayerCpuTemperaturesAsync(displayDto);
@@ -51,14 +51,15 @@ public sealed class MonitoringService : BaseService, IMonitoringService
                 displayDto.SetWindChill(_weatherObservation!.Properties.WindChill.Value.ToDisplayTemperature());
 
                 await SetTitleAndArtist(displayDto);
+                _logging.Information(displayDto.ToString());
                 await _engineerHttpClient.PostDisplayInfoAsync(displayDto);
             }
 
             _previousFppStatus = _currentFppStatus;
-            const int MINUTES_15_IN_SECONDS = 60;
-            delayTime = _currentFppStatus.Status_Name == StatusName.Idle ?
-                MINUTES_15_IN_SECONDS : Int32.Parse(_currentFppStatus.Seconds_Remaining + 1);
-                delayTime = 5;
+            // const int MINUTES_15_IN_SECONDS = 60;
+            // delayTime = _currentFppStatus.Status_Name == StatusName.Idle ?
+            //     MINUTES_15_IN_SECONDS : Int32.Parse(_currentFppStatus.Seconds_Remaining + 1);
+            delayTime = 5;
         }
         catch (Exception ex)
         {

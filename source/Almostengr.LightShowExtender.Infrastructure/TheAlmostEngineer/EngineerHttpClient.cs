@@ -8,7 +8,7 @@ public sealed class EngineerHttpClient : BaseHttpClient, IEngineerHttpClient
 {
     private readonly AppSettings _appSettings;
     private readonly HttpClient _httpClient;
-    private const string FppApiRoute = "fpp.php";
+    private const string FPP_API_ROUTE = "fpp.php";
 
     public EngineerHttpClient(AppSettings appSettings)
     {
@@ -21,16 +21,16 @@ public sealed class EngineerHttpClient : BaseHttpClient, IEngineerHttpClient
 
     public async Task DeleteAllSongsInQueueAsync()
     {
-        await HttpDeleteAsync(_httpClient, FppApiRoute);
+        await HttpDeleteAsync(_httpClient, FPP_API_ROUTE);
     }
 
     public async Task<EngineerResponseDto> GetFirstUnplayedRequestAsync()
     {
-        return await HttpGetAsync<EngineerResponseDto>(_httpClient, FppApiRoute);
+        return await HttpGetAsync<EngineerResponseDto>(_httpClient, FPP_API_ROUTE);
     }
 
     public async Task PostDisplayInfoAsync(EngineerLightShowDisplayRequestDto vitalsDto)
     {
-        await HttpPostAsync<EngineerLightShowDisplayRequestDto>(_httpClient, FppApiRoute, vitalsDto);
+        await HttpPostAsync<EngineerLightShowDisplayRequestDto>(_httpClient, FPP_API_ROUTE, vitalsDto);
     }
 }

@@ -7,20 +7,8 @@ public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
     public string WindChill { get; private set; } = string.Empty;
     public string NwsTemperature { get; private set; } = string.Empty;
     public string CpuTemp { get; private set; } = string.Empty;
-    // private List<CpuTempSensor> _cpuTempSensors { get; set; } = new();
-    // public IReadOnlyList<CpuTempSensor> CpuTempSensors { get { return _cpuTempSensors; } }
     public string Artist { get; private set; } = string.Empty;
     public string Title { get; private set; } = string.Empty;
-
-    // public sealed class CpuTempSensor
-    // {
-    //     public CpuTempSensor(string displayText)
-    //     {
-    //         Text = displayText;
-    //     }
-
-    //     public string Text { get; private set; } = string.Empty;
-    // }
 
     internal void AddCpuTemperature(string displayText)
     {
@@ -50,5 +38,11 @@ public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
     internal void setArtist(string artist)
     {
         Artist = artist;
+    }
+
+    public override string ToString()
+    {
+        string title = Title == string.Empty ? "OFFLINE" : $"Playing {Title}, {Artist}";
+        return $"{title}. Outdoor Temp {NwsTemperature}. CPU Temp {CpuTemp}. Wind chill {WindChill}.";
     }
 }
