@@ -16,7 +16,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Clean Release Project",
+            "label": "Clean Release",
             "command": "dotnet",
             "type": "shell",
             "args": [
@@ -60,7 +60,7 @@
             ],
         },
         {
-            "label": "Deploy Production",
+            "label": "Upload to Production",
             "command": "scp",
             "type": "shell",
             "args": [
@@ -72,7 +72,39 @@
                 "fpp@10.10.107.116://home/fpp/lightshowextender"
             ],
             "group": "none",
-            "dependsOn": ["Tag Release"],
+            "dependsOn": [
+                "Tag Release"
+            ],
         },
+        {
+            "label": "Upload to Contingency",
+            "command": "scp",
+            "type": "shell",
+            "args": [
+                "-pr",
+                "${workspaceRoot}/scripts/lightshowextender.service",
+                "${workspaceRoot}/scripts/restart_lightshowextender.sh",
+                "${workspaceRoot}/scripts/stop_lightshowextender.sh",
+                "${workspaceRoot}/source/Almostengr.LightShowExtender.Worker/bin/Release/net6.0/linux-arm/publish/*",
+                "fpp@10.10.107.106://home/fpp/lightshowextender"
+            ],
+            "group": "none",
+            "dependsOn": [
+                "Upload to Production"
+            ],
+        },
+        {
+            "label": "Create and Publish Release",
+            "command": "git",
+            "type": "shell",
+            "args": [
+                "push",
+                "--tags"
+            ],
+            "group": "none",
+            "dependsOn": [
+                "Upload to Contingency"
+            ]
+        }
     ]
 }
