@@ -15,7 +15,7 @@ public class WeatherWorker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await _monitoringService.LatestWeatherObservationAsync();
+            await _monitoringService.GetLatestWeatherObservationsAsync();
             await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
         }
     }

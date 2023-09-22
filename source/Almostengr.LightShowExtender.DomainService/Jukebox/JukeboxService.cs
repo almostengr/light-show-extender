@@ -1,4 +1,3 @@
-using Almostengr.LightShowExtender.DomainService.Common.Constants;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
@@ -10,6 +9,8 @@ public sealed class JukeboxService : BaseService, IJukeboxService
     private readonly IFppHttpClient _fppHttpClient;
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly ILoggingService<JukeboxService> _logger;
+    private FppStatusResponseDto _previousStatus;
+    private FppStatusResponseDto _currentStatus;
 
     public JukeboxService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
@@ -18,66 +19,39 @@ public sealed class JukeboxService : BaseService, IJukeboxService
         _fppHttpClient = fppHttpClient;
         _logger = logger;
         _engineerHttpClient = engineerHttpClient;
+        _currentStatus = _previousStatus = new();
     }
 
-    public async Task<PreviousJukeboxStateDto> UpdateJukeboxAsync(PreviousJukeboxStateDto previousJukeboxStateDto)
+    public async Task DelayBetweenRequestsAsync()
+    {
+        TimeSpan secondsRemaining = TimeSpan.FromSeconds(5);
+
+        if (!string.IsNullOrWhiteSpace(_currentStatus.Seconds_Remaining))
+        {
+            secondsRemaining = TimeSpan.FromSeconds(Double.Parse(_currentStatus.Seconds_Remaining));
+        }
+        
+        await Task.Delay(secondsRemaining);
+    }
+
+    public async Task UpdateJukeboxAsync()
     {
         try
         {
-            FppStatusDto fppStatus = await _fppHttpClient.GetFppdStatusAsync();
-            await ClearSongsInQueueAsync(previousJukeboxStateDto, fppStatus);
-            await UpdateCurrentSongDisplayAsync(previousJukeboxStateDto, fppStatus);
-
-            TimeSpan secondsRemaining = TimeSpan.FromSeconds(Double.Parse(fppStatus.Seconds_Remaining));
-            return new PreviousJukeboxStateDto(secondsRemaining, fppStatus.Current_Song, fppStatus.Status_Name);
+            _currentStatus = await _fppHttpClient.GetFppdStatusAsync();
+            await ClearSongsInQueueAsync();
+            _previousStatus = _currentStatus;
         }
         catch (Exception ex)
         {
             _logger.Error(ex, ex.Message);
-            return new PreviousJukeboxStateDto(
-                TimeSpan.FromSeconds(AppConstants.ErrorDelaySeconds),
-                previousJukeboxStateDto.LastSong,
-                previousJukeboxStateDto.StatusName);
         }
     }
 
-    private string GetSongNameFromFileName(string value)
+    private async Task ClearSongsInQueueAsync()
     {
-        value = Path.GetFileNameWithoutExtension(value)
-            .Replace("_", " ").Replace("-", " ");
-        return value;
-    }
-
-    private async Task UpdateCurrentSongDisplayAsync(PreviousJukeboxStateDto previousJukeboxStateDto, FppStatusDto fppStatus)
-    {
-        if (fppStatus.Current_Song == previousJukeboxStateDto.LastSong)
-        {
-            return;
-        }
-
-        string requestValue = string.Empty;
-
-        if (fppStatus.Current_Song != string.Empty)
-        {
-            const int TESTING_VOLUME_THRESHOLD = 50;
-            if (fppStatus.Volume > TESTING_VOLUME_THRESHOLD)
-            {
-                FppMediaMetaDto fppMediaMetaDto = await _fppHttpClient.GetCurrentSongMetaDataAsync(fppStatus.Current_Song);
-
-                requestValue = fppMediaMetaDto == null ?
-                    GetSongNameFromFileName(fppStatus.Current_Song) :
-                    $"{fppMediaMetaDto.Format.Tags.Title}|{fppMediaMetaDto.Format.Tags.Artist}";
-            }
-        }
-
-        EngineerSettingRequestDto settingDto = new(EngineerSettingKey.CurrentSong.Value, requestValue);
-        await _engineerHttpClient.UpdateSettingAsync(settingDto);
-    }
-
-    private async Task ClearSongsInQueueAsync(PreviousJukeboxStateDto previousJukeboxStateDto, FppStatusDto fppStatus)
-    {
-        if (previousJukeboxStateDto.StatusName == StatusName.Idle &&
-            fppStatus.Status_Name == StatusName.Playing)
+        if (_previousStatus.Status_Name == StatusName.Idle &&
+            _currentStatus.Status_Name == StatusName.Playing)
         {
             await _engineerHttpClient.DeleteAllSongsInQueueAsync();
         }
@@ -106,5 +80,3 @@ public sealed class JukeboxService : BaseService, IJukeboxService
     }
 
 }
-
-

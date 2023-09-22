@@ -13,9 +13,10 @@ public class MonitoringWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        TimeSpan delayTime = TimeSpan.FromSeconds(30);
         while (!stoppingToken.IsCancellationRequested)
         {
-            TimeSpan delayTime = await _monitoringService.CheckFppStatus();
+            delayTime = await _monitoringService.MonitoringCheckAsync();
             await Task.Delay(delayTime, stoppingToken);
         }
     }

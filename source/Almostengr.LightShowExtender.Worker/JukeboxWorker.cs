@@ -13,12 +13,11 @@ internal sealed class JukeboxWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        PreviousJukeboxStateDto latestJukeboxDto = new(TimeSpan.FromSeconds(5), string.Empty, string.Empty);
         while (!stoppingToken.IsCancellationRequested)
         {
-            latestJukeboxDto = await _jukeboxService.UpdateJukeboxAsync(latestJukeboxDto);
+            await _jukeboxService.UpdateJukeboxAsync();
             await _jukeboxService.GetLatestJukeboxRequest();
-            await Task.Delay(latestJukeboxDto.WorkerDelay);
+            await _jukeboxService.DelayBetweenRequestsAsync();
         }
     }
 }
