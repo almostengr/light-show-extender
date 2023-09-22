@@ -66,6 +66,8 @@
             "args": [
                 "-pr",
                 "${workspaceRoot}/scripts/lightshowextender.service",
+                "${workspaceRoot}/scripts/restart_lightshowextender.sh",
+                "${workspaceRoot}/scripts/stop_lightshowextender.sh",
                 "${workspaceRoot}/source/Almostengr.LightShowExtender.Worker/bin/Release/net6.0/linux-arm/publish/*",
                 "fpp@10.10.107.116://home/fpp/lightshowextender"
             ],
