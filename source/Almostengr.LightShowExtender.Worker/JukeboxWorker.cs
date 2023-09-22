@@ -16,7 +16,7 @@ internal sealed class JukeboxWorker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await _jukeboxService.UpdateJukeboxAsync();
-            await _jukeboxService.GetLatestJukeboxRequest();
+            await _jukeboxService.GetLatestJukeboxRequestAsync();
             await _jukeboxService.DelayBetweenRequestsAsync();
         }
     }

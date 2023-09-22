@@ -7,7 +7,7 @@ public interface IFppHttpClient : IBaseHttpClient
     Task<FppMediaMetaResponseDto> GetCurrentSongMetaDataAsync(string currentSong);
     Task<FppStatusResponseDto> GetFppdStatusAsync();
     Task<FppStatusResponseDto> GetFppdStatusAsync(string hostname);
-    Task<string> GetInsertPlaylistAfterCurrent(string playlistName);
+    Task<string> GetInsertPlaylistAfterCurrentAsync(string playlistName);
     Task<FppMultiSyncSystemsResponseDto> GetMultiSyncSystemsAsync();
-    Task StopPlaylistGracefully();
+    Task StopPlaylistGracefullyAsync();
 }

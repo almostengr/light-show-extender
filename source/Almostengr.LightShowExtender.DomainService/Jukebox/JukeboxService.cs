@@ -57,7 +57,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
         }
     }
 
-    public async Task GetLatestJukeboxRequest()
+    public async Task GetLatestJukeboxRequestAsync()
     {
         try
         {
@@ -67,7 +67,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
                 return;
             }
 
-            string fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrent(response.Message);
+            string fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrentAsync(response.Message);
             if (fppResponse.ToLower() != "playlist inserted")
             {
                 throw new InvalidDataException($"Unexpected response from FPP. {fppResponse}");

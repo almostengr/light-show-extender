@@ -50,7 +50,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
                 displayDto.SetNwsTempC(_weatherObservation!.Properties.Temperature.Value.ToDisplayTemperature());
                 displayDto.SetWindChill(_weatherObservation!.Properties.WindChill.Value.ToDisplayTemperature());
 
-                await SetTitleAndArtist(displayDto);
+                await SetTitleAndArtistAsync(displayDto);
                 _logging.Information(displayDto.ToString());
                 await _engineerHttpClient.PostDisplayInfoAsync(displayDto);
             }
@@ -69,7 +69,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
         return TimeSpan.FromSeconds(delayTime);
     }
 
-    private async Task SetTitleAndArtist(EngineerLightShowDisplayRequestDto displayDto)
+    private async Task SetTitleAndArtistAsync(EngineerLightShowDisplayRequestDto displayDto)
     {
         if (string.IsNullOrWhiteSpace(_currentFppStatus!.Current_Song))
         {
@@ -94,7 +94,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
     {
         try
         {
-            _weatherObservation = await _nwsHttpClient.GetLatestObservation(_appSettings.NwsStationId);
+            _weatherObservation = await _nwsHttpClient.GetLatestObservationAsync(_appSettings.NwsStationId);
         }
         catch (Exception ex)
         {
@@ -139,7 +139,7 @@ public sealed class MonitoringService : BaseService, IMonitoringService
             currentTime >= showEndTime)
         {
             _logging.Warning("Stopping playlist gracefully");
-            await _fppHttpClient.StopPlaylistGracefully();
+            await _fppHttpClient.StopPlaylistGracefullyAsync();
         }
     }
 

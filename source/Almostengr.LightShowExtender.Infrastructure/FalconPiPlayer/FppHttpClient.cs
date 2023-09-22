@@ -46,15 +46,15 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         return await HttpGetAsync<FppMultiSyncSystemsResponseDto>(_httpClient, route);
     }
 
-    public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName)
+    public async Task<string> GetInsertPlaylistAfterCurrentAsync(string playlistName)
     {
         string route = $"api/command/Insert Playlist After Current/{playlistName}";
         return await HttpGetAsync<string>(_httpClient, route);
     }
 
-    public async Task StopPlaylistGracefully()
+    public async Task StopPlaylistGracefullyAsync()
     {
         string route = "api/playlists/stopgracefully";
-        // await HttpGetAsync<string>(_httpClient, route);
+        await HttpGetAsync<string>(_httpClient, route);
     }
 }

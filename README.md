@@ -12,5 +12,5 @@ What I decided to do was to create my own jukebox implementation of the light sh
 
 ## More Information
 
-For more information about this project, visit the User Guide folder or
+For more information about this project, visit the User Guide (user_guide) folder or
 [project page](https://thealmostengineer.com/projects/light-show-extender).
