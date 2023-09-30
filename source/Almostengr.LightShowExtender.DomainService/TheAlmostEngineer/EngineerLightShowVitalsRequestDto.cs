@@ -9,6 +9,7 @@ public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
     public string CpuTemp { get; private set; } = string.Empty;
     public string Artist { get; private set; } = string.Empty;
     public string Title { get; private set; } = string.Empty;
+    public DateTime LastUpdated { get; private set; } = DateTime.Now;
 
     internal void AddCpuTemperature(string displayText)
     {
@@ -37,6 +38,12 @@ public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
 
     internal void setArtist(string artist)
     {
+        if (artist.ToLower().Contains("unknown"))
+        {
+            Artist = string.Empty;
+            return;
+        }
+
         Artist = artist;
     }
 
