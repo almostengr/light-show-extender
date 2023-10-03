@@ -9,5 +9,6 @@ public interface IFppHttpClient : IBaseHttpClient
     Task<FppStatusResponseDto> GetFppdStatusAsync(string hostname);
     Task<string> GetInsertPlaylistAfterCurrent(string playlistName);
     Task<FppMultiSyncSystemsResponseDto> GetMultiSyncSystemsAsync();
-    Task StopPlaylistGracefully();
+    Task<List<string>> GetSequenceListAsync();
+    Task StopPlaylistGracefullyAsync();
 }

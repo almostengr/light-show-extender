@@ -22,4 +22,9 @@ public static class Extensions
         return output;
     }
 
+    public static bool IsSameSong(this string previousSong, string currentSong)
+    {
+        return currentSong == previousSong;
+    }
+
 }

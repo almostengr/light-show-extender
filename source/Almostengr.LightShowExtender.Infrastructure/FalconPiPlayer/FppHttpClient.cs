@@ -52,9 +52,15 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         return await HttpGetAsync<string>(_httpClient, route);
     }
 
-    public async Task StopPlaylistGracefully()
+    public async Task StopPlaylistGracefullyAsync()
     {
         string route = "api/playlists/stopgracefully";
-        // await HttpGetAsync<string>(_httpClient, route);
+        await HttpGetAsync<string>(_httpClient, route);
+    }
+
+    public async Task<List<string>> GetSequenceListAsync()
+    {
+        string route = "api/sequence";
+        return await HttpGetAsync<List<string>>(_httpClient, route);
     }
 }

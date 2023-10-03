@@ -10,7 +10,7 @@ public sealed class JukeboxService : BaseService, IJukeboxService
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly ILoggingService<JukeboxService> _logger;
     private FppStatusResponseDto _previousStatus;
-    private FppStatusResponseDto _currentStatus;
+    const uint MIN_SECONDS_REMAINING = 5;
 
     public JukeboxService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
@@ -19,64 +19,68 @@ public sealed class JukeboxService : BaseService, IJukeboxService
         _fppHttpClient = fppHttpClient;
         _logger = logger;
         _engineerHttpClient = engineerHttpClient;
-        _currentStatus = _previousStatus = new();
+        _previousStatus = new();
     }
 
-    public async Task DelayBetweenRequestsAsync()
-    {
-        TimeSpan secondsRemaining = TimeSpan.FromSeconds(5);
-
-        if (!string.IsNullOrWhiteSpace(_currentStatus.Seconds_Remaining))
-        {
-            secondsRemaining = TimeSpan.FromSeconds(Double.Parse(_currentStatus.Seconds_Remaining));
-        }
-        
-        await Task.Delay(secondsRemaining);
-    }
-
-    public async Task UpdateJukeboxAsync()
+    public async Task<TimeSpan> ManageRequestsAsync()
     {
         try
         {
-            _currentStatus = await _fppHttpClient.GetFppdStatusAsync();
-            await ClearSongsInQueueAsync();
-            _previousStatus = _currentStatus;
+            var currentStatus = await _fppHttpClient.GetFppdStatusAsync();
+
+            if (currentStatus.Current_Song == string.Empty)
+            {
+                return TimeSpan.FromSeconds(15);
+            }
+
+            await ClearJukeboxQueueWhenStartingAsync(currentStatus.Status_Name);
+
+            _previousStatus = currentStatus;
+
+            uint secondsRemaining = UInt32.Parse(currentStatus.Seconds_Remaining);
+            if (secondsRemaining > MIN_SECONDS_REMAINING)
+            {
+                return TimeSpan.FromSeconds(secondsRemaining - MIN_SECONDS_REMAINING);
+            }
+
+            EngineerResponseDto response = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
+            if (response.Message == string.Empty)
+            {
+                return TimeSpan.FromSeconds(15);
+                // var sequences = await _fppHttpClient.GetSequenceListAsync();
+                // var filteredSequences = sequences.Where(s => !s.Contains("HPL")).ToList();
+
+                // Random random = new();
+                // response = new EngineerResponseDto
+                // {
+                //     Message = filteredSequences.ElementAt(random.Next(filteredSequences.Count()))
+                // };
+            }
+
+            await InsertFppPlaylistAsync(response.Message);
         }
         catch (Exception ex)
         {
             _logger.Error(ex, ex.Message);
         }
+
+        return TimeSpan.FromSeconds(15);
     }
 
-    private async Task ClearSongsInQueueAsync()
+    private async Task InsertFppPlaylistAsync(string sequenceFileName)
     {
-        if (_previousStatus.Status_Name == StatusName.Idle &&
-            _currentStatus.Status_Name == StatusName.Playing)
+        string fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrent(sequenceFileName);
+        if (fppResponse.ToLower() != "playlist inserted")
+        {
+            throw new InvalidDataException($"Unexpected response from FPP. {fppResponse}");
+        }
+    }
+
+    private async Task ClearJukeboxQueueWhenStartingAsync(string statusName)
+    {
+        if (statusName != string.Empty && _previousStatus.Current_Song == string.Empty)
         {
             await _engineerHttpClient.DeleteAllSongsInQueueAsync();
         }
     }
-
-    public async Task GetLatestJukeboxRequest()
-    {
-        try
-        {
-            EngineerResponseDto response = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
-            if (response.Message == string.Empty)
-            {
-                return;
-            }
-
-            string fppResponse = await _fppHttpClient.GetInsertPlaylistAfterCurrent(response.Message);
-            if (fppResponse.ToLower() != "playlist inserted")
-            {
-                throw new InvalidDataException($"Unexpected response from FPP. {fppResponse}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, ex.Message);
-        }
-    }
-
 }

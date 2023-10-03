@@ -2,7 +2,7 @@ using Almostengr.LightShowExtender.DomainService.Common;
 
 namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
-public sealed class EngineerLightShowDisplayRequestDto : BaseRequestDto
+public sealed class EngineerDisplayRequestDto : BaseRequestDto
 {
     public string WindChill { get; private set; } = string.Empty;
     public string NwsTemperature { get; private set; } = string.Empty;

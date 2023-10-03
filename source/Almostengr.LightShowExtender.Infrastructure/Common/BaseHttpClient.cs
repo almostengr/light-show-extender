@@ -114,7 +114,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
     private async Task<int> HandleServerErrorAsync(int attempt, ServerErrorException exception)
     {
         const int MAX_RETRIES = 3;
-        if (attempt > MAX_RETRIES)
+        if (attempt >= MAX_RETRIES)
         {
             throw exception;
         }

@@ -29,8 +29,8 @@ public sealed class EngineerHttpClient : BaseHttpClient, IEngineerHttpClient
         return await HttpGetAsync<EngineerResponseDto>(_httpClient, FPP_API_ROUTE);
     }
 
-    public async Task PostDisplayInfoAsync(EngineerLightShowDisplayRequestDto vitalsDto)
+    public async Task PostDisplayInfoAsync(EngineerDisplayRequestDto vitalsDto)
     {
-        await HttpPostAsync<EngineerLightShowDisplayRequestDto>(_httpClient, FPP_API_ROUTE, vitalsDto);
+        await HttpPostAsync<EngineerDisplayRequestDto>(_httpClient, FPP_API_ROUTE, vitalsDto);
     }
 }
