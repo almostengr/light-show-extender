@@ -2,7 +2,7 @@ using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.DomainService.NwsWeather;
 
-namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
+namespace Almostengr.LightShowExtender.DomainService;
 
 public sealed class DisplayService : BaseService, IDisplayService
 {
@@ -36,8 +36,8 @@ public sealed class DisplayService : BaseService, IDisplayService
     public async Task<TimeSpan> UpdateWebsiteDisplayAsync()
     {
         const uint DELAY_DURATION = 10;
-        FppStatusResponseDto currentStatus;
         const uint MIN_SECONDS_REMAINING = 5;
+        FppStatusResponseDto currentStatus;
 
         try
         {
@@ -204,3 +204,4 @@ public sealed class DisplayService : BaseService, IDisplayService
     }
 
 }
+

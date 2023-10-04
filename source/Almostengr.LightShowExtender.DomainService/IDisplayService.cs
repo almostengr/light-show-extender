@@ -1,4 +1,4 @@
-namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
+namespace Almostengr.LightShowExtender.DomainService;
 
 public interface IDisplayService
 {
