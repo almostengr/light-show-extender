@@ -16,13 +16,13 @@ public sealed class NwsLatestObservationResponseDto : BaseResponseDto
         public sealed class NwsLatestObservationWindChill
         {
             public string UnitCode { get; init; } = string.Empty;
-            public float? Value { get; init; }
+            public float? Value { get; init; } = null;
         }
 
         public sealed class NwsLatestObservationTemperature
         {
             public string UnitCode { get; init; } = string.Empty;
-            public float Value { get; init; }
+            public float? Value { get; init; } = null;
         }
     }
 }

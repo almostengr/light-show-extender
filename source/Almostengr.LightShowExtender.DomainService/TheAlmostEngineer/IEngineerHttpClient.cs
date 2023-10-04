@@ -6,5 +6,5 @@ public interface IEngineerHttpClient : IBaseHttpClient
 {
     Task<EngineerResponseDto> GetFirstUnplayedRequestAsync();
     Task DeleteAllSongsInQueueAsync();
-    Task PostDisplayInfoAsync(EngineerDisplayRequestDto vitalsDto);
+    Task PostDisplayInfoAsync(EngineerDisplayRequestDto requestDto);
 }

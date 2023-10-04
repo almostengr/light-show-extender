@@ -1,7 +1,6 @@
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.Infrastructure.Logging;
-using Almostengr.LightShowExtender.DomainService.Jukebox;
 using Almostengr.LightShowExtender.DomainService.Common.Constants;
 using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
@@ -40,11 +39,9 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
 
         services.AddSingleton<IDisplayService, DisplayService>();
-        services.AddSingleton<IJukeboxService, JukeboxService>();
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
-        services.AddHostedService<JukeboxWorker>();
         services.AddHostedService<WebsiteDisplayWorker>();
     })
     .UseSystemd()

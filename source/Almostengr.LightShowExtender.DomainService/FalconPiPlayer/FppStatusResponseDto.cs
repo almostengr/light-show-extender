@@ -37,4 +37,9 @@ public sealed class FppStatusResponseDto : BaseResponseDto
         public string Label { get; init; } = string.Empty;
         public double Value { get; init; }
     }
+
+    public uint SecondsRemaining()
+    {
+        return UInt32.Parse(Seconds_Remaining);
+    }
 }

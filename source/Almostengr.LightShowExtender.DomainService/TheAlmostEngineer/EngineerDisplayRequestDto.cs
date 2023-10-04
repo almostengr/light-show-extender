@@ -38,7 +38,7 @@ public sealed class EngineerDisplayRequestDto : BaseRequestDto
 
     internal void setArtist(string artist)
     {
-        if (artist.ToLower().Contains("unknown"))
+        if (artist.ToUpper().Contains("UNKNOWN"))
         {
             Artist = string.Empty;
             return;

@@ -21,10 +21,4 @@ public static class Extensions
         string output = $"{fahrenheitInt}F ({celsiusInt}C)";
         return output;
     }
-
-    public static bool IsSameSong(this string previousSong, string currentSong)
-    {
-        return currentSong == previousSong;
-    }
-
 }
