@@ -43,13 +43,12 @@ public sealed class DisplayService : BaseService, IDisplayService
         {
             currentStatus = await _fppHttpClient.GetFppdStatusAsync();
 
-            if (currentStatus.Status_Name.ToUpper() == "IDLE")
+            if (currentStatus.Status_Name.ToUpper() == StatusName.Idle)
             {
-                if (_previousStatus.Status_Name.ToUpper() == "PLAYING")
+                if (_previousStatus.Status_Name.ToUpper() == StatusName.Playing)
                 {
                     EngineerDisplayRequestDto displayRequestDto = new();
                     await _engineerHttpClient.PostDisplayInfoAsync(displayRequestDto);
-                    await _engineerHttpClient.DeleteAllSongsInQueueAsync();
                 }
 
                 _previousStatus = currentStatus;
@@ -73,6 +72,11 @@ public sealed class DisplayService : BaseService, IDisplayService
 
         try
         {
+            if (_previousStatus.Status_Name.ToUpper() == StatusName.Idle && currentStatus.Status_Name.ToUpper() == StatusName.Playing)
+            {
+                await _engineerHttpClient.DeleteAllSongsInQueueAsync();
+            }
+
             await StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist);
 
             if (currentStatus.Current_Song == _previousStatus.Current_Song ||
@@ -91,6 +95,8 @@ public sealed class DisplayService : BaseService, IDisplayService
 
             await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
 
+            // todo - update other social media platforms
+
             if (currentStatus.Current_Song.ToUpper().Contains("PUBLIC SERVICE ANNOUNCEMENT") ||
                 currentStatus.Current_Song.ToUpper().Contains("CODE "))
             {
@@ -100,7 +106,7 @@ public sealed class DisplayService : BaseService, IDisplayService
             EngineerResponseDto engineerResponseDto = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
             if (engineerResponseDto.Message == string.Empty)
             {
-                // insert random song in playlist
+                // todo - insert random song in playlist
                 return TimeSpan.FromSeconds(DELAY_DURATION);
             }
 

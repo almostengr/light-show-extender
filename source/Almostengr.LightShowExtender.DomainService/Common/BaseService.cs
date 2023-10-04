@@ -4,7 +4,7 @@ public abstract class BaseService
 {
     internal static class StatusName
     {
-        public static readonly string Idle = "idle";
-        public static readonly string Playing = "playing";
+        public static readonly string Idle = "IDLE";
+        public static readonly string Playing = "PLAYING";
     }
 }
