@@ -1,3 +1,4 @@
+using Almostengr.LightShowExtender.DomainService;
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.Infrastructure.Logging;

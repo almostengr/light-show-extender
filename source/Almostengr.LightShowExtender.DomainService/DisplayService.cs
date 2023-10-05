@@ -1,6 +1,7 @@
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.DomainService.NwsWeather;
+using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
 namespace Almostengr.LightShowExtender.DomainService;
 
@@ -57,7 +58,7 @@ public sealed class DisplayService : BaseService, IDisplayService
         }
         catch (Exception ex)
         {
-            _logging.Error(ex, ex.Message);
+            _logging.Error(ex, ex.GetBaseException().ToString());
             return TimeSpan.FromSeconds(DELAY_DURATION);
         }
 
@@ -67,7 +68,7 @@ public sealed class DisplayService : BaseService, IDisplayService
         }
         catch (Exception ex)
         {
-            _logging.Error(ex, ex.Message);
+            _logging.Error(ex, ex.GetBaseException().ToString());
         }
 
         try
@@ -95,19 +96,15 @@ public sealed class DisplayService : BaseService, IDisplayService
 
             await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
 
-            // todo - update other social media platforms
-
-            if (currentStatus.Current_Song.ToUpper().Contains("PUBLIC SERVICE ANNOUNCEMENT") ||
-                currentStatus.Current_Song.ToUpper().Contains("CODE "))
+            if (currentStatus.Current_Song.ToUpper().StartsWith("HPL"))
             {
                 return TimeSpan.FromSeconds(currentStatus.SecondsRemaining() - 2);
             }
 
             EngineerResponseDto engineerResponseDto = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
-            if (engineerResponseDto.Message == string.Empty)
+            if (string.IsNullOrWhiteSpace(engineerResponseDto.Message))
             {
-                // todo - insert random song in playlist
-                return TimeSpan.FromSeconds(DELAY_DURATION);
+                engineerResponseDto = await GetRandomSequenceAsync();
             }
 
             await InsertFppPlaylistAsync(engineerResponseDto.Message);
@@ -116,10 +113,21 @@ public sealed class DisplayService : BaseService, IDisplayService
         }
         catch (Exception ex)
         {
-            _logging.Error(ex, ex.Message);
+            _logging.Error(ex, ex.GetBaseException().ToString());
         }
 
         return TimeSpan.FromSeconds(DELAY_DURATION);
+    }
+
+    private async Task<EngineerResponseDto> GetRandomSequenceAsync()
+    {
+        List<string> allSequences = await _fppHttpClient.GetSequenceListAsync();
+        List<string> filteredSequences = allSequences.Where(s => !s.ToUpper().StartsWith("HPL")).ToList();
+
+        Random random = new();
+        string selectedSequence = filteredSequences.ElementAt(random.Next(filteredSequences.Count()));
+        EngineerResponseDto responseDto = new(selectedSequence);
+        return responseDto;
     }
 
     private async Task InsertFppPlaylistAsync(string sequenceFileName)

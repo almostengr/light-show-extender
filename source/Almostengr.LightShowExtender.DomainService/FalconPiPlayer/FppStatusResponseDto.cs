@@ -28,7 +28,7 @@ public sealed class FppStatusResponseDto : BaseResponseDto
         {
             [JsonPropertyName("scheduledEndTime")]
             public uint ScheduledEndTime { get; init; }
-            public string Playlist { get; set; } = string.Empty;
+            public string Playlist { get; init; } = string.Empty;
         }
     }
 
