@@ -1,3 +1,3 @@
 #!/bin/bash
 
-systemctl stop lightshowextender.service
+sudo /bin/systemctl stop lightshowextender.service

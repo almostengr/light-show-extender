@@ -6,6 +6,8 @@ public sealed class AppSettings
     public FalconSetting FalconPlayer { get; init; } = new();
     public string NwsApiUrl { get; init; } = string.Empty;
     public string NwsStationId { get; init; } = "KMGM";
+    public uint MaxSongsBetweenPsa { get; init; } = 2;
+    public uint ExtenderDelay { get; init; } = 5;
 
     public sealed class FalconSetting
     {

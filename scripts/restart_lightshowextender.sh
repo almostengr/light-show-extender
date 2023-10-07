@@ -1,3 +1,3 @@
 #!/bin/bash
 
-systemctl restart lightshowextender.service
+sudo /bin/systemctl restart lightshowextender.service

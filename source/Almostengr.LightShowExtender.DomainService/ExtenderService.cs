@@ -17,6 +17,7 @@ public sealed class ExtenderService : IExtenderService
     private DateTime _lastWeatherRefreshTime;
     private readonly TimeSpan _showEndTime;
     private string _previousSong;
+    private uint _songsSincePsa;
 
     public ExtenderService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
@@ -32,13 +33,12 @@ public sealed class ExtenderService : IExtenderService
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
         _showEndTime = new TimeSpan(22, 15, 00);
         _weatherObservation = new();
-        _previousSong = string.Empty;
+        _previousSong = "START";
+        _songsSincePsa = 0;
     }
 
     public async Task<TimeSpan> UpdateWebsiteDisplayAsync()
     {
-        const uint DELAY_DURATION = 10;
-        const uint MIN_SECONDS_REMAINING = 5;
         FppStatusResponseDto currentStatus;
 
         try
@@ -54,13 +54,13 @@ public sealed class ExtenderService : IExtenderService
                 }
 
                 _previousSong = currentStatus.Current_Song;
-                return TimeSpan.FromSeconds(DELAY_DURATION);
+                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
         }
         catch (Exception ex)
         {
             _logging.Error(ex, ex.GetBaseException().ToString());
-            return TimeSpan.FromSeconds(DELAY_DURATION);
+            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
         }
 
         try
@@ -77,18 +77,27 @@ public sealed class ExtenderService : IExtenderService
             await ClearQueueWhenStartingPlaylistAsync(currentStatus);
             await StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist);
 
-            if (currentStatus.Current_Song == _previousSong || currentStatus.SecondsRemaining() > MIN_SECONDS_REMAINING)
+            if (currentStatus.Current_Song == _previousSong)
             {
                 _previousSong = currentStatus.Current_Song;
-                return TimeSpan.FromSeconds(DELAY_DURATION);
+                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
+
+            _logging.Information($"Previous song: {_previousSong}; current song: {currentStatus.Current_Song}");
 
             EngineerDisplayRequestDto engineerDisplayRequestDto = await CreateDisplayRequestDtoAsync(currentStatus.Current_Song);
             await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
 
-            if (currentStatus.Current_Song.ToUpper().StartsWith("HPL"))
+            if (_songsSincePsa >= _appSettings.MaxSongsBetweenPsa)
             {
-                return TimeSpan.FromSeconds(currentStatus.SecondsRemaining() - 2);
+                List<string> allSequences = await _fppHttpClient.GetSequenceListAsync();
+                string psaSequence = allSequences.Where(s => s.ToUpper().Contains("PSA")).First();
+                psaSequence += ".fseq";
+                EngineerResponseDto psaRequest = new EngineerResponseDto { Message = psaSequence };
+                await InsertFppPlaylistAsync(psaRequest.Message);
+                _songsSincePsa = 0;
+                _previousSong = currentStatus.Current_Song;
+                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
 
             EngineerResponseDto unplayedRequest = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
@@ -98,6 +107,7 @@ public sealed class ExtenderService : IExtenderService
             }
 
             await InsertFppPlaylistAsync(unplayedRequest.Message);
+            _songsSincePsa++;
 
             _previousSong = currentStatus.Current_Song;
         }
@@ -106,7 +116,7 @@ public sealed class ExtenderService : IExtenderService
             _logging.Error(ex, ex.GetBaseException().ToString());
         }
 
-        return TimeSpan.FromSeconds(DELAY_DURATION);
+        return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
     }
 
     private async Task<EngineerDisplayRequestDto> CreateDisplayRequestDtoAsync(string currentSong)
@@ -140,7 +150,6 @@ public sealed class ExtenderService : IExtenderService
             Artist = artist,
         };
 
-        _logging.Information(engineerDisplayRequestDto.ToString());
         return engineerDisplayRequestDto;
     }
 
@@ -159,6 +168,7 @@ public sealed class ExtenderService : IExtenderService
 
         Random random = new();
         string selectedSequence = filteredSequences.ElementAt(random.Next(filteredSequences.Count()));
+        selectedSequence += ".fseq";
         EngineerResponseDto responseDto = new(selectedSequence);
         return responseDto;
     }
@@ -174,10 +184,11 @@ public sealed class ExtenderService : IExtenderService
 
     private async Task GetWeatherObservationAsync()
     {
-        DateTime oneHourAgo = DateTime.Now.AddHours(-1);
+        DateTime nextRefreshTime = DateTime.Now.AddHours(-1);
 
-        if (_lastWeatherRefreshTime > oneHourAgo)
+        if (_lastWeatherRefreshTime < nextRefreshTime)
         {
+            _logging.Information("Refreshing weather information");
             _weatherObservation = await _nwsHttpClient.GetLatestObservationAsync(_appSettings.NwsStationId);
             _lastWeatherRefreshTime = DateTime.Now;
         }
@@ -199,7 +210,7 @@ public sealed class ExtenderService : IExtenderService
 
         foreach (var system in fppMultiSyncSystemsDto.Systems)
         {
-            var status = await _fppHttpClient.GetFppdStatusAsync(system.Address);
+            FppStatusResponseDto status = await _fppHttpClient.GetFppdStatusAsync(system.Address);
 
             float cpuTemperature = (float)status.Sensors
                 .Where(s => s.Label.ToUpper().StartsWith("CPU"))
@@ -211,7 +222,7 @@ public sealed class ExtenderService : IExtenderService
                 output.Append(", ");
             }
 
-            output.Append($"{cpuTemperature.ToDisplayTemperature()} ");
+            output.Append(cpuTemperature.ToDisplayTemperature());
 
             if (cpuTemperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
             {
@@ -232,4 +243,3 @@ public sealed class ExtenderService : IExtenderService
     }
 
 }
-

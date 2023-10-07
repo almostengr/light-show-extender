@@ -13,7 +13,7 @@ internal sealed class WebsiteDisplayWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        TimeSpan delayTime = TimeSpan.FromSeconds(30);
+        TimeSpan delayTime;
         while (!stoppingToken.IsCancellationRequested)
         {
             delayTime = await _displayService.UpdateWebsiteDisplayAsync();
