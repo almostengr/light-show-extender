@@ -4,11 +4,11 @@ namespace Almostengr.LightShowExtender.Worker;
 
 internal sealed class WebsiteDisplayWorker : BackgroundService
 {
-    private readonly IExtenderService _displayService;
+    private readonly IExtenderService _extenderService;
 
-    public WebsiteDisplayWorker(IExtenderService displayService)
+    public WebsiteDisplayWorker(IExtenderService extenderService)
     {
-        _displayService = displayService;
+        _extenderService = extenderService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -16,7 +16,7 @@ internal sealed class WebsiteDisplayWorker : BackgroundService
         TimeSpan delayTime;
         while (!stoppingToken.IsCancellationRequested)
         {
-            delayTime = await _displayService.UpdateWebsiteDisplayAsync();
+            delayTime = await _extenderService.UpdateWebsiteDisplayAsync();
             await Task.Delay(delayTime, stoppingToken);
         }
     }
