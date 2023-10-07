@@ -9,7 +9,7 @@ public static class Extensions
             return "None";
         }
 
-        return ToDisplayTemperature((float) celsius);
+        return ToDisplayTemperature((float)celsius);
     }
 
     public static string ToDisplayTemperature(this float celsius)
@@ -20,5 +20,15 @@ public static class Extensions
 
         string output = $"{fahrenheitInt}F ({celsiusInt}C)";
         return output;
+    }
+
+    public static bool IsNotNullOrWhiteSpace(this string input)
+    {
+        return !string.IsNullOrWhiteSpace(input);
+    }
+
+    public static bool IsNullOrWhiteSpace(this string input)
+    {
+        return string.IsNullOrWhiteSpace(input);
     }
 }

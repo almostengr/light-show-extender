@@ -2,11 +2,11 @@ using Almostengr.LightShowExtender.DomainService;
 
 namespace Almostengr.LightShowExtender.Worker;
 
-public class WebsiteDisplayWorker : BackgroundService
+internal sealed class WebsiteDisplayWorker : BackgroundService
 {
-    private readonly IDisplayService _displayService;
+    private readonly IExtenderService _displayService;
 
-    public WebsiteDisplayWorker(IDisplayService displayService)
+    public WebsiteDisplayWorker(IExtenderService displayService)
     {
         _displayService = displayService;
     }

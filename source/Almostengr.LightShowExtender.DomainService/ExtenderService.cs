@@ -1,3 +1,4 @@
+using System.Text;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.DomainService.NwsWeather;
@@ -5,33 +6,33 @@ using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
 namespace Almostengr.LightShowExtender.DomainService;
 
-public sealed class DisplayService : BaseService, IDisplayService
+public sealed class ExtenderService : IExtenderService
 {
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly IFppHttpClient _fppHttpClient;
-    private readonly ILoggingService<DisplayService> _logging;
+    private readonly ILoggingService<ExtenderService> _logging;
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly AppSettings _appSettings;
     private NwsLatestObservationResponseDto _weatherObservation;
-    private FppStatusResponseDto _previousStatus;
     private DateTime _lastWeatherRefreshTime;
     private readonly TimeSpan _showEndTime;
+    private string _previousSong;
 
-    public DisplayService(IFppHttpClient fppHttpClient,
+    public ExtenderService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
         INwsHttpClient nwsHttpClient,
         AppSettings appSettings,
-        ILoggingService<DisplayService> logging)
+        ILoggingService<ExtenderService> logging)
     {
         _fppHttpClient = fppHttpClient;
         _engineerHttpClient = engineerHttpClient;
         _logging = logging;
         _nwsHttpClient = nwsHttpClient;
         _appSettings = appSettings;
-        _previousStatus = new();
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
         _showEndTime = new TimeSpan(22, 15, 00);
         _weatherObservation = new();
+        _previousSong = string.Empty;
     }
 
     public async Task<TimeSpan> UpdateWebsiteDisplayAsync()
@@ -44,15 +45,15 @@ public sealed class DisplayService : BaseService, IDisplayService
         {
             currentStatus = await _fppHttpClient.GetFppdStatusAsync();
 
-            if (currentStatus.Status_Name.ToUpper() == StatusName.Idle)
+            if (currentStatus.Current_Song.IsNullOrWhiteSpace())
             {
-                if (_previousStatus.Status_Name.ToUpper() == StatusName.Playing)
+                if (_previousSong.IsNotNullOrWhiteSpace())
                 {
-                    EngineerDisplayRequestDto displayRequestDto = new();
+                    EngineerDisplayRequestDto displayRequestDto = await CreateDisplayRequestDtoAsync(string.Empty);
                     await _engineerHttpClient.PostDisplayInfoAsync(displayRequestDto);
                 }
 
-                _previousStatus = currentStatus;
+                _previousSong = currentStatus.Current_Song;
                 return TimeSpan.FromSeconds(DELAY_DURATION);
             }
         }
@@ -73,27 +74,16 @@ public sealed class DisplayService : BaseService, IDisplayService
 
         try
         {
-            if (_previousStatus.Status_Name.ToUpper() == StatusName.Idle && currentStatus.Status_Name.ToUpper() == StatusName.Playing)
-            {
-                await _engineerHttpClient.DeleteAllSongsInQueueAsync();
-            }
-
+            await ClearQueueWhenStartingPlaylistAsync(currentStatus);
             await StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist);
 
-            if (currentStatus.Current_Song == _previousStatus.Current_Song ||
-                currentStatus.SecondsRemaining() > MIN_SECONDS_REMAINING)
+            if (currentStatus.Current_Song == _previousSong || currentStatus.SecondsRemaining() > MIN_SECONDS_REMAINING)
             {
-                _previousStatus = currentStatus;
+                _previousSong = currentStatus.Current_Song;
                 return TimeSpan.FromSeconds(DELAY_DURATION);
             }
 
-            EngineerDisplayRequestDto engineerDisplayRequestDto = new();
-            await GetAllCpuTemperaturesAsync(engineerDisplayRequestDto);
-            engineerDisplayRequestDto.SetWindChill(_weatherObservation.Properties.WindChill.Value.ToDisplayTemperature());
-            engineerDisplayRequestDto.SetNwsTempC(_weatherObservation.Properties.Temperature.Value.ToDisplayTemperature());
-            await SetTitleAndArtistAsync(engineerDisplayRequestDto, currentStatus.Current_Song);
-            _logging.Information(engineerDisplayRequestDto.ToString());
-
+            EngineerDisplayRequestDto engineerDisplayRequestDto = await CreateDisplayRequestDtoAsync(currentStatus.Current_Song);
             await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
 
             if (currentStatus.Current_Song.ToUpper().StartsWith("HPL"))
@@ -101,15 +91,15 @@ public sealed class DisplayService : BaseService, IDisplayService
                 return TimeSpan.FromSeconds(currentStatus.SecondsRemaining() - 2);
             }
 
-            EngineerResponseDto engineerResponseDto = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
-            if (string.IsNullOrWhiteSpace(engineerResponseDto.Message))
+            EngineerResponseDto unplayedRequest = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
+            if (unplayedRequest.Message.IsNullOrWhiteSpace())
             {
-                engineerResponseDto = await GetRandomSequenceAsync();
+                unplayedRequest = await GetRandomSequenceAsync();
             }
 
-            await InsertFppPlaylistAsync(engineerResponseDto.Message);
+            await InsertFppPlaylistAsync(unplayedRequest.Message);
 
-            _previousStatus = currentStatus;
+            _previousSong = currentStatus.Current_Song;
         }
         catch (Exception ex)
         {
@@ -117,6 +107,49 @@ public sealed class DisplayService : BaseService, IDisplayService
         }
 
         return TimeSpan.FromSeconds(DELAY_DURATION);
+    }
+
+    private async Task<EngineerDisplayRequestDto> CreateDisplayRequestDtoAsync(string currentSong)
+    {
+        string cpuTemps = await GetAllCpuTemperaturesAsync();
+        string windChill = _weatherObservation.Properties.WindChill.Value.ToDisplayTemperature();
+        string temp = _weatherObservation.Properties.Temperature.Value.ToDisplayTemperature();
+        string artist = string.Empty;
+        string title = string.Empty;
+
+        if (currentSong.IsNotNullOrWhiteSpace())
+        {
+            FppMediaMetaResponseDto metaResponse = await _fppHttpClient.GetCurrentSongMetaDataAsync(currentSong);
+
+            if (metaResponse != null)
+            {
+                title = metaResponse.Format.Tags.Title.IsNullOrWhiteSpace() ?
+                    GetSongNameFromFileName(currentSong) : metaResponse.Format.Tags.Title;
+
+                artist = metaResponse.Format.Tags.Artist.IsNullOrWhiteSpace() ?
+                   string.Empty : metaResponse.Format.Tags.Artist;
+            }
+        }
+
+        EngineerDisplayRequestDto engineerDisplayRequestDto = new EngineerDisplayRequestDto
+        {
+            CpuTemp = cpuTemps,
+            WindChill = windChill,
+            NwsTemperature = temp,
+            Title = title,
+            Artist = artist,
+        };
+
+        _logging.Information(engineerDisplayRequestDto.ToString());
+        return engineerDisplayRequestDto;
+    }
+
+    private async Task ClearQueueWhenStartingPlaylistAsync(FppStatusResponseDto currentStatus)
+    {
+        if (_previousSong.IsNullOrWhiteSpace() && currentStatus.Current_Song.IsNotNullOrWhiteSpace())
+        {
+            await _engineerHttpClient.DeleteAllSongsInQueueAsync();
+        }
     }
 
     private async Task<EngineerResponseDto> GetRandomSequenceAsync()
@@ -136,28 +169,6 @@ public sealed class DisplayService : BaseService, IDisplayService
         if (fppResponse.ToUpper() != "PLAYLIST INSERTED")
         {
             throw new InvalidDataException($"Unexpected response from FPP. {fppResponse}");
-        }
-    }
-
-    private async Task SetTitleAndArtistAsync(EngineerDisplayRequestDto displayDto, string currentSong)
-    {
-        if (string.IsNullOrWhiteSpace(currentSong))
-        {
-            return;
-        }
-
-        FppMediaMetaResponseDto metaResponse = await _fppHttpClient.GetCurrentSongMetaDataAsync(currentSong);
-
-        if (metaResponse != null)
-        {
-            string title = string.IsNullOrWhiteSpace(metaResponse.Format.Tags.Title) ?
-                GetSongNameFromFileName(currentSong) :
-                metaResponse.Format.Tags.Title;
-            displayDto.SetTitle(title);
-
-            string artist = string.IsNullOrWhiteSpace(metaResponse.Format.Tags.Artist) ?
-                string.Empty : metaResponse.Format.Tags.Artist;
-            displayDto.setArtist(artist);
         }
     }
 
@@ -181,9 +192,11 @@ public sealed class DisplayService : BaseService, IDisplayService
         return value;
     }
 
-    private async Task GetAllCpuTemperaturesAsync(EngineerDisplayRequestDto engineerDisplayRequestDto)
+    private async Task<string> GetAllCpuTemperaturesAsync()
     {
         FppMultiSyncSystemsResponseDto fppMultiSyncSystemsDto = await _fppHttpClient.GetMultiSyncSystemsAsync();
+        StringBuilder output = new();
+
         foreach (var system in fppMultiSyncSystemsDto.Systems)
         {
             var status = await _fppHttpClient.GetFppdStatusAsync(system.Address);
@@ -193,13 +206,20 @@ public sealed class DisplayService : BaseService, IDisplayService
                 .Select(s => s.Value)
                 .Single();
 
-            engineerDisplayRequestDto.AddCpuTemperature(cpuTemperature.ToDisplayTemperature());
+            if (output.Length > 0)
+            {
+                output.Append(", ");
+            }
+
+            output.Append($"{cpuTemperature.ToDisplayTemperature()} ");
 
             if (cpuTemperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
             {
                 _logging.Warning($"CPU temperature alert: {cpuTemperature.ToString()} for host {system.Hostname}");
             }
         }
+
+        return output.ToString();
     }
 
     private async Task StopPlaylistAfterEndTimeAsync(string currentPlaylist)

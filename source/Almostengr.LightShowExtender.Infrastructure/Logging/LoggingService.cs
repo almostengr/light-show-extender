@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Logging;
 
-public sealed class LoggingService<T> : ILoggingService<T>
+public sealed class LoggingService<T> : ILoggingService<T> where T : class
 {
     private readonly ILogger<T> _logger;
 

@@ -10,6 +10,5 @@ public sealed class FppMultiSyncSystemsResponseDto : BaseResponseDto
     {
         public string Address { get; init; } = string.Empty;
         public string Hostname { get; init; } = string.Empty;
-        public int LastSeen { get; init; }
     }
 }

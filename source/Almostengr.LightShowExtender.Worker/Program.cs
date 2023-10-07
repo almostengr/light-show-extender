@@ -39,7 +39,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IEngineerHttpClient, EngineerHttpClient>();
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
 
-        services.AddSingleton<IDisplayService, DisplayService>();
+        services.AddSingleton<IExtenderService, ExtenderService>();
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 

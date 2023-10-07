@@ -4,48 +4,11 @@ namespace Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 
 public sealed class EngineerDisplayRequestDto : BaseRequestDto
 {
-    public string WindChill { get; private set; } = string.Empty;
-    public string NwsTemperature { get; private set; } = string.Empty;
-    public string CpuTemp { get; private set; } = string.Empty;
-    public string Artist { get; private set; } = string.Empty;
-    public string Title { get; private set; } = string.Empty;
-    public DateTime LastUpdated { get; private set; } = DateTime.Now;
-
-    internal void AddCpuTemperature(string displayText)
-    {
-        if (!string.IsNullOrWhiteSpace(CpuTemp))
-        {
-            CpuTemp += ", ";
-        }
-
-        CpuTemp += displayText;
-    }
-
-    internal void SetWindChill(string displayText)
-    {
-        WindChill = displayText;
-    }
-
-    internal void SetNwsTempC(string displayText)
-    {
-        NwsTemperature = displayText;
-    }
-
-    internal void SetTitle(string title)
-    {
-        Title = title;
-    }
-
-    internal void setArtist(string artist)
-    {
-        if (artist.ToUpper().Contains("UNKNOWN"))
-        {
-            Artist = string.Empty;
-            return;
-        }
-
-        Artist = artist;
-    }
+    public string WindChill { get; init; } = string.Empty;
+    public string NwsTemperature { get; init; } = string.Empty;
+    public string CpuTemp { get; init; } = string.Empty;
+    public string Artist { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
 
     public override string ToString()
     {

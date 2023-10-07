@@ -1,6 +1,6 @@
 namespace Almostengr.LightShowExtender.DomainService;
 
-public interface IDisplayService
+public interface IExtenderService
 {
     Task<TimeSpan> UpdateWebsiteDisplayAsync();
 }

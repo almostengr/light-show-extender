@@ -13,8 +13,6 @@ public sealed class FppStatusResponseDto : BaseResponseDto
     [JsonPropertyName("seconds_remaining")]
     public string Seconds_Remaining { get; init; } = string.Empty;
 
-    [JsonPropertyName("status_name")]
-    public string Status_Name { get; init; } = string.Empty;
 
     [JsonPropertyName("scheduler")]
     public ScheduleDetail Scheduler { get; init; } = new();
@@ -24,10 +22,9 @@ public sealed class FppStatusResponseDto : BaseResponseDto
         [JsonPropertyName("currentPlaylist")]
         public ActivePlaylist CurrentPlaylist { get; init; } = new();
 
-        public class ActivePlaylist
+        public sealed class ActivePlaylist
         {
             [JsonPropertyName("scheduledEndTime")]
-            public uint ScheduledEndTime { get; init; }
             public string Playlist { get; init; } = string.Empty;
         }
     }
