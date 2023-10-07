@@ -83,8 +83,6 @@ public sealed class ExtenderService : IExtenderService
                 return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
 
-            _logging.Information($"Previous song: {_previousSong}; current song: {currentStatus.Current_Song}");
-
             EngineerDisplayRequestDto engineerDisplayRequestDto = await CreateDisplayRequestDtoAsync(currentStatus.Current_Song);
             await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
 
@@ -188,7 +186,6 @@ public sealed class ExtenderService : IExtenderService
 
         if (_lastWeatherRefreshTime < nextRefreshTime)
         {
-            _logging.Information("Refreshing weather information");
             _weatherObservation = await _nwsHttpClient.GetLatestObservationAsync(_appSettings.NwsStationId);
             _lastWeatherRefreshTime = DateTime.Now;
         }
