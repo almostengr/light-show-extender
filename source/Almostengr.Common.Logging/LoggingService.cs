@@ -1,7 +1,6 @@
-using Almostengr.LightShowExtender.DomainService.Common;
 using Microsoft.Extensions.Logging;
 
-namespace Almostengr.LightShowExtender.Infrastructure.Logging;
+namespace Almostengr.Common.Logging;
 
 public sealed class LoggingService<T> : ILoggingService<T> where T : class
 {

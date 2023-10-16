@@ -1,14 +1,14 @@
 using Almostengr.LightShowExtender.DomainService;
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.LightShowExtender.DomainService.Common;
-using Almostengr.LightShowExtender.Infrastructure.Logging;
+using Almostengr.Common.Logging;
 using Almostengr.LightShowExtender.DomainService.Common.Constants;
-using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.LightShowExtender.Infrastructure.TheAlmostEngineer;
 using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
-using Almostengr.LightShowExtender.DomainService.NwsWeather;
-using Almostengr.LightShowExtender.Infrastructure.NwsWeather;
+using Almostengr.LightShowExtender.Infrastructure.Wled;
+using Almostengr.LightShowExtender.DomainService.Wled;
+using Almostengr.Common.NwsWeather;
+using Almostengr.Common.TheAlmostEngineer;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
@@ -38,6 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IEngineerHttpClient, EngineerHttpClient>();
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
+        services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
         services.AddSingleton<IExtenderService, ExtenderService>();
 

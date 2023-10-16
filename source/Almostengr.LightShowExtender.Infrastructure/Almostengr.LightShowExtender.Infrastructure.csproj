@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj" />
+    <ProjectReference Include="..\Almostengr.Common.Utilities\Almostengr.Common.Utilities.csproj" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
 

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>Almostengr Utilities</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.Common.Utitiles</AssemblyName>
+    <RootNamespace>Almostengr.Common</RootNamespace>
+    <Version>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
+  </PropertyGroup>
+
+</Project>

@@ -16,7 +16,7 @@ internal sealed class WebsiteDisplayWorker : BackgroundService
         TimeSpan delayTime;
         while (!stoppingToken.IsCancellationRequested)
         {
-            delayTime = await _extenderService.UpdateWebsiteDisplayAsync();
+            delayTime = await _extenderService.MonitorAsync();
             await Task.Delay(delayTime, stoppingToken);
         }
     }

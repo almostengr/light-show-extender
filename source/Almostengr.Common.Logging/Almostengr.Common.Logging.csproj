@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <ProjectReference Include="..\Almostengr.Common.NwsWeather\Almostengr.Common.NwsWeather.csproj" />
-    <ProjectReference Include="..\Almostengr.Common.Logging\Almostengr.Common.Logging.csproj" />
-    <ProjectReference Include="..\Almostengr.Common.TheAlmostEngineer\Almostengr.Common.TheAlmostEngineer.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -12,10 +9,10 @@
     <Nullable>enable</Nullable>
     <Company>Robinson Handy and Technology Services LLC</Company>
     <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
-    <Product>Lihgt Show Extender</Product>
+    <Product>Logging Utilities</Product>
     <Authors>Kenny Robinson</Authors>
-    <AssemblyName>Almostengr.LightShowExtender.DomainService</AssemblyName>
-    <RootNamespace>Almostengr.LightShowExtender</RootNamespace>
+    <AssemblyName>Almostengr.Common.Logging</AssemblyName>
+    <RootNamespace>Almostengr.Common</RootNamespace>
     <Version>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
   </PropertyGroup>
 

@@ -1,4 +1,4 @@
-namespace Almostengr.LightShowExtender.DomainService.NwsWeather;
+namespace Almostengr.Common.NwsWeather;
 
 public interface INwsHttpClient
 {

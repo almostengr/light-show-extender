@@ -1,4 +1,4 @@
-namespace Almostengr.LightShowExtender.DomainService.Common;
+namespace Almostengr.Common.Logging;
 
 public interface ILoggingService<T>
 {

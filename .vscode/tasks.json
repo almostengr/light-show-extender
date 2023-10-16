@@ -67,7 +67,7 @@
                 "-pr",
                 "${workspaceRoot}/scripts/lightshowextender.service",
                 "${workspaceRoot}/source/Almostengr.LightShowExtender.Worker/bin/Release/net6.0/linux-arm/publish/*",
-                "fpp@10.10.107.116://home/fpp/lightshowextender"
+                "fpp@10.10.50.101://home/fpp/lightshowextender"
             ],
             "group": "none",
             "dependsOn": ["Tag Release"],

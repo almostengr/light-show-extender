@@ -1,8 +1,10 @@
 using System.Text;
+using Almostengr.Common.NwsWeather;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.LightShowExtender.DomainService.NwsWeather;
-using Almostengr.LightShowExtender.DomainService.TheAlmostEngineer;
+using Almostengr.LightShowExtender.DomainService.Wled;
+using Almostengr.Common.TheAlmostEngineer;
+using Almostengr.Common.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService;
 
@@ -12,6 +14,7 @@ public sealed class ExtenderService : IExtenderService
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<ExtenderService> _logging;
     private readonly INwsHttpClient _nwsHttpClient;
+    private readonly IWledHttpClient _wledHttpClient;
     private readonly AppSettings _appSettings;
     private NwsLatestObservationResponseDto _weatherObservation;
     private DateTime _lastWeatherRefreshTime;
@@ -22,6 +25,7 @@ public sealed class ExtenderService : IExtenderService
     public ExtenderService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
         INwsHttpClient nwsHttpClient,
+        IWledHttpClient wledHttpClient,
         AppSettings appSettings,
         ILoggingService<ExtenderService> logging)
     {
@@ -29,6 +33,7 @@ public sealed class ExtenderService : IExtenderService
         _engineerHttpClient = engineerHttpClient;
         _logging = logging;
         _nwsHttpClient = nwsHttpClient;
+        _wledHttpClient = wledHttpClient;
         _appSettings = appSettings;
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
         _showEndTime = new TimeSpan(22, 15, 00);
@@ -37,7 +42,7 @@ public sealed class ExtenderService : IExtenderService
         _songsSincePsa = 0;
     }
 
-    public async Task<TimeSpan> UpdateWebsiteDisplayAsync()
+    public async Task<TimeSpan> MonitorAsync()
     {
         FppStatusResponseDto currentStatus;
 
@@ -51,6 +56,10 @@ public sealed class ExtenderService : IExtenderService
                 {
                     EngineerDisplayRequestDto displayRequestDto = await CreateDisplayRequestDtoAsync(string.Empty);
                     await _engineerHttpClient.PostDisplayInfoAsync(displayRequestDto);
+
+                    // todo - turn off lights ran by WLED
+
+                    // todo - turn on driveway lights after show ends
                 }
 
                 _previousSong = currentStatus.Current_Song;
@@ -91,7 +100,7 @@ public sealed class ExtenderService : IExtenderService
                 List<string> allSequences = await _fppHttpClient.GetSequenceListAsync();
                 string psaSequence = allSequences.Where(s => s.ToUpper().Contains("PSA")).First();
                 psaSequence += ".fseq";
-                EngineerResponseDto psaRequest = new EngineerResponseDto { Message = psaSequence };
+                EngineerResponseDto psaRequest = new EngineerResponseDto(psaSequence);
                 await InsertFppPlaylistAsync(psaRequest.Message);
                 _songsSincePsa = 0;
                 _previousSong = currentStatus.Current_Song;
@@ -101,7 +110,7 @@ public sealed class ExtenderService : IExtenderService
             EngineerResponseDto unplayedRequest = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
             if (unplayedRequest.Message.IsNullOrWhiteSpace())
             {
-                unplayedRequest = await GetRandomSequenceAsync();
+                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
 
             await InsertFppPlaylistAsync(unplayedRequest.Message);
@@ -119,7 +128,7 @@ public sealed class ExtenderService : IExtenderService
 
     private async Task<EngineerDisplayRequestDto> CreateDisplayRequestDtoAsync(string currentSong)
     {
-        string cpuTemps = await GetAllCpuTemperaturesAsync();
+        string cpuTemps = await CheckAllSystemsAsync();
         string windChill = _weatherObservation.Properties.WindChill.Value.ToDisplayTemperature();
         string temp = _weatherObservation.Properties.Temperature.Value.ToDisplayTemperature();
         string artist = string.Empty;
@@ -200,30 +209,44 @@ public sealed class ExtenderService : IExtenderService
         return value;
     }
 
-    private async Task<string> GetAllCpuTemperaturesAsync()
+    private async Task<string> CheckAllSystemsAsync()
     {
         FppMultiSyncSystemsResponseDto fppMultiSyncSystemsDto = await _fppHttpClient.GetMultiSyncSystemsAsync();
         StringBuilder output = new();
 
         foreach (var system in fppMultiSyncSystemsDto.Systems)
         {
-            FppStatusResponseDto status = await _fppHttpClient.GetFppdStatusAsync(system.Address);
-
-            float cpuTemperature = (float)status.Sensors
-                .Where(s => s.Label.ToUpper().StartsWith("CPU"))
-                .Select(s => s.Value)
-                .Single();
-
-            if (output.Length > 0)
+            if (system.Type != FppSystemType.RaspberryPi3)
             {
-                output.Append(", ");
+                FppStatusResponseDto status = await _fppHttpClient.GetFppdStatusAsync(system.Address);
+
+                float? cpuTemperature = (float)status.Sensors
+                    .Where(s => s.Label.ToUpper().StartsWith("CPU"))
+                    .Select(s => s.Value)
+                    .SingleOrDefault();
+
+                if (output.Length > 0)
+                {
+                    output.Append(", ");
+                }
+
+                output.Append(cpuTemperature.ToDisplayTemperature());
+
+                if (cpuTemperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
+                {
+                    _logging.Warning($"CPU temperature alert: {cpuTemperature.ToString()} for host {system.Hostname}");
+                }
             }
-
-            output.Append(cpuTemperature.ToDisplayTemperature());
-
-            if (cpuTemperature >= _appSettings.FalconPlayer.MaxCpuTemperatureC)
+            else if (system.Type == FppSystemType.WLED)
             {
-                _logging.Warning($"CPU temperature alert: {cpuTemperature.ToString()} for host {system.Hostname}");
+                WledJsonResponseDto status = await _wledHttpClient.GetStatusAsync(system.Address);
+
+                if (status.State.On == false)
+                {
+                    _logging.Warning($"WLED instance is not powered on {system.Hostname}");
+                    WledJsonStateRequestDto wledRequestDto = new WledJsonStateRequestDto(true, 255);
+                    WledJsonResponseDto response = await _wledHttpClient.PostStateAsync(system.Hostname, wledRequestDto);
+                }
             }
         }
 

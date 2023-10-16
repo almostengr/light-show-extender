@@ -1,6 +1,7 @@
 using Almostengr.LightShowExtender.DomainService.Common;
 using System.Text.Json;
 using System.Text;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Common;
 
@@ -17,50 +18,31 @@ public abstract class BaseHttpClient : IBaseHttpClient
             return (T)Convert.ChangeType(result, typeof(T));
         }
 
-        return JsonSerializer.Deserialize<T>(result, SerializerOptions())!;
-    }
-
-    internal async Task HttpDeleteAsync(HttpClient httpClient, string route)
-    {
-        HttpResponseMessage response = await httpClient.DeleteAsync(route);
-        await response.WasRequestSuccessfulAsync();
+        return await HttpClientUtilities.DeserializeResponseBodyAsync<T>(response);
     }
 
     internal async Task<X> HttpPutAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseRequestDto where X : BaseResponseDto
     {
-        StringContent content = SerializeRequestBody<T>(transferObject);
+        StringContent content = HttpClientUtilities.SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await httpClient.PutAsync(route, content);
         await response.WasRequestSuccessfulAsync();
-
-        var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<X>(result, SerializerOptions())!;
+        return await HttpClientUtilities.DeserializeResponseBodyAsync<X>(response);
     }
 
     internal async Task<T> HttpPutAsync<T>(HttpClient httpClient, string route, T transferObject) where T : BaseDto
     {
-        StringContent content = SerializeRequestBody<T>(transferObject);
+        StringContent content = HttpClientUtilities.SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await httpClient.PutAsync(route, content);
         await response.WasRequestSuccessfulAsync();
-
-        var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(result, SerializerOptions())!;
+        return await HttpClientUtilities.DeserializeResponseBodyAsync<T>(response);
     }
 
-    internal async Task<T> HttpPostAsync<T>(HttpClient httpClient, string route, T transferObject) where T : BaseDto
+    internal async Task<X> HttpPostAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseRequestDto where X : BaseResponseDto
     {
-        StringContent content = SerializeRequestBody<T>(transferObject);
+        StringContent content = HttpClientUtilities.SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await httpClient.PostAsync(route, content);
         await response.WasRequestSuccessfulAsync();
-
-        var result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(result, SerializerOptions())!;
-    }
-
-    private StringContent SerializeRequestBody<T>(T transferObject) where T : BaseDto
-    {
-        var json = JsonSerializer.Serialize(transferObject);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        return content;
+        return await HttpClientUtilities.DeserializeResponseBodyAsync<X>(response);
     }
 
     internal string GetUrlWithProtocol(string address)
@@ -78,13 +60,5 @@ public abstract class BaseHttpClient : IBaseHttpClient
         }
 
         return address;
-    }
-
-    private JsonSerializerOptions SerializerOptions()
-    {
-        return new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        };
     }
 }

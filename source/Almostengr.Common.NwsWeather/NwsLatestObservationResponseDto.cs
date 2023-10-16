@@ -1,8 +1,6 @@
-using Almostengr.LightShowExtender.DomainService.Common;
+namespace Almostengr.Common.NwsWeather;
 
-namespace Almostengr.LightShowExtender.DomainService.NwsWeather;
-
-public sealed class NwsLatestObservationResponseDto : BaseResponseDto
+public sealed class NwsLatestObservationResponseDto
 {
     public NwsLatestObservationProperties Properties { get; init; } = new();
 
