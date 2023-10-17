@@ -38,6 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton<IEngineerHttpClient, EngineerHttpClient>();
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
+        // services.AddHttpClient<HomeAssistantClient>();
         services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();

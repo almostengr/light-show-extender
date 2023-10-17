@@ -13,7 +13,7 @@ public sealed class ExtenderService : IExtenderService
 {
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly IFppHttpClient _fppHttpClient;
-    private readonly IHomeAssistantHttpClient _homeAssistantHttpClient;
+    private readonly IHomeAssistantHttpClient _haClient;
     private readonly ILoggingService<ExtenderService> _logging;
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly IWledHttpClient _wledHttpClient;
@@ -32,13 +32,13 @@ public sealed class ExtenderService : IExtenderService
         AppSettings appSettings,
         ILoggingService<ExtenderService> logging)
     {
+        _appSettings = appSettings;
         _fppHttpClient = fppHttpClient;
-        _homeAssistantHttpClient = homeAssistantHttpClient;
+        _haClient = homeAssistantHttpClient;
         _engineerHttpClient = engineerHttpClient;
         _logging = logging;
         _nwsHttpClient = nwsHttpClient;
         _wledHttpClient = wledHttpClient;
-        _appSettings = appSettings;
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
         _showEndTime = new TimeSpan(22, 15, 00);
         _weatherObservation = new();
@@ -46,7 +46,7 @@ public sealed class ExtenderService : IExtenderService
         _songsSincePsa = 0;
     }
 
-    public async Task<TimeSpan> MonitorAsync()
+    public async Task<TimeSpan> MonitorAsync(CancellationToken cancellationToken)
     {
         const string DRIVEWAY_SWITCH = "switch.driveway";
         FppStatusResponseDto currentStatus;
@@ -64,8 +64,9 @@ public sealed class ExtenderService : IExtenderService
 
                     // todo - turn off lights ran by WLED
 
-                    var haRequest = new HaSwitchRequestDto(DRIVEWAY_SWITCH);
-                    await _homeAssistantHttpClient.TurnOnSwitchAsync(haRequest);
+                    TurnOffSwitchCommand turnOffCommand = new(DRIVEWAY_SWITCH);
+                    TurnOffSwitchCommandHandler turnOffHandler = new(_haClient);
+                    TurnOffSwitchResult turnOffResult = await turnOffHandler.HandleAsync(turnOffCommand, cancellationToken);
                 }
 
                 _previousSong = currentStatus.Current_Song;
@@ -122,8 +123,9 @@ public sealed class ExtenderService : IExtenderService
             await InsertFppPlaylistAsync(unplayedRequest.Message);
             _songsSincePsa++;
 
-            var haRequest = new HaSwitchRequestDto(DRIVEWAY_SWITCH);
-            await _homeAssistantHttpClient.TurnOffSwitchAsync(haRequest);
+            TurnOnSwitchCommand turnOnCommand = new(DRIVEWAY_SWITCH);
+            TurnOnSwitchCommandHandler turnOnHandler = new(_haClient);
+            TurnOnSwitchResult turnOnResult = await turnOnHandler.HandleAsync(turnOnCommand, cancellationToken);
 
             _previousSong = currentStatus.Current_Song;
         }

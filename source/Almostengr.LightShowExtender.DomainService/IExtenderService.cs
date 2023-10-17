@@ -2,5 +2,5 @@ namespace Almostengr.LightShowExtender.DomainService;
 
 public interface IExtenderService
 {
-    Task<TimeSpan> MonitorAsync();
+    Task<TimeSpan> MonitorAsync(CancellationToken cancellationToken);
 }

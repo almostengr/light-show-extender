@@ -4,6 +4,7 @@ public sealed class AppSettings
 {
     public FrontEndSetting FrontEnd { get; init; } = new();
     public FalconSetting FalconPlayer { get; init; } = new();
+    public HomeAssistantsetting HomeAssistant {get ; init; } = new();
     public string NwsApiUrl { get; init; } = string.Empty;
     public string NwsStationId { get; init; } = "KMGM";
     public uint MaxSongsBetweenPsa { get; init; } = 2;
@@ -16,6 +17,12 @@ public sealed class AppSettings
     }
 
     public sealed class FrontEndSetting
+    {
+        public string ApiUrl { get; init; } = string.Empty;
+        public string ApiKey { get; init; } = string.Empty;
+    }
+
+    public sealed class HomeAssistantsetting
     {
         public string ApiUrl { get; init; } = string.Empty;
         public string ApiKey { get; init; } = string.Empty;

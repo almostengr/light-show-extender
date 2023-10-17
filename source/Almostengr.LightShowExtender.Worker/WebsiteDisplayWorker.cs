@@ -11,13 +11,13 @@ internal sealed class WebsiteDisplayWorker : BackgroundService
         _extenderService = extenderService;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         TimeSpan delayTime;
-        while (!stoppingToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
-            delayTime = await _extenderService.MonitorAsync();
-            await Task.Delay(delayTime, stoppingToken);
+            delayTime = await _extenderService.MonitorAsync(cancellationToken);
+            await Task.Delay(delayTime, cancellationToken);
         }
     }
 }
