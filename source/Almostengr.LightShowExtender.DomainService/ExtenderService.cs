@@ -5,6 +5,7 @@ using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.DomainService.Wled;
 using Almostengr.Common.TheAlmostEngineer;
 using Almostengr.Common.Logging;
+using Almostengr.Common.HomeAssistant;
 
 namespace Almostengr.LightShowExtender.DomainService;
 
@@ -12,6 +13,7 @@ public sealed class ExtenderService : IExtenderService
 {
     private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly IFppHttpClient _fppHttpClient;
+    private readonly IHomeAssistantHttpClient _homeAssistantHttpClient;
     private readonly ILoggingService<ExtenderService> _logging;
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly IWledHttpClient _wledHttpClient;
@@ -24,12 +26,14 @@ public sealed class ExtenderService : IExtenderService
 
     public ExtenderService(IFppHttpClient fppHttpClient,
         IEngineerHttpClient engineerHttpClient,
+        IHomeAssistantHttpClient homeAssistantHttpClient,
         INwsHttpClient nwsHttpClient,
         IWledHttpClient wledHttpClient,
         AppSettings appSettings,
         ILoggingService<ExtenderService> logging)
     {
         _fppHttpClient = fppHttpClient;
+        _homeAssistantHttpClient = homeAssistantHttpClient;
         _engineerHttpClient = engineerHttpClient;
         _logging = logging;
         _nwsHttpClient = nwsHttpClient;
@@ -44,6 +48,7 @@ public sealed class ExtenderService : IExtenderService
 
     public async Task<TimeSpan> MonitorAsync()
     {
+        const string DRIVEWAY_SWITCH = "switch.driveway";
         FppStatusResponseDto currentStatus;
 
         try
@@ -59,7 +64,8 @@ public sealed class ExtenderService : IExtenderService
 
                     // todo - turn off lights ran by WLED
 
-                    // todo - turn on driveway lights after show ends
+                    var haRequest = new HaSwitchRequestDto(DRIVEWAY_SWITCH);
+                    await _homeAssistantHttpClient.TurnOnSwitchAsync(haRequest);
                 }
 
                 _previousSong = currentStatus.Current_Song;
@@ -115,6 +121,9 @@ public sealed class ExtenderService : IExtenderService
 
             await InsertFppPlaylistAsync(unplayedRequest.Message);
             _songsSincePsa++;
+
+            var haRequest = new HaSwitchRequestDto(DRIVEWAY_SWITCH);
+            await _homeAssistantHttpClient.TurnOffSwitchAsync(haRequest);
 
             _previousSong = currentStatus.Current_Song;
         }

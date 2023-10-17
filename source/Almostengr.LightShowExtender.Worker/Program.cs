@@ -7,6 +7,7 @@ using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.Wled;
 using Almostengr.LightShowExtender.DomainService.Wled;
+using Almostengr.Common.HomeAssistant;
 using Almostengr.Common.NwsWeather;
 using Almostengr.Common.TheAlmostEngineer;
 
@@ -35,13 +36,13 @@ IHost host = Host.CreateDefaultBuilder(args)
         AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
         services.AddSingleton(appSettings);
 
-        services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IEngineerHttpClient, EngineerHttpClient>();
+        services.AddSingleton<IFppHttpClient, FppHttpClient>();
+        services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
         services.AddSingleton<IExtenderService, ExtenderService>();
-
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
         services.AddHostedService<WebsiteDisplayWorker>();
