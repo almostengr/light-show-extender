@@ -5,7 +5,7 @@ using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Common;
 
-public abstract class BaseHttpClient : IBaseHttpClient
+public abstract class BaseHttpClient : DomainService.Common.IBaseHttpClient
 {
     internal async Task<T> HttpGetAsync<T>(HttpClient httpClient, string route)
     {
@@ -21,7 +21,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return await HttpClientUtilities.DeserializeResponseBodyAsync<T>(response);
     }
 
-    internal async Task<X> HttpPutAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseRequestDto where X : BaseResponseDto
+    internal async Task<X> HttpPutAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : DomainService.Common.BaseRequestDto where X : BaseResponseDto
     {
         StringContent content = HttpClientUtilities.SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await httpClient.PutAsync(route, content);
@@ -37,7 +37,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return await HttpClientUtilities.DeserializeResponseBodyAsync<T>(response);
     }
 
-    internal async Task<X> HttpPostAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : BaseRequestDto where X : BaseResponseDto
+    internal async Task<X> HttpPostAsync<T, X>(HttpClient httpClient, string route, T transferObject) where T : DomainService.Common.BaseRequestDto where X : BaseResponseDto
     {
         StringContent content = HttpClientUtilities.SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await httpClient.PostAsync(route, content);

@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public abstract class BaseSwitchCommand
+public abstract class BaseSwitchRequest : BaseRequestDto
 {
-    public BaseSwitchCommand(string entityId)
+    public BaseSwitchRequest(string entityId)
     {
         if (string.IsNullOrWhiteSpace(entityId))
         {

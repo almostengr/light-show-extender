@@ -1,6 +1,8 @@
+using Almostengr.Common.Utilities;
+
 namespace Almostengr.Common.TheAlmostEngineer;
 
-public sealed class EngineerResponseDto
+public sealed class EngineerResponseDto : BaseResultDto
 {
     public EngineerResponseDto(string message)
     {

@@ -1,6 +1,8 @@
+using Almostengr.Common.Utilities;
+
 namespace Almostengr.Common.NwsWeather;
 
-public sealed class NwsLatestObservationResponseDto
+public sealed class NwsLatestObservationResultDto : BaseResultDto
 {
     public NwsLatestObservationProperties Properties { get; init; } = new();
 

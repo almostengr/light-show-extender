@@ -36,11 +36,11 @@ IHost host = Host.CreateDefaultBuilder(args)
         AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
         services.AddSingleton(appSettings);
 
-        services.AddSingleton<IEngineerHttpClient, EngineerHttpClient>();
+        // services.AddSingleton<IEngineerHttpClient, EngineerHttpClient>();
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         // services.AddHttpClient<HomeAssistantClient>();
-        services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
-        services.AddSingleton<INwsHttpClient, NwsHttpClient>();
+        // services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
+        // services.AddSingleton<INwsHttpClient, NwsHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
         services.AddSingleton<IExtenderService, ExtenderService>();

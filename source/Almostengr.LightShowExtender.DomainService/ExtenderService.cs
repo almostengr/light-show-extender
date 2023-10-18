@@ -11,31 +11,28 @@ namespace Almostengr.LightShowExtender.DomainService;
 
 public sealed class ExtenderService : IExtenderService
 {
-    private readonly IEngineerHttpClient _engineerHttpClient;
     private readonly IFppHttpClient _fppHttpClient;
-    private readonly IHomeAssistantHttpClient _haClient;
+    private readonly IHaHttpClient _haHttpClient;
     private readonly ILoggingService<ExtenderService> _logging;
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly IWledHttpClient _wledHttpClient;
     private readonly AppSettings _appSettings;
-    private NwsLatestObservationResponseDto _weatherObservation;
+    private NwsLatestObservationResultDto _weatherObservation;
     private DateTime _lastWeatherRefreshTime;
     private readonly TimeSpan _showEndTime;
     private string _previousSong;
     private uint _songsSincePsa;
 
     public ExtenderService(IFppHttpClient fppHttpClient,
-        IEngineerHttpClient engineerHttpClient,
-        IHomeAssistantHttpClient homeAssistantHttpClient,
-        INwsHttpClient nwsHttpClient,
+    INwsHttpClient nwsHttpClient,
+    IHaHttpClient haHttpClient,
         IWledHttpClient wledHttpClient,
         AppSettings appSettings,
         ILoggingService<ExtenderService> logging)
     {
         _appSettings = appSettings;
         _fppHttpClient = fppHttpClient;
-        _haClient = homeAssistantHttpClient;
-        _engineerHttpClient = engineerHttpClient;
+        _haHttpClient = haHttpClient;
         _logging = logging;
         _nwsHttpClient = nwsHttpClient;
         _wledHttpClient = wledHttpClient;
@@ -60,13 +57,12 @@ public sealed class ExtenderService : IExtenderService
                 if (_previousSong.IsNotNullOrWhiteSpace())
                 {
                     EngineerDisplayRequestDto displayRequestDto = await CreateDisplayRequestDtoAsync(string.Empty);
-                    await _engineerHttpClient.PostDisplayInfoAsync(displayRequestDto);
+                    // await _engineerHttpClient.PostDisplayInfoAsync(displayRequestDto);
 
                     // todo - turn off lights ran by WLED
 
-                    TurnOffSwitchCommand turnOffCommand = new(DRIVEWAY_SWITCH);
-                    TurnOffSwitchCommandHandler turnOffHandler = new(_haClient);
-                    TurnOffSwitchResult turnOffResult = await turnOffHandler.HandleAsync(turnOffCommand, cancellationToken);
+                    TurnOffSwitchRequest turnOffRequest = new(DRIVEWAY_SWITCH);
+                    await _haHttpClient.TurnOffSwitchAsync(turnOffRequest, cancellationToken);
                 }
 
                 _previousSong = currentStatus.Current_Song;
@@ -81,7 +77,7 @@ public sealed class ExtenderService : IExtenderService
 
         try
         {
-            await GetWeatherObservationAsync();
+            await GetWeatherObservationAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -90,7 +86,7 @@ public sealed class ExtenderService : IExtenderService
 
         try
         {
-            await ClearQueueWhenStartingPlaylistAsync(currentStatus);
+            await ClearQueueWhenStartingPlaylistAsync(currentStatus, cancellationToken);
             await StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist);
 
             if (currentStatus.Current_Song == _previousSong)
@@ -100,7 +96,9 @@ public sealed class ExtenderService : IExtenderService
             }
 
             EngineerDisplayRequestDto engineerDisplayRequestDto = await CreateDisplayRequestDtoAsync(currentStatus.Current_Song);
-            await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
+            // await _engineerHttpClient.PostDisplayInfoAsync(engineerDisplayRequestDto);
+            PostDisplayInfoHandler displayHandler = new(_appSettings.FrontEnd.ApiUrl, _appSettings.FrontEnd.ApiKey);
+            await displayHandler.HandleAsync(engineerDisplayRequestDto, cancellationToken);
 
             if (_songsSincePsa >= _appSettings.MaxSongsBetweenPsa)
             {
@@ -114,7 +112,10 @@ public sealed class ExtenderService : IExtenderService
                 return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
 
-            EngineerResponseDto unplayedRequest = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
+            // EngineerResponseDto unplayedRequest = await _engineerHttpClient.GetFirstUnplayedRequestAsync();
+            GetFirstUnplayedRequestHandler unplayedHandler = new(_appSettings.FrontEnd.ApiUrl, _appSettings.FrontEnd.ApiKey);
+            var unplayedRequest = await unplayedHandler.HandleAsync(cancellationToken);
+
             if (unplayedRequest.Message.IsNullOrWhiteSpace())
             {
                 return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
@@ -122,10 +123,6 @@ public sealed class ExtenderService : IExtenderService
 
             await InsertFppPlaylistAsync(unplayedRequest.Message);
             _songsSincePsa++;
-
-            TurnOnSwitchCommand turnOnCommand = new(DRIVEWAY_SWITCH);
-            TurnOnSwitchCommandHandler turnOnHandler = new(_haClient);
-            TurnOnSwitchResult turnOnResult = await turnOnHandler.HandleAsync(turnOnCommand, cancellationToken);
 
             _previousSong = currentStatus.Current_Song;
         }
@@ -171,11 +168,13 @@ public sealed class ExtenderService : IExtenderService
         return engineerDisplayRequestDto;
     }
 
-    private async Task ClearQueueWhenStartingPlaylistAsync(FppStatusResponseDto currentStatus)
+    private async Task ClearQueueWhenStartingPlaylistAsync(FppStatusResponseDto currentStatus, CancellationToken cancellationToken)
     {
         if (_previousSong.IsNullOrWhiteSpace() && currentStatus.Current_Song.IsNotNullOrWhiteSpace())
         {
-            await _engineerHttpClient.DeleteAllSongsInQueueAsync();
+            // await _engineerHttpClient.DeleteAllSongsInQueueAsync();
+            DeleteSongsInQueueHandler deleteHandler = new(_appSettings.FrontEnd.ApiUrl, _appSettings.FrontEnd.ApiKey);
+            await deleteHandler.HandleAsync(cancellationToken);
         }
     }
 
@@ -200,13 +199,15 @@ public sealed class ExtenderService : IExtenderService
         }
     }
 
-    private async Task GetWeatherObservationAsync()
+    private async Task GetWeatherObservationAsync(CancellationToken cancellationToken)
     {
         DateTime nextRefreshTime = DateTime.Now.AddHours(-1);
 
         if (_lastWeatherRefreshTime < nextRefreshTime)
         {
-            _weatherObservation = await _nwsHttpClient.GetLatestObservationAsync(_appSettings.NwsStationId);
+            // _weatherObservation = await _nwsHttpClient.GetLatestObservationAsync(_appSettings.NwsStationId);
+            // GetLatestObservationHandler weatherHandler = new()
+            var response = await _nwsHttpClient.GetLatestObservationAsync(_appSettings.NwsStationId, cancellationToken);
             _lastWeatherRefreshTime = DateTime.Now;
         }
     }
