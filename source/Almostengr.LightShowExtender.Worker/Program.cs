@@ -36,15 +36,21 @@ IHost host = Host.CreateDefaultBuilder(args)
         AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
         services.AddSingleton(appSettings);
 
-        services.Configure<HomeAssistantOptions>(configuration.GetSection("HomeAssistant"));
+        services.Configure<HomeAssistantOptions>(configuration.GetSection(nameof(HomeAssistantOptions)));
         services.AddHttpClient<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
         services.AddSingleton<IHomeAssistantService, HomeAssistantService>();
         
-        services.Configure<LightShowOptions>(configuration.GetSection("TheAlmostEngineer"));
-        services.AddHttpClient<ILightShowHttpClient, LightShowHttpClient>();
+        // services.Configure<LightShowOptions>(configuration.GetSection(nameof(LightShowOptions)));
+        // services.AddHttpClient<ILightShowHttpClient, LightShowHttpClient>();
+        services.AddHttpClient<ILightShowService, LightShowService>(client => 
+        {
+            client.BaseAddress = new Uri(appSettings.LightShow.ApiUrl);
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("X-Auth-Token", appSettings.LightShow.ApiKey);
+        });
         services.AddSingleton<ILightShowService, LightShowService>();
 
-        services.Configure<NwsOptions>(configuration.GetSection("NationalWeatherService"));
+        services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
         services.AddHttpClient<INwsHttpClient, NwsHttpClient>();
         services.AddSingleton<INwsService, NwsService>();
 
