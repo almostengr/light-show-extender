@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Almostengr.Common.Utilities\Almostengr.Common.Utilities.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
   <PropertyGroup>

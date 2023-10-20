@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class FppStatusResponseDto : BaseResponseDto
+public sealed class FppStatusResponse : BaseResponse
 {
     public List<Sensor> Sensors { get; init; } = new();
 

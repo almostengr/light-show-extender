@@ -1,13 +1,12 @@
+using Almostengr.Common.Utilities;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.LightShowExtender.Infrastructure.Common;
 
 namespace Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 
 public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 {
     private readonly AppSettings _appSettings;
-    private readonly HttpClient _httpClient;
 
     public FppHttpClient(AppSettings appSettings)
     {
@@ -16,7 +15,7 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(_appSettings.FalconPlayer.ApiUrl));
     }
 
-    public async Task<FppMediaMetaResponseDto> GetCurrentSongMetaDataAsync(string currentSong)
+    public async Task<FppMediaMetaResponse> GetCurrentSongMetaDataAsync(string currentSong, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(currentSong))
         {
@@ -24,43 +23,43 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         }
 
         string route = $"api/media/{currentSong}/meta";
-        return await HttpGetAsync<FppMediaMetaResponseDto>(_httpClient, route);
+        return await HttpGetAsync<FppMediaMetaResponse>(route, cancellationToken);
     }
 
-    public async Task<FppStatusResponseDto> GetFppdStatusAsync()
+    public async Task<FppStatusResponse> GetFppdStatusAsync(CancellationToken cancellationToken, string hostname = "")
     {
         string route = "api/fppd/status";
-        return await HttpGetAsync<FppStatusResponseDto>(_httpClient, route);
+
+        if (!string.IsNullOrWhiteSpace(hostname))
+        {
+            hostname = GetUrlWithProtocol(hostname);
+            route = $"{hostname}api/fppd/status";
+        }
+
+        return await HttpGetAsync<FppStatusResponse>(route, cancellationToken);
     }
 
-    public async Task<FppStatusResponseDto> GetFppdStatusAsync(string hostname)
-    {
-        hostname = GetUrlWithProtocol(hostname);
-        string route = $"{hostname}api/fppd/status";
-        return await HttpGetAsync<FppStatusResponseDto>(_httpClient, route);
-    }
-
-    public async Task<FppMultiSyncSystemsResponseDto> GetMultiSyncSystemsAsync()
+    public async Task<FppMultiSyncSystemsResponse> GetMultiSyncSystemsAsync(CancellationToken cancellationToken)
     {
         string route = "api/fppd/multiSyncSystems";
-        return await HttpGetAsync<FppMultiSyncSystemsResponseDto>(_httpClient, route);
+        return await HttpGetAsync<FppMultiSyncSystemsResponse>(route, cancellationToken);
     }
 
-    public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName)
+    public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName, CancellationToken cancellationToken)
     {
         string route = $"api/command/Insert Playlist After Current/{playlistName}";
-        return await HttpGetAsync<string>(_httpClient, route);
+        return await HttpGetAsync<string>(route, cancellationToken);
     }
 
-    public async Task StopPlaylistGracefullyAsync()
+    public async Task StopPlaylistGracefullyAsync(CancellationToken cancellationToken)
     {
         string route = "api/playlists/stopgracefully";
-        await HttpGetAsync<string>(_httpClient, route);
+        await HttpGetAsync<string>(route, cancellationToken);
     }
 
-    public async Task<List<string>> GetSequenceListAsync()
+    public async Task<List<string>> GetSequenceListAsync(CancellationToken cancellationToken)
     {
         string route = "api/sequence";
-        return await HttpGetAsync<List<string>>(_httpClient, route);
+        return await HttpGetAsync<List<string>>(route, cancellationToken);
     }
 }

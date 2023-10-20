@@ -2,7 +2,7 @@ using Almostengr.Common.Utilities;
 
 namespace Almostengr.Common.NwsWeather;
 
-public sealed class NwsLatestObservationResultDto : BaseResultDto
+public sealed class NwsLatestObservationResponse : BaseResponse
 {
     public NwsLatestObservationProperties Properties { get; init; } = new();
 

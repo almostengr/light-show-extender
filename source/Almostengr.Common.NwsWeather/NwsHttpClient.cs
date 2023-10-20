@@ -1,26 +1,32 @@
 using Almostengr.Common.Utilities;
+using Microsoft.Extensions.Options;
 
 namespace Almostengr.Common.NwsWeather;
 
 public interface INwsHttpClient
 {
-    Task<NwsLatestObservationResultDto> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken);
+    Task<NwsLatestObservationResponse> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken);
 }
 
 public sealed class NwsHttpClient : BaseHttpClient, INwsHttpClient
 {
-    public NwsHttpClient(string nwsApiUrl)
+    public NwsHttpClient(IOptions<NwsOptions> options)
     {
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(nwsApiUrl);
+        _httpClient.BaseAddress = new Uri(options.Value.StationId);
         _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36");
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", options.Value.UserAgent);
     }
 
-    public async Task<NwsLatestObservationResultDto> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken)
+    public async Task<NwsLatestObservationResponse> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(stationId))
+        {
+            throw new ArgumentNullException(nameof(stationId));
+        }
+
         string route = $"stations/{stationId}/observations/latest";
-        var result = await HttpGetAsync<NwsLatestObservationResultDto>(route, cancellationToken);
+        var result = await HttpGetAsync<NwsLatestObservationResponse>(route, cancellationToken);
         return result;
     }
 }

@@ -2,9 +2,9 @@ using Almostengr.Common.Utilities;
 
 namespace Almostengr.Common.TheAlmostEngineer;
 
-public sealed class EngineerResponseDto : BaseResultDto
+public sealed class LightShowDisplayResponse : BaseResponse
 {
-    public EngineerResponseDto(string message)
+    public LightShowDisplayResponse(string message)
     {
         Message = message;
     }

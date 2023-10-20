@@ -1,8 +1,8 @@
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class FppMultiSyncSystemsResponseDto : BaseResponseDto
+public sealed class FppMultiSyncSystemsResponse : BaseResponse
 {
     public List<FppSystem> Systems { get; init; } = new();
 

@@ -5,6 +5,7 @@
     <ProjectReference Include="..\Almostengr.Common.Logging\Almostengr.Common.Logging.csproj" />
     <ProjectReference Include="..\Almostengr.Common.NwsWeather\Almostengr.Common.NwsWeather.csproj" />
     <ProjectReference Include="..\Almostengr.Common.TheAlmostEngineer\Almostengr.Common.TheAlmostEngineer.csproj" />
+    <ProjectReference Include="..\Almostengr.Common.Utilities\Almostengr.Common.Utilities.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

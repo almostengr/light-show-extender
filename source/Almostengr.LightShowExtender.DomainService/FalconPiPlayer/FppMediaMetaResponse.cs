@@ -1,8 +1,8 @@
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class FppMediaMetaResponseDto : BaseResponseDto
+public sealed class FppMediaMetaResponse : BaseResponse
 {
     public FalconMediaMetaFormat Format { get; init; } = new();
 

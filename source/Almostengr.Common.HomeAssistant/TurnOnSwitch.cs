@@ -9,6 +9,6 @@ public sealed class TurnOnSwitchRequest : BaseSwitchRequest
     }
 }
 
-public sealed class TurnOnSwitchResult : BaseResultDto
+public sealed class TurnOnSwitchResponse : BaseResponse
 {
 }

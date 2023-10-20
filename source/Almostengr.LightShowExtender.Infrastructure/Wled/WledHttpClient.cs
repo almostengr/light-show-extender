@@ -1,18 +1,16 @@
 using Almostengr.LightShowExtender.DomainService.Wled;
-using Almostengr.LightShowExtender.Infrastructure.Common;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Wled;
 
 public sealed class WledHttpClient : BaseHttpClient, IWledHttpClient
 {
-    private readonly HttpClient _httpClient;
-
     public WledHttpClient()
     {
         _httpClient = new HttpClient();
     }
 
-    public async Task<WledJsonResponseDto> GetStatusAsync(string hostname)
+    public async Task<WledJsonResponse> GetStatusAsync(string hostname, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(hostname))
         {
@@ -20,10 +18,10 @@ public sealed class WledHttpClient : BaseHttpClient, IWledHttpClient
         }
 
         string route = $"{hostname}/json";
-        return await HttpGetAsync<WledJsonResponseDto>(_httpClient, route);
+        return await HttpGetAsync<WledJsonResponse>(route, cancellationToken);
     }
 
-    public async Task<WledJsonResponseDto> PostStateAsync(string hostname, WledJsonStateRequestDto wledRequestDto)
+    public async Task<WledJsonResponse> PostStateAsync(string hostname, WledJsonStateRequest wledRequestDto, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(hostname))
         {
@@ -31,6 +29,6 @@ public sealed class WledHttpClient : BaseHttpClient, IWledHttpClient
         }
 
         string route = $"{hostname}/json/state";
-        return await HttpPostAsync<WledJsonStateRequestDto, WledJsonResponseDto>(_httpClient, route, wledRequestDto);
+        return await HttpPostAsync<WledJsonStateRequest, WledJsonResponse>(route, wledRequestDto, cancellationToken);
     }
 }

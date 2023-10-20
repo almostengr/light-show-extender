@@ -3,7 +3,7 @@ using Almostengr.Common.Utilities;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public abstract class BaseSwitchRequest : BaseRequestDto
+public abstract class BaseSwitchRequest : BaseRequest
 {
     public BaseSwitchRequest(string entityId)
     {

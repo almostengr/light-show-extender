@@ -29,7 +29,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return await DeserializeResponseBodyAsync<X>(response);
     }
 
-    public async Task<X> HttpPostAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken) where T : BaseRequestDto where X : BaseResultDto
+    public async Task<X> HttpPostAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken) where T : BaseRequest where X : BaseResponse
     {
         StringContent content = SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await _httpClient.PostAsync(route, content, cancellationToken);
@@ -37,7 +37,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return await DeserializeResponseBodyAsync<X>(response);
     }
 
-    public async Task<X> HttpPutAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken) where T : BaseRequestDto where X : BaseResultDto
+    public async Task<X> HttpPutAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken) where T : BaseRequest where X : BaseResponse
     {
         StringContent content = SerializeRequestBodyAsync<T>(transferObject);
         HttpResponseMessage response = await _httpClient.PutAsync(route, content, cancellationToken);
@@ -45,7 +45,7 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return await DeserializeResponseBodyAsync<X>(response);
     }
 
-    internal string GetUrlWithProtocol(string address)
+    public string GetUrlWithProtocol(string address)
     {
         const string http = "http://";
 
@@ -106,15 +106,15 @@ public interface IBaseHttpClient
     Task<X> HttpDeleteAsync<X>(string route, CancellationToken cancellationToken);
     Task<X> HttpGetAsync<X>(string route, CancellationToken cancellationToken);
     Task<X> HttpPostAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken)
-        where T : BaseRequestDto
-        where X : BaseResultDto;
+        where T : BaseRequest
+        where X : BaseResponse;
     Task<X> HttpPutAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken)
-        where T : BaseRequestDto
-        where X : BaseResultDto;
+        where T : BaseRequest
+        where X : BaseResponse;
 }
 
-public abstract class BaseRequestDto
+public abstract class BaseRequest
 { }
 
-public abstract class BaseResultDto
+public abstract class BaseResponse
 { }

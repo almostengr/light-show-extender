@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
-public sealed class WledJsonStateRequestDto : BaseRequestDto
+public sealed class WledJsonStateRequest : BaseRequest
 {
-    public WledJsonStateRequestDto(bool onState, uint brightness = 255)
+    public WledJsonStateRequest(bool onState, uint brightness = 255)
     {
         On = onState;
         Brightness = brightness;

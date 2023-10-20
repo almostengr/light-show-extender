@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.Common.Utilities;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
-public sealed class WledJsonResponseDto : BaseResponseDto
+public sealed class WledJsonResponse : BaseResponse
 {
     [JsonPropertyName("state")]
     public WledState State { get; init; } = new();
