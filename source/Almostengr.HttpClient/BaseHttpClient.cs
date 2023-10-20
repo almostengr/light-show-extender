@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace Almostengr.Common.Utilities;
+namespace Almostengr.HttpClient;
 
 public abstract class BaseHttpClient : IBaseHttpClient
 {
@@ -29,17 +29,17 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return await DeserializeResponseBodyAsync<X>(response);
     }
 
-    public async Task<X> HttpPostAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken) where T : BaseRequest where X : BaseResponse
+    public async Task<X> HttpPostAsync<T, X>(string route, T requestObject, CancellationToken cancellationToken) where T : BaseRequest where X : BaseResponse
     {
-        StringContent content = SerializeRequestBodyAsync<T>(transferObject);
+        StringContent content = SerializeRequestBodyAsync<T>(requestObject);
         HttpResponseMessage response = await _httpClient.PostAsync(route, content, cancellationToken);
         await WasRequestSuccessfulAsync(response, cancellationToken);
         return await DeserializeResponseBodyAsync<X>(response);
     }
 
-    public async Task<X> HttpPutAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken) where T : BaseRequest where X : BaseResponse
+    public async Task<X> HttpPutAsync<T, X>(string route, T requestObject, CancellationToken cancellationToken) where T : BaseRequest where X : BaseResponse
     {
-        StringContent content = SerializeRequestBodyAsync<T>(transferObject);
+        StringContent content = SerializeRequestBodyAsync<T>(requestObject);
         HttpResponseMessage response = await _httpClient.PutAsync(route, content, cancellationToken);
         await WasRequestSuccessfulAsync(response, cancellationToken);
         return await DeserializeResponseBodyAsync<X>(response);
@@ -62,9 +62,9 @@ public abstract class BaseHttpClient : IBaseHttpClient
         return address;
     }
 
-    private StringContent SerializeRequestBodyAsync<T>(T transferObject)
+    private StringContent SerializeRequestBodyAsync<T>(T requestObject)
     {
-        string json = JsonSerializer.Serialize(transferObject);
+        string json = JsonSerializer.Serialize(requestObject);
         StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
         return content;
     }
@@ -105,10 +105,10 @@ public interface IBaseHttpClient
 {
     Task<X> HttpDeleteAsync<X>(string route, CancellationToken cancellationToken);
     Task<X> HttpGetAsync<X>(string route, CancellationToken cancellationToken);
-    Task<X> HttpPostAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken)
+    Task<X> HttpPostAsync<T, X>(string route, T requestObject, CancellationToken cancellationToken)
         where T : BaseRequest
         where X : BaseResponse;
-    Task<X> HttpPutAsync<T, X>(string route, T transferObject, CancellationToken cancellationToken)
+    Task<X> HttpPutAsync<T, X>(string route, T requestObject, CancellationToken cancellationToken)
         where T : BaseRequest
         where X : BaseResponse;
 }

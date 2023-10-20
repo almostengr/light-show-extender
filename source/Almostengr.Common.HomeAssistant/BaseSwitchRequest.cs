@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Almostengr.Common.Utilities;
+using Almostengr.HttpClient;
 
 namespace Almostengr.Common.HomeAssistant;
 

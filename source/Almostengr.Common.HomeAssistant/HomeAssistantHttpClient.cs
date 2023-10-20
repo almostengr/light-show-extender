@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using Almostengr.Common.Utilities;
+using Almostengr.HttpClient;
 
 namespace Almostengr.Common.HomeAssistant;
 

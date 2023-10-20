@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.NwsWeathe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.TheAlmostEngineer", "source\Almostengr.Common.TheAlmostEngineer\Almostengr.Common.TheAlmostEngineer.csproj", "{537BF6B5-AD0C-48E4-A91F-BD15EE57623F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.Utilities", "source\Almostengr.Common.Utilities\Almostengr.Common.Utilities.csproj", "{624A1F85-5045-4D78-B012-101CF552A5C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.HttpClient", "source\Almostengr.HttpClient\Almostengr.HttpClient.csproj", "{624A1F85-5045-4D78-B012-101CF552A5C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

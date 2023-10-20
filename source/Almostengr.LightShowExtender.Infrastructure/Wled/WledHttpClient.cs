@@ -1,5 +1,5 @@
 using Almostengr.LightShowExtender.DomainService.Wled;
-using Almostengr.Common.Utilities;
+using Almostengr.HttpClient;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Wled;
 
