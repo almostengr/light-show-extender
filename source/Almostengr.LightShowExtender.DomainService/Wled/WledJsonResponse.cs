@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 

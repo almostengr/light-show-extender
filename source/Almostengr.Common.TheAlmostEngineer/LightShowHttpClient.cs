@@ -1,15 +1,16 @@
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Almostengr.Common.TheAlmostEngineer;
 
-public sealed class LightShowHttpClient : BaseHttpClient, ILightShowHttpClient
+public sealed class LightShowHttpClient : ILightShowHttpClient
 {
     const string FPP_PHP = "fpp.php";
+    private readonly HttpClient _httpClient;
 
-    public LightShowHttpClient(IOptions<LightShowOptions> options)
+    public LightShowHttpClient(IOptions<LightShowOptions> options, HttpClient httpClient)
     {
-        _httpClient = new HttpClient();
+        _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri(options.Value.ApiUrl);
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("X-Auth-Token", options.Value.ApiKey);
@@ -17,19 +18,22 @@ public sealed class LightShowHttpClient : BaseHttpClient, ILightShowHttpClient
 
     public async Task DeleteSongsInQueueAsync(CancellationToken cancellationToken)
     {
-        await HttpDeleteAsync<string>(FPP_PHP, cancellationToken);
+        HttpResponseMessage response = await _httpClient.DeleteAsync(FPP_PHP, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
     }
 
     public async Task<LightShowDisplayResponse> GetNextSongInQueueAsync(CancellationToken cancellationToken)
     {
-        var result = await HttpGetAsync<LightShowDisplayResponse>(FPP_PHP, cancellationToken);
-        return result;
+        var response = await _httpClient.GetAsync(FPP_PHP, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<LightShowDisplayResponse>(cancellationToken);
     }
 
     public async Task<LightShowDisplayResponse> PostDisplayInfoAsync(LightShowDisplayRequest request, CancellationToken cancellationToken)
     {
-        var result = await HttpPostAsync<LightShowDisplayRequest, LightShowDisplayResponse>(FPP_PHP, request, cancellationToken);
-        return result;
+        var response = await _httpClient.PostAsync(FPP_PHP, request.SerializeRequestBodyAsync<LightShowDisplayRequest>(), cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<LightShowDisplayResponse>(cancellationToken);
     }
 }
 

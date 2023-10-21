@@ -1,13 +1,15 @@
 using Microsoft.Extensions.Options;
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public sealed class HomeAssistantHttpClient : BaseHttpClient, IHomeAssistantHttpClient
+public sealed class HomeAssistantHttpClient : IHomeAssistantHttpClient
 {
-    public HomeAssistantHttpClient(IOptions<HomeAssistantOptions> options)
+    private readonly HttpClient _httpClient;
+
+    public HomeAssistantHttpClient(IOptions<HomeAssistantOptions> options, HttpClient httpClient)
     {
-        _httpClient = new HttpClient();
+        _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri(options.Value.ApiUrl);
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("Authentication", $"Bearer: {options.Value.ApiKey}");
@@ -16,19 +18,21 @@ public sealed class HomeAssistantHttpClient : BaseHttpClient, IHomeAssistantHttp
     public async Task<TurnOnSwitchResponse> TurnOnSwitchAsync(TurnOnSwitchRequest request, CancellationToken cancellationToken)
     {
         string route = "api/services/switch/turn_on";
-        var result = await HttpPostAsync<TurnOnSwitchRequest, TurnOnSwitchResponse>(route, request, cancellationToken);
-        return result;
+        var response = await _httpClient.PostAsync(route, request.SerializeRequestBodyAsync<TurnOnSwitchRequest>(), cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<TurnOnSwitchResponse>(cancellationToken);
     }
 
     public async Task<TurnOffSwitchResponse> TurnOffSwitchAsync(TurnOffSwitchRequest request, CancellationToken cancellationToken)
     {
         string route = "api/services/switch/turn_off";
-        var result = await HttpPostAsync<TurnOffSwitchRequest, TurnOffSwitchResponse>(route, request, cancellationToken);
-        return result;
+        var response = await _httpClient.PostAsync(route, request.SerializeRequestBodyAsync<TurnOffSwitchRequest>(), cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<TurnOffSwitchResponse>(cancellationToken);
     }
 }
 
-public interface IHomeAssistantHttpClient : IBaseHttpClient
+public interface IHomeAssistantHttpClient
 {
     Task<TurnOffSwitchResponse> TurnOffSwitchAsync(TurnOffSwitchRequest request, CancellationToken cancellationToken);
     Task<TurnOnSwitchResponse> TurnOnSwitchAsync(TurnOnSwitchRequest request, CancellationToken cancellationToken);

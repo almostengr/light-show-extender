@@ -11,10 +11,4 @@ public sealed class AppSettings
         public string ApiUrl { get; init; } = "http://localhost";
         public double MaxCpuTemperatureC { get; init; } = 60.0;
     }
-
-    public sealed class LightShow
-    {
-        public string ApiUrl {get; init; } = string.Empty;
-        public string ApiKey {get; init; } = string.Empty;
-    }
 }

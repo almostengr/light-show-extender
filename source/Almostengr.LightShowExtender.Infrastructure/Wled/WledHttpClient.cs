@@ -1,13 +1,15 @@
 using Almostengr.LightShowExtender.DomainService.Wled;
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.Infrastructure.Wled;
 
-public sealed class WledHttpClient : BaseHttpClient, IWledHttpClient
+public sealed class WledHttpClient : IWledHttpClient
 {
-    public WledHttpClient()
+    private readonly HttpClient _httpClient;
+
+    public WledHttpClient(HttpClient httpClient)
     {
-        _httpClient = new HttpClient();
+        _httpClient = httpClient;
     }
 
     public async Task<WledJsonResponse> GetStatusAsync(string hostname, CancellationToken cancellationToken)
@@ -18,10 +20,12 @@ public sealed class WledHttpClient : BaseHttpClient, IWledHttpClient
         }
 
         string route = $"{hostname}/json";
-        return await HttpGetAsync<WledJsonResponse>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<WledJsonResponse>(cancellationToken);
     }
 
-    public async Task<WledJsonResponse> PostStateAsync(string hostname, WledJsonStateRequest wledRequestDto, CancellationToken cancellationToken)
+    public async Task<WledJsonResponse> PostStateAsync(string hostname, WledJsonStateRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(hostname))
         {
@@ -29,6 +33,8 @@ public sealed class WledHttpClient : BaseHttpClient, IWledHttpClient
         }
 
         string route = $"{hostname}/json/state";
-        return await HttpPostAsync<WledJsonStateRequest, WledJsonResponse>(route, wledRequestDto, cancellationToken);
+        var response = await _httpClient.PostAsync(route, request.SerializeRequestBodyAsync<WledJsonStateRequest>(), cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<WledJsonResponse>(cancellationToken);
     }
 }

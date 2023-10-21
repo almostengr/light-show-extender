@@ -1,6 +1,6 @@
-namespace Almostengr.LightShowExtender.DomainService.Common;
+namespace Almostengr.Common.NwsWeather;
 
-public static class Extensions
+public static class TemperatureConverstion
 {
     public static string ToDisplayTemperature(this float? celsius)
     {
@@ -20,15 +20,5 @@ public static class Extensions
 
         string output = $"{fahrenheitInt}F ({celsiusInt}C)";
         return output;
-    }
-
-    public static bool IsNotNullOrWhiteSpace(this string input)
-    {
-        return !string.IsNullOrWhiteSpace(input);
-    }
-
-    public static bool IsNullOrWhiteSpace(this string input)
-    {
-        return string.IsNullOrWhiteSpace(input);
     }
 }

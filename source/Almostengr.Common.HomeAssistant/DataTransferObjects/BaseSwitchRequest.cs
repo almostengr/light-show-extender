@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public abstract class BaseSwitchRequest : BaseRequest
+public abstract class BaseSwitchRequest
 {
     public BaseSwitchRequest(string entityId)
     {

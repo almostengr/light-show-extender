@@ -17,17 +17,17 @@ public sealed class NwsService : INwsService
         _options = options;
     }
 
-    public async Task<NwsLatestObservationResponse> GetLatestObservationAsync(CancellationToken cancellationToken, bool forceRefresh = false)
+    public async Task<NwsLatestObservationResponse> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken, bool forceRefresh = false)
     {
-        if (string.IsNullOrWhiteSpace(_options.Value.StationId))
+        if (string.IsNullOrWhiteSpace(stationId))
         {
-            throw new ArgumentNullException(nameof(_options.Value.StationId));
+            throw new ArgumentNullException(nameof(stationId));
         }
 
-        DateTime oneHourAgo = DateTime.Now.AddHours(-1);
-        if (!forceRefresh || _lastReloadTime <= oneHourAgo)
+        TimeSpan timeDifference =  DateTime.Now - _lastReloadTime;
+        if (forceRefresh || timeDifference.Hours >= 1)
         {
-            _latestObservation = await _httpClient.GetLatestObservationAsync(_options.Value.StationId, cancellationToken);
+            _latestObservation = await _httpClient.GetLatestObservationAsync(stationId, cancellationToken);
             _lastReloadTime = DateTime.Now;
         }
 
@@ -37,5 +37,5 @@ public sealed class NwsService : INwsService
 
 public interface INwsService
 {
-    Task<NwsLatestObservationResponse> GetLatestObservationAsync(CancellationToken cancellationToken, bool forceRefresh = false);
+    Task<NwsLatestObservationResponse> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken, bool forceRefresh = false);
 }

@@ -1,8 +1,6 @@
-using Almostengr.LightShowExtender.DomainService.Common;
-
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public interface IFppHttpClient : IBaseHttpClient
+public interface IFppHttpClient
 {
     Task<FppMediaMetaResponse> GetCurrentSongMetaDataAsync(string currentSong, CancellationToken cancellationToken);
     Task<FppStatusResponse> GetFppdStatusAsync(CancellationToken cancellationToken, string hostname = "");

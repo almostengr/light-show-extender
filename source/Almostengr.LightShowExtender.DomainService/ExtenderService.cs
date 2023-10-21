@@ -71,7 +71,7 @@ public sealed class ExtenderService : IExtenderService
 
         try
         {
-            _weatherObservation = await _nwsService.GetLatestObservationAsync(cancellationToken);
+            _weatherObservation = await _nwsService.GetLatestObservationAsync("KMGM", cancellationToken);
         }
         catch (Exception ex)
         {
@@ -141,4 +141,10 @@ public sealed class ExtenderService : IExtenderService
 
         return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
     }
+}
+
+
+public interface IExtenderService
+{
+    Task<TimeSpan> MonitorAsync(CancellationToken cancellationToken);
 }

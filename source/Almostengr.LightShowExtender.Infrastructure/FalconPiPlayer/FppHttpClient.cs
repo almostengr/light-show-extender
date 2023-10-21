@@ -1,18 +1,19 @@
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 namespace Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 
-public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
+public sealed class FppHttpClient : IFppHttpClient
 {
     private readonly AppSettings _appSettings;
+    private readonly HttpClient _httpClient;
 
-    public FppHttpClient(AppSettings appSettings)
+    public FppHttpClient(AppSettings appSettings, HttpClient httpClient)
     {
         _appSettings = appSettings;
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(GetUrlWithProtocol(_appSettings.FalconPlayer.ApiUrl));
+        _httpClient = httpClient;
+        _httpClient.BaseAddress = new Uri(_appSettings.FalconPlayer.ApiUrl.GetUrlWithProtocol());
     }
 
     public async Task<FppMediaMetaResponse> GetCurrentSongMetaDataAsync(string currentSong, CancellationToken cancellationToken)
@@ -23,7 +24,9 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
         }
 
         string route = $"api/media/{currentSong}/meta";
-        return await HttpGetAsync<FppMediaMetaResponse>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<FppMediaMetaResponse>(cancellationToken);
     }
 
     public async Task<FppStatusResponse> GetFppdStatusAsync(CancellationToken cancellationToken, string hostname = "")
@@ -32,34 +35,43 @@ public sealed class FppHttpClient : BaseHttpClient, IFppHttpClient
 
         if (!string.IsNullOrWhiteSpace(hostname))
         {
-            hostname = GetUrlWithProtocol(hostname);
+            hostname = hostname.GetUrlWithProtocol();
             route = $"{hostname}api/fppd/status";
         }
 
-        return await HttpGetAsync<FppStatusResponse>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<FppStatusResponse>(cancellationToken);
     }
 
     public async Task<FppMultiSyncSystemsResponse> GetMultiSyncSystemsAsync(CancellationToken cancellationToken)
     {
         string route = "api/fppd/multiSyncSystems";
-        return await HttpGetAsync<FppMultiSyncSystemsResponse>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<FppMultiSyncSystemsResponse>(cancellationToken);
     }
 
     public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName, CancellationToken cancellationToken)
     {
         string route = $"api/command/Insert Playlist After Current/{playlistName}";
-        return await HttpGetAsync<string>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<string>(cancellationToken);
     }
 
     public async Task StopPlaylistGracefullyAsync(CancellationToken cancellationToken)
     {
         string route = "api/playlists/stopgracefully";
-        await HttpGetAsync<string>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
     }
 
     public async Task<List<string>> GetSequenceListAsync(CancellationToken cancellationToken)
     {
         string route = "api/sequence";
-        return await HttpGetAsync<List<string>>(route, cancellationToken);
+        var response = await _httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<List<string>>(cancellationToken);
     }
 }

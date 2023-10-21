@@ -1,27 +1,27 @@
-using Almostengr.LightShowExtender.DomainService;
 using Almostengr.LightShowExtender.Worker;
-using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.Common.Logging;
-using Almostengr.LightShowExtender.DomainService.Common.Constants;
-using Almostengr.LightShowExtender.Infrastructure.Wled;
-using Almostengr.LightShowExtender.DomainService.Wled;
 using Almostengr.Common.HomeAssistant;
 using Almostengr.Common.NwsWeather;
 using Almostengr.Common.TheAlmostEngineer;
-using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
+using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
+using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
+using Almostengr.LightShowExtender.Infrastructure.Wled;
+using Almostengr.LightShowExtender.DomainService.Wled;
+using Almostengr.LightShowExtender.DomainService;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
-string environment = AppEnvironment.Prod;
+const string PROD = "prod";
+string environment = PROD;
 
 #if !RELEASE
-environment = AppEnvironment.Devl;
+environment = "devl";
 #endif
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile(
-        (environment == AppEnvironment.Prod) ? AppConstants.AppSettingsProdFile : AppConstants.AppSettingsDevlFile,
+        (environment == PROD) ? "/home/fpp/media/upload/lightshowextender.appsettings.json" : "appsettings.Development.json",
         false,
         false)
     .Build();
@@ -39,19 +39,14 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.Configure<HomeAssistantOptions>(configuration.GetSection(nameof(HomeAssistantOptions)));
         services.AddHttpClient<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
         services.AddSingleton<IHomeAssistantService, HomeAssistantService>();
-        
-        // services.Configure<LightShowOptions>(configuration.GetSection(nameof(LightShowOptions)));
-        // services.AddHttpClient<ILightShowHttpClient, LightShowHttpClient>();
-        services.AddHttpClient<ILightShowService, LightShowService>(client => 
-        {
-            client.BaseAddress = new Uri(appSettings.LightShow.ApiUrl);
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("X-Auth-Token", appSettings.LightShow.ApiKey);
-        });
+
+        services.Configure<LightShowOptions>(configuration.GetSection(nameof(LightShowOptions)));
+        services.AddHttpClient<ILightShowService, LightShowService>();
         services.AddSingleton<ILightShowService, LightShowService>();
 
         services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
         services.AddHttpClient<INwsHttpClient, NwsHttpClient>();
+
         services.AddSingleton<INwsService, NwsService>();
 
         services.AddHttpClient<IFppHttpClient, FppHttpClient>();

@@ -1,4 +1,4 @@
-using Almostengr.HttpClient;
+using Almostengr.Extensions;
 
 namespace Almostengr.Common.HomeAssistant;
 

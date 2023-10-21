@@ -1,8 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Almostengr.HttpClient\Almostengr.HttpClient.csproj" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.Extensions\Almostengr.Extensions.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

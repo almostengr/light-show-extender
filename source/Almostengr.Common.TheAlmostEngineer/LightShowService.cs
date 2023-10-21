@@ -1,39 +1,27 @@
-using Almostengr.HttpClient;
-
 namespace Almostengr.Common.TheAlmostEngineer;
 
-public sealed class LightShowService : BaseHttpClient, ILightShowService
+public sealed class LightShowService : ILightShowService
 {
-    // private readonly ILightShowHttpClient _httpClient;
-    private readonly HttpClient _httpClient;
-    const string FPP_PHP = "fpp.php";
+    private readonly ILightShowHttpClient _httpClient;
 
-    // public LightShowService(ILightShowHttpClient httpClient)
-    private LightShowService(HttpClient httpClient)
+    public LightShowService(ILightShowHttpClient httpClient)
     {
-        // _httpClient = httpClient;
         _httpClient = httpClient  ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
     public async Task DeleteSongsInQueueAsync(CancellationToken cancellationToken)
     {
-        // await _httpClient.DeleteSongsInQueueAsync(cancellationToken);
-        await HttpDeleteAsync<string>(FPP_PHP, cancellationToken);
+        await _httpClient.DeleteSongsInQueueAsync(cancellationToken);
     }
 
     public async Task<LightShowDisplayResponse> GetNextSongInQueueAsync(CancellationToken cancellationToken)
     {
-        // return await _httpClient.GetNextSongInQueueAsync(cancellationToken);
-        
-        var result = await HttpGetAsync<LightShowDisplayResponse>(FPP_PHP, cancellationToken);
-        return result;
+        return await _httpClient.GetNextSongInQueueAsync(cancellationToken);
     }
 
-    public Task<LightShowDisplayResponse> PostDisplayInfoAsync(LightShowDisplayRequest request, CancellationToken cancellationToken)
+    public async Task<LightShowDisplayResponse> PostDisplayInfoAsync(LightShowDisplayRequest request, CancellationToken cancellationToken)
     {
-        // throw new NotImplementedException();
-        var result = await HttpPostAsync<LightShowDisplayRequest, LightShowDisplayResponse>(FPP_PHP, request, cancellationToken);
-        return result;
+        return await _httpClient.PostDisplayInfoAsync(request, cancellationToken);
     }
 
     public async Task DeleteQueueWhenPlaylistStartsAsync(string previousSong, string currentSong, CancellationToken cancellationToken)
