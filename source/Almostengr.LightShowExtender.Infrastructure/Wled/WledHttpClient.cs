@@ -20,7 +20,7 @@ public sealed class WledHttpClient : IWledHttpClient
         }
 
         string route = $"{hostname}/json";
-        return await _httpClient.GetAsync<WledJsonResponse>(route, cancellationToken);
+        return await _httpClient.GetAsync<WledJsonResponse>(route.GetUrlWithProtocol(), cancellationToken);
     }
 
     public async Task<WledJsonResponse> PostStateAsync(string hostname, WledJsonStateRequest request, CancellationToken cancellationToken)
@@ -31,6 +31,6 @@ public sealed class WledHttpClient : IWledHttpClient
         }
 
         string route = $"{hostname}/json/state";
-        return await _httpClient.PostAsync<WledJsonStateRequest, WledJsonResponse>(route, request, cancellationToken);
+        return await _httpClient.PostAsync<WledJsonStateRequest, WledJsonResponse>(route.GetUrlWithProtocol(), request, cancellationToken);
     }
 }

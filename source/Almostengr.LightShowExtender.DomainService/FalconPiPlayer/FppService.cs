@@ -1,7 +1,6 @@
 using System.Text;
 using Almostengr.Common.Logging;
 using Almostengr.LightShowExtender.DomainService.Common;
-using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
@@ -26,7 +25,7 @@ public sealed class FppService : IFppService
     {
         if (string.IsNullOrWhiteSpace(currentSong))
         {
-            throw new ArgumentNullException(nameof(currentSong));
+            return new();
         }
 
         return await _httpClient.GetCurrentSongMetaDataAsync(currentSong, cancellationToken);
@@ -87,7 +86,7 @@ public sealed class FppService : IFppService
     public async Task<List<string>> GetWledSystemsFromMultiSyncSystemsAsync(CancellationToken cancellationToken, bool forceRefresh = false)
     {
         var multiSyncSystems = await GetMultiSyncSystemsAsync(cancellationToken, forceRefresh);
-        return multiSyncSystems.Systems.Where(s => s.Type == FppSystemType.WLED)
+        return multiSyncSystems.Systems.Where(s => s.Type == "WLED")
             .Select(s => s.Address)
             .ToList();
     }
@@ -96,7 +95,7 @@ public sealed class FppService : IFppService
     {
         var multiSyncSystems = await GetMultiSyncSystemsAsync(cancellationToken, false);
 
-        var fppSystems = multiSyncSystems.Systems.Where(s => s.Type == FppSystemType.RaspberryPi3)
+        var fppSystems = multiSyncSystems.Systems.Where(s => s.Type.StartsWith("Raspberry Pi"))
             .Select(s => s.Address)
             .ToList();
 

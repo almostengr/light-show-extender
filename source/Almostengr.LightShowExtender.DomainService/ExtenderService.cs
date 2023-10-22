@@ -57,11 +57,11 @@ public sealed class ExtenderService : IExtenderService
             currentStatus = await _fppService.GetFppdStatusAsync(cancellationToken);
 
             string currentSequence = currentStatus.Current_Sequence.ToUpper();
-            if (currentSequence.Contains(_appSettings.StartupSequence))
+            if (currentSequence.Contains(_appSettings.StartupSequence.ToUpper()))
             {
                 await ShowStartupAsync(currentStatus, cancellationToken);
             }
-            else if (currentSequence.Contains(_appSettings.ShutDownSequence))
+            else if (currentSequence.Contains(_appSettings.ShutDownSequence.ToUpper()))
             {
                 await ShowShutdownAsync(currentStatus, cancellationToken);
             }
@@ -98,10 +98,10 @@ public sealed class ExtenderService : IExtenderService
             FppMediaMetaResponse metaResponse = await _fppService.GetCurrentSongMetaDataAsync(currentStatus.Current_Song, cancellationToken);
 
             string cpuTemperatures = await _fppService.GetCpuTemperaturesAsync(cancellationToken);
-            string title = metaResponse.Format.Tags.Title.IsNotNullOrWhiteSpace() ? currentStatus.Current_Song.Replace(".mp3", string.Empty) : metaResponse.Format.Tags.Title;
-            string weatherTemp = _weatherObservation.Properties.Temperature.Value.ToString() ?? string.Empty;
+            string title = metaResponse.Format.Tags.Title.IsNullOrWhiteSpace() ? currentStatus.Current_Song.Replace(".mp3", string.Empty) : metaResponse.Format.Tags.Title;
+            string weatherTemp = _weatherObservation.Properties.Temperature.Value.ToDisplayTemperature();
             string artist = metaResponse.Format.Tags.Artist ?? string.Empty;
-            string windChill = _weatherObservation.Properties.WindChill.Value.ToString() ?? string.Empty;
+            string windChill = _weatherObservation.Properties.WindChill.Value.ToDisplayTemperature();
 
             LightShowDisplayRequest displayRequest = new(title, weatherTemp, cpuTemperatures, artist, windChill);
             await _engineerService.PostDisplayInfoAsync(displayRequest, cancellationToken);
@@ -135,7 +135,6 @@ public sealed class ExtenderService : IExtenderService
 
         return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
     }
-
 
     private async Task ShowShutdownAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
     {

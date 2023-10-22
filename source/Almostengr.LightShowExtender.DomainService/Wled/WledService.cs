@@ -1,13 +1,12 @@
 using Almostengr.Extensions;
-using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
 public sealed class WledService : IWledService
 {
-    private readonly HttpClient _httpClient;
+    private readonly IWledHttpClient _httpClient;
 
-    public WledService(HttpClient httpClient)
+    public WledService(IWledHttpClient httpClient)
     {
         _httpClient = httpClient;
     }
@@ -20,8 +19,7 @@ public sealed class WledService : IWledService
         }
 
         var request = new WledJsonStateRequest(true);
-        var route = $"{hostname}/json/state";
-        return await _httpClient.PostAsync<WledJsonStateRequest, WledJsonResponse>(route, request, cancellationToken);
+        return await _httpClient.PostStateAsync(hostname, request, cancellationToken);
     }
 
     public async Task<WledJsonResponse> TurnOffAsync(string hostname, CancellationToken cancellationToken)
@@ -32,8 +30,7 @@ public sealed class WledService : IWledService
         }
 
         var request = new WledJsonStateRequest(false);
-        var route = $"{hostname}/json/state";
-        return await _httpClient.PostAsync<WledJsonStateRequest, WledJsonResponse>(route, request, cancellationToken);
+        return await _httpClient.PostStateAsync(hostname, request, cancellationToken);
     }
 
     public async Task TurnOffAsync(List<string> hostnames, CancellationToken cancellationToken)
