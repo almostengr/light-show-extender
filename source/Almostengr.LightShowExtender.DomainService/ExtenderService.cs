@@ -56,6 +56,11 @@ public sealed class ExtenderService : IExtenderService
         {
             currentStatus = await _fppService.GetFppdStatusAsync(cancellationToken);
 
+            if (currentStatus.Current_Song == _previousSong)
+            {
+                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
+            }
+
             string currentSequence = currentStatus.Current_Sequence.ToUpper();
             if (currentSequence.Contains(_appSettings.StartupSequence.ToUpper()))
             {
@@ -89,11 +94,6 @@ public sealed class ExtenderService : IExtenderService
         try
         {
             await _fppService.StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist, cancellationToken);
-
-            if (currentStatus.Current_Song == _previousSong)
-            {
-                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
-            }
 
             FppMediaMetaResponse metaResponse = await _fppService.GetCurrentSongMetaDataAsync(currentStatus.Current_Song, cancellationToken);
 
