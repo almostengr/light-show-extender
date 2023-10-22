@@ -41,20 +41,21 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IHomeAssistantService, HomeAssistantService>();
 
         services.Configure<LightShowOptions>(configuration.GetSection(nameof(LightShowOptions)));
-        services.AddHttpClient<ILightShowService, LightShowService>();
+        services.AddHttpClient<ILightShowHttpClient, LightShowHttpClient>();
         services.AddSingleton<ILightShowService, LightShowService>();
 
         services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
         services.AddHttpClient<INwsHttpClient, NwsHttpClient>();
-
         services.AddSingleton<INwsService, NwsService>();
 
         services.AddHttpClient<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IFppService, FppService>();
 
         services.AddHttpClient<IWledHttpClient, WledHttpClient>();
+        services.AddSingleton<IWledService, WledService>();
 
         services.AddSingleton<IExtenderService, ExtenderService>();
+        
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
         services.AddHostedService<WebsiteDisplayWorker>();

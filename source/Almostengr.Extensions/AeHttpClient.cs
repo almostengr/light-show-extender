@@ -6,7 +6,7 @@ namespace Almostengr.Extensions;
 
 public static class AeHttpClient
 {
-    public static async Task WasRequestSuccessfulAsync(this HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async Task WasRequestSuccessfulAsync(this HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode >= HttpStatusCode.InternalServerError ||
             response.StatusCode == HttpStatusCode.RequestTimeout)
@@ -18,21 +18,22 @@ public static class AeHttpClient
         response.EnsureSuccessStatusCode();
     }
 
-    public static StringContent SerializeRequestBodyAsync<T>(this T requestObject)
+    private static StringContent SerializeRequestBodyAsync<T>(this T request)
     {
-        string json = JsonSerializer.Serialize(requestObject);
+        string json = JsonSerializer.Serialize(request);
         StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
         return content;
     }
 
-    public static async Task<T> DeserializeResponseBodyAsync<T>(this HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async Task<T> DeserializeResponseBodyAsync<T>(this HttpResponseMessage response, CancellationToken cancellationToken)
     {
+        var result = await response.Content.ReadAsStringAsync(cancellationToken);
+
         JsonSerializerOptions serializeOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
         };
 
-        var result = await response.Content.ReadAsStringAsync(cancellationToken);
         return JsonSerializer.Deserialize<T>(result, serializeOptions)!;
     }
 
@@ -52,5 +53,34 @@ public static class AeHttpClient
         }
 
         return address;
+    }
+
+    public static async Task<T> GetAsync<T>(this HttpClient httpClient, string route, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<T>(cancellationToken);
+    }
+
+    public static async Task<X> PostAsync<T, X>(this HttpClient httpClient, string route, T request, CancellationToken cancellationToken)
+    {
+        var serializedRequest = request.SerializeRequestBodyAsync<T>();
+        var response = await httpClient.PostAsync(route, serializedRequest, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<X>(cancellationToken);
+    }
+
+    public static async Task<X> PutAsync<T, X>(this HttpClient httpClient, string route, T request, CancellationToken cancellationToken)
+    {
+        var serializedRequest = request.SerializeRequestBodyAsync<T>();
+        var response = await httpClient.PutAsync(route, serializedRequest, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.DeserializeResponseBodyAsync<X>(cancellationToken);
+    }
+
+    public static async Task DeleteAsync(this HttpClient httpClient, string route, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.DeleteAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
     }
 }

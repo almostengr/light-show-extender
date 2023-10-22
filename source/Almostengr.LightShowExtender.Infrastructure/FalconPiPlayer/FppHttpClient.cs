@@ -24,9 +24,7 @@ public sealed class FppHttpClient : IFppHttpClient
         }
 
         string route = $"api/media/{currentSong}/meta";
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<FppMediaMetaResponse>(cancellationToken);
+        return await _httpClient.GetAsync<FppMediaMetaResponse>(route, cancellationToken);
     }
 
     public async Task<FppStatusResponse> GetFppdStatusAsync(CancellationToken cancellationToken, string hostname = "")
@@ -39,39 +37,30 @@ public sealed class FppHttpClient : IFppHttpClient
             route = $"{hostname}api/fppd/status";
         }
 
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<FppStatusResponse>(cancellationToken);
+        return await _httpClient.GetAsync<FppStatusResponse>(route, cancellationToken);
     }
 
     public async Task<FppMultiSyncSystemsResponse> GetMultiSyncSystemsAsync(CancellationToken cancellationToken)
     {
         string route = "api/fppd/multiSyncSystems";
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<FppMultiSyncSystemsResponse>(cancellationToken);
+        return await _httpClient.GetAsync<FppMultiSyncSystemsResponse>(route, cancellationToken);
     }
 
     public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName, CancellationToken cancellationToken)
     {
         string route = $"api/command/Insert Playlist After Current/{playlistName}";
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<string>(cancellationToken);
+        return await _httpClient.GetAsync<string>(route, cancellationToken);
     }
 
     public async Task StopPlaylistGracefullyAsync(CancellationToken cancellationToken)
     {
         string route = "api/playlists/stopgracefully";
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
+        await _httpClient.GetAsync(route, cancellationToken);
     }
 
     public async Task<List<string>> GetSequenceListAsync(CancellationToken cancellationToken)
     {
         string route = "api/sequence";
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<List<string>>(cancellationToken);
+        return await _httpClient.GetAsync<List<string>>(route, cancellationToken);
     }
 }

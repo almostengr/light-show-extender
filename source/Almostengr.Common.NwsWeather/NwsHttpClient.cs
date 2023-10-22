@@ -28,8 +28,6 @@ public sealed class NwsHttpClient : INwsHttpClient
         }
 
         string route = $"stations/{stationId}/observations/latest";
-        var response = await _httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<NwsLatestObservationResponse>(cancellationToken);
+        return await _httpClient.GetAsync<NwsLatestObservationResponse>(route, cancellationToken);
     }
 }

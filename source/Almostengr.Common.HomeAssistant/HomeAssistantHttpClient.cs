@@ -18,17 +18,13 @@ public sealed class HomeAssistantHttpClient : IHomeAssistantHttpClient
     public async Task<TurnOnSwitchResponse> TurnOnSwitchAsync(TurnOnSwitchRequest request, CancellationToken cancellationToken)
     {
         string route = "api/services/switch/turn_on";
-        var response = await _httpClient.PostAsync(route, request.SerializeRequestBodyAsync<TurnOnSwitchRequest>(), cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<TurnOnSwitchResponse>(cancellationToken);
+        return await _httpClient.PostAsync<TurnOnSwitchRequest, TurnOnSwitchResponse>(route, request, cancellationToken);
     }
 
     public async Task<TurnOffSwitchResponse> TurnOffSwitchAsync(TurnOffSwitchRequest request, CancellationToken cancellationToken)
     {
         string route = "api/services/switch/turn_off";
-        var response = await _httpClient.PostAsync(route, request.SerializeRequestBodyAsync<TurnOffSwitchRequest>(), cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<TurnOffSwitchResponse>(cancellationToken);
+        return await _httpClient.PostAsync<TurnOffSwitchRequest, TurnOffSwitchResponse>(route, request, cancellationToken);
     }
 }
 

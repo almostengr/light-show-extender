@@ -10,6 +10,9 @@ public sealed class FppStatusResponse : BaseResponse
     [JsonPropertyName("current_song")]
     public string Current_Song { get; init; } = string.Empty;
 
+    [JsonPropertyName("current_sequence")]
+    public string Current_Sequence { get; init; } = string.Empty;
+
     [JsonPropertyName("seconds_remaining")]
     public string Seconds_Remaining { get; init; } = string.Empty;
 

@@ -18,22 +18,17 @@ public sealed class LightShowHttpClient : ILightShowHttpClient
 
     public async Task DeleteSongsInQueueAsync(CancellationToken cancellationToken)
     {
-        HttpResponseMessage response = await _httpClient.DeleteAsync(FPP_PHP, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
+        await _httpClient.DeleteAsync(FPP_PHP, cancellationToken);
     }
 
     public async Task<LightShowDisplayResponse> GetNextSongInQueueAsync(CancellationToken cancellationToken)
     {
-        var response = await _httpClient.GetAsync(FPP_PHP, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<LightShowDisplayResponse>(cancellationToken);
+        return await _httpClient.GetAsync<LightShowDisplayResponse>(FPP_PHP, cancellationToken);
     }
 
     public async Task<LightShowDisplayResponse> PostDisplayInfoAsync(LightShowDisplayRequest request, CancellationToken cancellationToken)
     {
-        var response = await _httpClient.PostAsync(FPP_PHP, request.SerializeRequestBodyAsync<LightShowDisplayRequest>(), cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<LightShowDisplayResponse>(cancellationToken);
+        return await _httpClient.PostAsync<LightShowDisplayRequest, LightShowDisplayResponse>(FPP_PHP, request, cancellationToken);
     }
 }
 
