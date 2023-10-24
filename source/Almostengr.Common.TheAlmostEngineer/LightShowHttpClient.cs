@@ -8,9 +8,9 @@ public sealed class LightShowHttpClient : ILightShowHttpClient
     const string FPP_PHP = "fpp.php";
     private readonly HttpClient _httpClient;
 
-    public LightShowHttpClient(IOptions<LightShowOptions> options, HttpClient httpClient)
+    public LightShowHttpClient(IOptions<LightShowOptions> options)
     {
-        _httpClient = httpClient;
+        _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(options.Value.ApiUrl);
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("X-Auth-Token", options.Value.ApiKey);

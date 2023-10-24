@@ -7,9 +7,9 @@ public sealed class HomeAssistantHttpClient : IHomeAssistantHttpClient
 {
     private readonly HttpClient _httpClient;
 
-    public HomeAssistantHttpClient(IOptions<HomeAssistantOptions> options, HttpClient httpClient)
+    public HomeAssistantHttpClient(IOptions<HomeAssistantOptions> options)
     {
-        _httpClient = httpClient;
+        _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(options.Value.ApiUrl);
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("Authentication", $"Bearer: {options.Value.ApiKey}");

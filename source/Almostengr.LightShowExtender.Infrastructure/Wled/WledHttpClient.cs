@@ -7,9 +7,9 @@ public sealed class WledHttpClient : IWledHttpClient
 {
     private readonly HttpClient _httpClient;
 
-    public WledHttpClient(HttpClient httpClient)
+    public WledHttpClient()
     {
-        _httpClient = httpClient;
+        _httpClient = new HttpClient();
     }
 
     public async Task<WledJsonResponse> GetStatusAsync(string hostname, CancellationToken cancellationToken)

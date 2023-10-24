@@ -16,7 +16,7 @@ public sealed class ExtenderService : IExtenderService
     private readonly AppSettings _appSettings;
     private NwsLatestObservationResponse _weatherObservation;
     private readonly INwsService _nwsService;
-    private readonly ILightShowService _engineerService;
+    private readonly ILightShowService _websiteService;
     private readonly IHomeAssistantService _homeAssistantService;
     private readonly IOptions<NwsOptions> _nwsOptions;
     private readonly IWledService _wledService;
@@ -39,7 +39,7 @@ public sealed class ExtenderService : IExtenderService
         _fppService = fppService;
         _nwsService = nwsService;
         _wledService = wledService;
-        _engineerService = engineerService;
+        _websiteService = engineerService;
         _homeAssistantService = homeAssistantService;
         _nwsOptions = nwsOptions;
         _weatherObservation = new();
@@ -56,17 +56,12 @@ public sealed class ExtenderService : IExtenderService
         {
             currentStatus = await _fppService.GetFppdStatusAsync(cancellationToken);
 
-            if (currentStatus.Current_Song == _previousSong)
-            {
-                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
-            }
-
             string currentSequence = currentStatus.Current_Sequence.ToUpper();
-            if (currentSequence.Contains(_appSettings.StartupSequence.ToUpper()))
+            if (currentSequence.Contains(_appSettings.StartupSequence))
             {
                 await ShowStartupAsync(currentStatus, cancellationToken);
             }
-            else if (currentSequence.Contains(_appSettings.ShutDownSequence.ToUpper()))
+            else if (currentSequence.Contains(_appSettings.ShutDownSequence))
             {
                 await ShowShutdownAsync(currentStatus, cancellationToken);
             }
@@ -78,6 +73,12 @@ public sealed class ExtenderService : IExtenderService
         }
 
         if (_showOffline)
+        {
+            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
+        }
+
+
+        if (currentStatus.Current_Song == _previousSong)
         {
             return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
         }
@@ -104,7 +105,7 @@ public sealed class ExtenderService : IExtenderService
             string windChill = _weatherObservation.Properties.WindChill.Value.ToDisplayTemperature();
 
             LightShowDisplayRequest displayRequest = new(title, weatherTemp, cpuTemperatures, artist, windChill);
-            await _engineerService.PostDisplayInfoAsync(displayRequest, cancellationToken);
+            await _websiteService.PostDisplayInfoAsync(displayRequest, cancellationToken);
 
             _songsSincePsa = currentStatus.Current_Song.Contains("PSA") ? 0 : _songsSincePsa;
 
@@ -116,7 +117,7 @@ public sealed class ExtenderService : IExtenderService
                 return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
             }
 
-            var nextSongResponse = await _engineerService.GetNextSongInQueueAsync(cancellationToken);
+            var nextSongResponse = await _websiteService.GetNextSongInQueueAsync(cancellationToken);
 
             if (nextSongResponse.Message.IsNullOrWhiteSpace())
             {
@@ -138,13 +139,18 @@ public sealed class ExtenderService : IExtenderService
 
     private async Task ShowShutdownAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
     {
+        if (_showOffline)
+        {
+            return;
+        }
+
         List<string> wledSystems = await _fppService.GetWledSystemsFromMultiSyncSystemsAsync(cancellationToken);
         await _wledService.TurnOffAsync(wledSystems, cancellationToken);
 
         // await _homeAssistantService.TurnOnSwitchAsync(_appSettings.ExteriorLightEntity, cancellationToken);
 
         LightShowDisplayRequest displayRequest = new(string.Empty);
-        await _engineerService.PostDisplayInfoAsync(displayRequest, cancellationToken);
+        await _websiteService.PostDisplayInfoAsync(displayRequest, cancellationToken);
 
         _previousSong = currentStatus.Current_Song;
 
@@ -153,12 +159,17 @@ public sealed class ExtenderService : IExtenderService
 
     private async Task ShowStartupAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
     {
+        if (!_showOffline)
+        {
+            return;
+        }
+
         List<string> wledSystems = await _fppService.GetWledSystemsFromMultiSyncSystemsAsync(cancellationToken, true);
         await _wledService.TurnOnAsync(wledSystems, cancellationToken);
 
         // await _homeAssistantService.TurnOffSwitchAsync(_appSettings.ExteriorLightEntity, cancellationToken);
 
-        await _engineerService.DeleteQueueWhenPlaylistStartsAsync(_previousSong, currentStatus.Current_Song, cancellationToken);
+        await _websiteService.DeleteQueueWhenPlaylistStartsAsync(_previousSong, currentStatus.Current_Song, cancellationToken);
 
         _showOffline = false;
     }

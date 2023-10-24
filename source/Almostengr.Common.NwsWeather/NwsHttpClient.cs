@@ -12,9 +12,9 @@ public sealed class NwsHttpClient : INwsHttpClient
 {
     private readonly HttpClient _httpClient;
 
-    public NwsHttpClient(IOptions<NwsOptions> options, HttpClient httpClient)
+    public NwsHttpClient(IOptions<NwsOptions> options)
     {
-        _httpClient = httpClient;
+        _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(options.Value.ApiUrl);
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("User-Agent", options.Value.UserAgent);

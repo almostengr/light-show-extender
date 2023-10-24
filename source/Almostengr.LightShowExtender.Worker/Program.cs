@@ -9,6 +9,9 @@ using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.Wled;
 using Almostengr.LightShowExtender.DomainService.Wled;
 using Almostengr.LightShowExtender.DomainService;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http.Logging;
+using Microsoft.Extensions.Http;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
@@ -37,25 +40,25 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton(appSettings);
 
         services.Configure<HomeAssistantOptions>(configuration.GetSection(nameof(HomeAssistantOptions)));
-        services.AddHttpClient<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
+        services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
         services.AddSingleton<IHomeAssistantService, HomeAssistantService>();
 
         services.Configure<LightShowOptions>(configuration.GetSection(nameof(LightShowOptions)));
-        services.AddHttpClient<ILightShowHttpClient, LightShowHttpClient>();
+        services.AddSingleton<ILightShowHttpClient, LightShowHttpClient>();
         services.AddSingleton<ILightShowService, LightShowService>();
 
         services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
-        services.AddHttpClient<INwsHttpClient, NwsHttpClient>();
+        services.AddSingleton<INwsHttpClient, NwsHttpClient>();
         services.AddSingleton<INwsService, NwsService>();
 
-        services.AddHttpClient<IFppHttpClient, FppHttpClient>();
+        services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IFppService, FppService>();
 
-        services.AddHttpClient<IWledHttpClient, WledHttpClient>();
+        services.AddSingleton<IWledHttpClient, WledHttpClient>();
         services.AddSingleton<IWledService, WledService>();
 
         services.AddSingleton<IExtenderService, ExtenderService>();
-        
+
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
         services.AddHostedService<WebsiteDisplayWorker>();

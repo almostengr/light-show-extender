@@ -9,10 +9,10 @@ public sealed class FppHttpClient : IFppHttpClient
     private readonly AppSettings _appSettings;
     private readonly HttpClient _httpClient;
 
-    public FppHttpClient(AppSettings appSettings, HttpClient httpClient)
+    public FppHttpClient(AppSettings appSettings)
     {
         _appSettings = appSettings;
-        _httpClient = httpClient;
+        _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri(_appSettings.FalconPlayer.ApiUrl.GetUrlWithProtocol());
     }
 
