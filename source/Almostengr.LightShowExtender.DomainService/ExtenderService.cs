@@ -59,11 +59,11 @@ public sealed class ExtenderService : IExtenderService
             string currentSequence = currentStatus.Current_Sequence.ToUpper();
             if (currentSequence.Contains(_appSettings.StartupSequence))
             {
-                await ShowStartupAsync(currentStatus, cancellationToken);
+                await StartupShowAsync(currentStatus, cancellationToken);
             }
             else if (currentSequence.Contains(_appSettings.ShutDownSequence))
             {
-                await ShowShutdownAsync(currentStatus, cancellationToken);
+                await ShutdownShowAsync(currentStatus, cancellationToken);
             }
         }
         catch (Exception ex)
@@ -97,14 +97,9 @@ public sealed class ExtenderService : IExtenderService
             await _fppService.StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist, cancellationToken);
 
             FppMediaMetaResponse metaResponse = await _fppService.GetCurrentSongMetaDataAsync(currentStatus.Current_Song, cancellationToken);
-
-            string cpuTemperatures = await _fppService.GetCpuTemperaturesAsync(cancellationToken);
-            string title = metaResponse.Format.Tags.Title.IsNullOrWhiteSpace() ? currentStatus.Current_Song.Replace(".mp3", string.Empty) : metaResponse.Format.Tags.Title;
-            string weatherTemp = _weatherObservation.Properties.Temperature.Value.ToDisplayTemperature();
-            string artist = metaResponse.Format.Tags.Artist ?? string.Empty;
-            string windChill = _weatherObservation.Properties.WindChill.Value.ToDisplayTemperature();
-
-            LightShowDisplayRequest displayRequest = new(title, weatherTemp, cpuTemperatures, artist, windChill);
+            
+            LightShowDisplayRequest displayRequest = await CreateDisplayRequestAsync(currentStatus, metaResponse, cancellationToken);
+            
             await _websiteService.PostDisplayInfoAsync(displayRequest, cancellationToken);
 
             _songsSincePsa = currentStatus.Current_Song.Contains("PSA") ? 0 : _songsSincePsa;
@@ -137,7 +132,19 @@ public sealed class ExtenderService : IExtenderService
         return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
     }
 
-    private async Task ShowShutdownAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
+    private async Task<LightShowDisplayRequest> CreateDisplayRequestAsync(FppStatusResponse currentStatus, FppMediaMetaResponse metaResponse, CancellationToken cancellationToken)
+    {
+        string cpuTemperatures = await _fppService.GetCpuTemperaturesAsync(cancellationToken);
+        string title = metaResponse.Format.Tags.Title.IsNullOrWhiteSpace() ? currentStatus.Current_Song.Replace(".mp3", string.Empty) : metaResponse.Format.Tags.Title;
+        string weatherTemp = _weatherObservation.Properties.Temperature.Value.ToDisplayTemperature();
+        string artist = metaResponse.Format.Tags.Artist ?? string.Empty;
+        string windChill = _weatherObservation.Properties.WindChill.Value.ToDisplayTemperature();
+
+        LightShowDisplayRequest displayRequest = new(title, weatherTemp, cpuTemperatures, artist, windChill);
+        return displayRequest;
+    }
+
+    private async Task ShutdownShowAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
     {
         if (_showOffline)
         {
@@ -157,7 +164,7 @@ public sealed class ExtenderService : IExtenderService
         _showOffline = true;
     }
 
-    private async Task ShowStartupAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
+    private async Task StartupShowAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
     {
         if (!_showOffline)
         {
