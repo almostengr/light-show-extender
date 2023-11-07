@@ -14,12 +14,12 @@ public sealed class ExtenderService : IExtenderService
     private readonly ILoggingService<ExtenderService> _loggingService;
     private readonly IFppService _fppService;
     private readonly AppSettings _appSettings;
-    private NwsLatestObservationResponse _weatherObservation;
     private readonly INwsService _nwsService;
     private readonly ILightShowService _websiteService;
     private readonly IHomeAssistantService _homeAssistantService;
     private readonly IOptions<NwsOptions> _nwsOptions;
     private readonly IWledService _wledService;
+    private NwsLatestObservationResponse _weatherObservation;
     private string _previousSong;
     private uint _songsSincePsa;
     private bool _showOffline;
@@ -43,7 +43,7 @@ public sealed class ExtenderService : IExtenderService
         _homeAssistantService = homeAssistantService;
         _nwsOptions = nwsOptions;
         _weatherObservation = new();
-        _previousSong = "START";
+        _previousSong = "PREVIOUS NOT SET";
         _songsSincePsa = 0;
         _showOffline = true;
     }
@@ -56,12 +56,16 @@ public sealed class ExtenderService : IExtenderService
         {
             currentStatus = await _fppService.GetFppdStatusAsync(cancellationToken);
 
-            string currentSequence = currentStatus.Current_Sequence.ToUpper();
-            if (currentSequence.Contains(_appSettings.StartupSequence))
+            if (currentStatus.Current_Song == _previousSong)
+            {
+                return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
+            }
+
+            if (currentStatus.Current_Song.Contains(_appSettings.StartupSequence))
             {
                 await StartupShowAsync(currentStatus, cancellationToken);
             }
-            else if (currentSequence.Contains(_appSettings.ShutDownSequence))
+            else if (currentStatus.Current_Song.Contains(_appSettings.ShutDownSequence))
             {
                 await ShutdownShowAsync(currentStatus, cancellationToken);
             }
@@ -69,17 +73,6 @@ public sealed class ExtenderService : IExtenderService
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.GetBaseException().ToString());
-            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
-        }
-
-        if (_showOffline)
-        {
-            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
-        }
-
-
-        if (currentStatus.Current_Song == _previousSong)
-        {
             return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
         }
 
@@ -97,9 +90,9 @@ public sealed class ExtenderService : IExtenderService
             await _fppService.StopPlaylistAfterEndTimeAsync(currentStatus.Scheduler.CurrentPlaylist.Playlist, cancellationToken);
 
             FppMediaMetaResponse metaResponse = await _fppService.GetCurrentSongMetaDataAsync(currentStatus.Current_Song, cancellationToken);
-            
+
             LightShowDisplayRequest displayRequest = await CreateDisplayRequestAsync(currentStatus, metaResponse, cancellationToken);
-            
+
             await _websiteService.PostDisplayInfoAsync(displayRequest, cancellationToken);
 
             _songsSincePsa = currentStatus.Current_Song.Contains("PSA") ? 0 : _songsSincePsa;
@@ -181,7 +174,6 @@ public sealed class ExtenderService : IExtenderService
         _showOffline = false;
     }
 }
-
 
 public interface IExtenderService
 {
