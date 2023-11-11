@@ -63,7 +63,7 @@ final class PostRequestHandler extends BaseRequestHandler
 
         $decodedJson = json_decode($json, false);
         $this->sequenceName = $decodedJson->sequenceName;
-        $this->code = $decodedJson->code;
+        $this->code = strtoupper($decodedJson->code);
         $this->ipAddress = $_SERVER['REMOTE_ADDR'];
     }
 
@@ -109,7 +109,7 @@ final class PostRequestHandler extends BaseRequestHandler
 
     public function validateCode(): void
     {
-        $validCodeForToday = $this->getCodeForToday();
+        $validCodeForToday = strtoupper($this->getCodeForToday());
         if ($this->code !== $validCodeForToday) {
             throw new Exception("Invalid code. Please listen to the show announcement for the code.", 400);
         }
