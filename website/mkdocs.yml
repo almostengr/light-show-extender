@@ -1,0 +1,27 @@
+site_name: HP Light Show
+site_description: Interactive Christmas Light Show
+site_author: Kenny Robinson, @almostengr
+copyright: Copyright &copy; 2020-2023 Kenny Robinson
+
+# repository information
+remote_name: origin
+remote_branch: website
+
+# Development server details
+dev_addr: 10.10.10.103:8000
+
+use_directory_urls: true
+strict: false
+
+theme:
+  theme:
+  name: null
+  custom_dir: 'theme'
+  language: en
+  static_templates:
+    - api.php
+    - jukeboxapi.php
+
+plugins:
+  - minify:
+      minify_html: true
