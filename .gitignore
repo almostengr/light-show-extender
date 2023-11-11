@@ -445,3 +445,4 @@ $RECYCLE.BIN/
 *appsettings*.json
 !*appsettings.template.json
 appsettings.Development.json
+website/site*

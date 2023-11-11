@@ -2,7 +2,7 @@
 
 require_once('../config.php');
 date_default_timezone_set("America/Chicago");
-ini_set('display_errors', 'On');
+ini_set('display_errors', 'Off');
 
 final class ResponseDto
 {

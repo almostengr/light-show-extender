@@ -35,7 +35,6 @@
   <meta name="twitter:description" content="{{ config.site_description }}" />
   {% endif %}
 
-
   <link rel="canonical" href="{{ page.canonical_url | url }}">
   <meta property="og:url" content="{{ page.canonical_url | url }}" />
   <meta property="twitter:url" content="{{ page.canonical_url | url }}" />
@@ -132,7 +131,6 @@
 
       {{ page.content }}
       {%- endblock %}
-
     </main><!-- /.container -->
     <footer class="blog-footer bg-dark text-light text-left">
       <div class="container">
@@ -142,7 +140,7 @@
             (YouTube)</a>
           <a class="text-light pr-3" target="_blank" href="https://github.com/almostengr/light-show-extender">Github</a>
         </div>
-        <div>Copyright &copy; 2010-{{ build_date_utc.strftime("%Y") }} Kenny Robinson</div>
+        <div>Copyright &copy; 2020-{{ build_date_utc.strftime("%Y") }} Kenny Robinson</div>
         <div>
           Created by <a class="text-light" href="https://rhtservices.net" target="_blank">Robinson Handy and Technology Services</a>
         </div>
