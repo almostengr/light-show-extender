@@ -31,24 +31,25 @@ async function submitJukeboxRequest() {
         });
 
         const result = await response.json();
-        alertText.innerText = result.message;
         if (response.status > 299) {
             throw new Error(result.message);
         }
-
+        
+        alertText.innerText = result.message;
         alertBody.classList.remove(ALERT_DANGER_CLASS);
         alertBody.classList.add(ALERT_SUCCESS_CLASS);
+
+        const alertDisplaySeconds = 5 * 1000;
+        setTimeout(() => {
+            alertBody.classList.add(D_NONE)
+        }, alertDisplaySeconds);
     } catch (error) {
+        alertText.innerText = error;
         alertBody.classList.remove(ALERT_SUCCESS_CLASS);
         alertBody.classList.add(ALERT_DANGER_CLASS);
     }
 
     alertBody.classList.remove(D_NONE);
-
-    const alertDisplaySeconds = 5 * 1000;
-    setTimeout(() => {
-        alertBody.classList.add(D_NONE)
-    }, alertDisplaySeconds);
 }
 
 async function getDisplayData() {
