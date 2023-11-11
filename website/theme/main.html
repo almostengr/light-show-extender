@@ -46,7 +46,7 @@
   {% endif %}
 </head>
 
-<body class="bg-dark">
+<body class="bg-light">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark pb-2">
     <a class="navbar-brand" href="/">{{ config.site_name }}</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
@@ -60,26 +60,11 @@
   </nav>
 
   <div class="bg-light pt-3 mb-0 pb-0">
-    <!-- <div class="container">
-      {% if page and page.is_homepage %}
-      <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark"
-        style="background-image: url(/images/jumbotron_kenny.jpg); background-size: contain; background-position: right; background-repeat: no-repeat;">
-        <div class="col-md-3 p-2 bg-dark">
-          <h1 class="display-4 font-italic font-weight-bold">The blog of Kenny Robinson</h1>
-          <p class="lead my-3 font-weight-bold">
-            Share what you know, document what does work, and learn from previous mistakes.
-          </p>
-        </div>
-      </div>
-      {% endif %}
-    </div> -->
-
     {% if page and page.meta.announcement %}
     <div id="alert" class="alert fade show alert-warning" role="alert">
       {{ page.meta.announcement }}
     </div>
     {% endif %}
-
 
     {% if page and page.is_homepage %}
     <div class="container">
@@ -124,6 +109,10 @@
     {% endif %}
 
     <main role="main" class="container">
+      {% if page and page.is_homepage == false %}
+      <h1>{{ page.title }}</h1>
+      {% endif %}
+
       {%- block content %}
       {% if page and page.is_homepage %}
       {% include "_jukebox.html" %}
@@ -132,17 +121,16 @@
       {{ page.content }}
       {%- endblock %}
     </main><!-- /.container -->
-    <footer class="blog-footer bg-dark text-light text-left">
-      <div class="container">
-        <div>
-          <a class="text-light pr-3" target="_blank" href="https://www.facebook.com/profile.php?id=100089303142244">Tech Talk (Facebook)</a>
-          <a class="text-light pr-3" target="_blank" href="https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1">Tech Talk
-            (YouTube)</a>
-          <a class="text-light pr-3" target="_blank" href="https://github.com/almostengr/light-show-extender">Github</a>
+    <footer class="blog-footer text-dark text-left border-0">
+      <div class="container pl-3">
+        <div class="border-top pt-3">
+          <a class="pr-3" target="_blank" href="https://www.facebook.com/profile.php?id=100089303142244">Tech Talk (Facebook)</a>
+          <a class="pr-3" target="_blank" href="https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1">Tech Talk (YouTube)</a>
+          <a class="pr-3" target="_blank" href="https://github.com/almostengr/light-show-extender">Github</a>
         </div>
         <div>Copyright &copy; 2020-{{ build_date_utc.strftime("%Y") }} Kenny Robinson</div>
         <div>
-          Created by <a class="text-light" href="https://rhtservices.net" target="_blank">Robinson Handy and Technology Services</a>
+          Created by <a href="https://rhtservices.net" target="_blank">Robinson Handy and Technology Services</a>
         </div>
       </div>
     </footer>
