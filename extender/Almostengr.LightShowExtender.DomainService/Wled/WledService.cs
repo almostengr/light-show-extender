@@ -1,5 +1,3 @@
-using Almostengr.Extensions;
-
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
 public sealed class WledService : IWledService
@@ -45,7 +43,7 @@ public sealed class WledService : IWledService
     {
         foreach(var hostname in hostnames)
         {
-            await TurnOffAsync(hostname, cancellationToken);
+            await TurnOnAsync(hostname, cancellationToken);
         }
     }
 }
