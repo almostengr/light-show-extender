@@ -5,21 +5,21 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{AE314DB9-52B9-4DFF-8E37-2E77D9073386}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.DomainService", "source\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj", "{A60727E2-1FFD-4636-A84C-CD077C9FD5B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.DomainService", "extender\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj", "{A60727E2-1FFD-4636-A84C-CD077C9FD5B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Infrastructure", "source\Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj", "{4F1694FC-C643-4AD7-964F-6678E263D454}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Infrastructure", "extender\Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj", "{4F1694FC-C643-4AD7-964F-6678E263D454}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Worker", "source\Almostengr.LightShowExtender.Worker\Almostengr.LightShowExtender.Worker.csproj", "{995D1D6A-89CA-4641-8E01-5FCBDB44C960}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Worker", "extender\Almostengr.LightShowExtender.Worker\Almostengr.LightShowExtender.Worker.csproj", "{995D1D6A-89CA-4641-8E01-5FCBDB44C960}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.HomeAssistant", "source\Almostengr.Common.HomeAssistant\Almostengr.Common.HomeAssistant.csproj", "{C9587C13-E446-4108-82EA-32572C062532}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.HomeAssistant", "extender\Almostengr.Common.HomeAssistant\Almostengr.Common.HomeAssistant.csproj", "{C9587C13-E446-4108-82EA-32572C062532}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.Logging", "source\Almostengr.Common.Logging\Almostengr.Common.Logging.csproj", "{9133A832-FF7E-4AF3-BB06-72FA5048777C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.Logging", "extender\Almostengr.Common.Logging\Almostengr.Common.Logging.csproj", "{9133A832-FF7E-4AF3-BB06-72FA5048777C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.NwsWeather", "source\Almostengr.Common.NwsWeather\Almostengr.Common.NwsWeather.csproj", "{1D4631CC-16AD-444C-86D1-10D7F61CF614}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.NwsWeather", "extender\Almostengr.Common.NwsWeather\Almostengr.Common.NwsWeather.csproj", "{1D4631CC-16AD-444C-86D1-10D7F61CF614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.TheAlmostEngineer", "source\Almostengr.Common.TheAlmostEngineer\Almostengr.Common.TheAlmostEngineer.csproj", "{537BF6B5-AD0C-48E4-A91F-BD15EE57623F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.TheAlmostEngineer", "extender\Almostengr.Common.TheAlmostEngineer\Almostengr.Common.TheAlmostEngineer.csproj", "{537BF6B5-AD0C-48E4-A91F-BD15EE57623F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Extensions", "source\Almostengr.Extensions\Almostengr.Extensions.csproj", "{FD556F03-7AB5-4FCB-B328-BB9D129D281E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Extensions", "extender\Almostengr.Extensions\Almostengr.Extensions.csproj", "{FD556F03-7AB5-4FCB-B328-BB9D129D281E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
