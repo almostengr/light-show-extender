@@ -1,17 +1,14 @@
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.Common.Logging;
-using Almostengr.Common.HomeAssistant;
+using Almostengr.Common.HomeAssistant.Common;
 using Almostengr.Common.NwsWeather;
-using Almostengr.Common.TheAlmostEngineer;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.Wled;
 using Almostengr.LightShowExtender.DomainService.Wled;
-using Almostengr.LightShowExtender.DomainService;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http.Logging;
-using Microsoft.Extensions.Http;
+using Almostengr.LightShowExtender.DomainService.Website.Common;
+using Almostengr.LightShowExtender.Infrastructure.Website;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
@@ -41,27 +38,19 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.Configure<HomeAssistantOptions>(configuration.GetSection(nameof(HomeAssistantOptions)));
         services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
-        services.AddSingleton<IHomeAssistantService, HomeAssistantService>();
 
-        services.Configure<LightShowOptions>(configuration.GetSection(nameof(LightShowOptions)));
-        services.AddSingleton<ILightShowHttpClient, LightShowHttpClient>();
-        services.AddSingleton<ILightShowService, LightShowService>();
+        services.Configure<WebsiteOptions>(configuration.GetSection(nameof(WebsiteOptions)));
+        services.AddSingleton<IWebsiteHttpClient, WebsiteHttpClient>();
 
         services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
-        services.AddSingleton<INwsService, NwsService>();
 
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
-        services.AddSingleton<IFppService, FppService>();
-
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
-        services.AddSingleton<IWledService, WledService>();
-
-        services.AddSingleton<IExtenderService, ExtenderService>();
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
-        services.AddHostedService<WebsiteDisplayWorker>();
+        services.AddHostedService<LightShowWorker>();
     })
     .UseSystemd()
     .Build();

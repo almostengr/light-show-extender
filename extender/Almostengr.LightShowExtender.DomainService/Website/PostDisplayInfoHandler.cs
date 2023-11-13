@@ -1,15 +1,24 @@
+using Almostengr.LightShowExtender.DomainService.Website.Common;
 using Almostengr.Extensions;
 
-namespace Almostengr.Common.TheAlmostEngineer;
+namespace Almostengr.LightShowExtender.DomainService.Website;
 
-public sealed class LightShowDisplayRequest : BaseRequest
+public static class PostDisplayInfoHandler
 {
-    public LightShowDisplayRequest(string title)
+    public static async Task<LightShowDisplayResponse> Handle(IWebsiteHttpClient websiteHttpClient, WebsiteDisplayInfoRequest request, CancellationToken cancellationToken)
+    {
+        return await websiteHttpClient.PostDisplayInfoAsync(request, cancellationToken);
+    }
+}
+
+public sealed class WebsiteDisplayInfoRequest : BaseRequest
+{
+    public WebsiteDisplayInfoRequest(string title)
     {
         Title = title;
     }
 
-    public LightShowDisplayRequest(
+    public WebsiteDisplayInfoRequest(
         string title, string weatherTemp, string cpuTemp, string artist = "", string windChill = "")
     {
         Title = title;

@@ -1,6 +1,6 @@
 using Almostengr.Extensions;
 
-namespace Almostengr.Common.TheAlmostEngineer;
+namespace Almostengr.LightShowExtender.DomainService.Website.Common;
 
 public sealed class LightShowDisplayResponse : BaseResponse
 {

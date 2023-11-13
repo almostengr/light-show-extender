@@ -2,6 +2,23 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
+public static class GetMultiSyncSystemsHandler
+{
+    public static async Task<List<FppMultiSyncSystemsResponse.FppSystem>> Handle(IFppHttpClient fppHttpClient, CancellationToken cancellationToken, string type = "")
+    {
+        var systems = await fppHttpClient.GetMultiSyncSystemsAsync(cancellationToken);
+        
+        if (string.IsNullOrWhiteSpace(type))
+        {
+            return systems.Systems;
+        }
+
+        return systems.Systems
+            .Where(s => s.Type.ToUpper() == type)
+            .ToList();
+    }
+}
+
 public sealed class FppMultiSyncSystemsResponse : BaseResponse
 {
     public List<FppSystem> Systems { get; init; } = new();

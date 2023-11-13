@@ -2,6 +2,19 @@ using Almostengr.Extensions;
 
 namespace Almostengr.Common.NwsWeather;
 
+public static class GetLatestObservationHandler
+{
+    public static async Task<NwsLatestObservationResponse> Handle(INwsHttpClient nwsHttpClient, string stationId, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(stationId))
+        {
+            throw new ArgumentNullException(nameof(stationId));
+        }
+
+        return await nwsHttpClient.GetLatestObservationAsync(stationId, cancellationToken);
+    }
+}
+
 public sealed class NwsLatestObservationResponse : BaseResponse
 {
     public NwsLatestObservationProperties Properties { get; init; } = new();

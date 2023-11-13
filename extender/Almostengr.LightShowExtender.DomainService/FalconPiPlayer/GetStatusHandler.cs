@@ -3,6 +3,14 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
+public static class GetStatusHandler
+{
+    public static async Task<FppStatusResponse> Handle(IFppHttpClient fppHttpClient, CancellationToken cancellationToken, string hostname = "")
+    {
+        return await fppHttpClient.GetFppdStatusAsync(cancellationToken, hostname);
+    }
+}
+
 public sealed class FppStatusResponse : BaseResponse
 {
     public List<Sensor> Sensors { get; init; } = new();
@@ -15,7 +23,6 @@ public sealed class FppStatusResponse : BaseResponse
 
     [JsonPropertyName("seconds_remaining")]
     public string Seconds_Remaining { get; init; } = string.Empty;
-
 
     [JsonPropertyName("scheduler")]
     public ScheduleDetail Scheduler { get; init; } = new();
