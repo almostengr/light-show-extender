@@ -3,11 +3,25 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class GetStatusHandler
+public sealed class GetStatusHandler
 {
-    public static async Task<FppStatusResponse> Handle(IFppHttpClient fppHttpClient, CancellationToken cancellationToken, string hostname = "")
+    private readonly IFppHttpClient _fppHttpClient;
+
+    public GetStatusHandler(IFppHttpClient fppHttpClient)
     {
-        return await fppHttpClient.GetFppdStatusAsync(cancellationToken, hostname);
+        _fppHttpClient = fppHttpClient;
+    }
+
+    public async Task<FppStatusResponse?> Handle(CancellationToken cancellationToken, string hostname = "")
+    {
+        try
+        {
+            return await _fppHttpClient.GetFppdStatusAsync(cancellationToken, hostname);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }
 

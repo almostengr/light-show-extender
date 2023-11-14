@@ -1,12 +1,19 @@
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class InsertPsaHandler
+public sealed class InsertPsaHandler
 {
-    public static async Task Handle(IFppHttpClient fppHttpClient, CancellationToken cancellationToken)
+    private readonly IFppHttpClient _fppHttpClient;
+
+    public InsertPsaHandler(IFppHttpClient fppHttpClient)
     {
-        var allSequences = await GetSequenceList.Handle(fppHttpClient, cancellationToken);
+        _fppHttpClient = fppHttpClient;
+    }
+
+    public async Task Handle(CancellationToken cancellationToken)
+    {
+        var allSequences = await GetSequenceListHandler.Handle(cancellationToken);
         string psaSequence = allSequences.Where(s => s.ToUpper().Contains("PSA")).First();
         psaSequence = psaSequence.Contains(".fseq") ? psaSequence : $"{psaSequence}.fseq";
-        await InsertPlaylistAfterCurrentHandler.Handle(fppHttpClient, psaSequence, cancellationToken);
+        await InsertPlaylistAfterCurrentHandler.Handle(psaSequence, cancellationToken);
     }
 }

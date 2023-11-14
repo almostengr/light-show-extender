@@ -2,16 +2,30 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class GetCurrentSongMetaDataHandler
+public sealed class GetCurrentSongMetaDataHandler
 {
-    public static async Task<FppMediaMetaResponse> Handle(IFppHttpClient fppHttpClient, string currentSong, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(currentSong))
-        {
-            return new();
-        }
+    private readonly IFppHttpClient _fppHttpClient;
 
-        return await fppHttpClient.GetCurrentSongMetaDataAsync(currentSong, cancellationToken);
+    public GetCurrentSongMetaDataHandler(IFppHttpClient fppHttpClient)
+    {
+        _fppHttpClient = fppHttpClient;
+    }
+
+    public async Task<FppMediaMetaResponse> Handle(string currentSong, CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(currentSong))
+            {
+                return new();
+            }
+
+            return await _fppHttpClient.GetCurrentSongMetaDataAsync(currentSong, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 }
 

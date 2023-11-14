@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.HomeAssistant", "Almostengr.Common.HomeAssistant\Almostengr.Common.HomeAssistant.csproj", "{8D0AD7AD-EC9B-4C57-864A-68F4D1D5686F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.NwsWeather", "Almostengr.Common.NwsWeather\Almostengr.Common.NwsWeather.csproj", "{4326B1F1-CE98-4E0E-A132-24C00BE90C9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Extensions", "Almostengr.Extensions\Almostengr.Extensions.csproj", "{84216686-ECD0-452D-80C7-375966B4A2C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.DomainService", "Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj", "{BA56C5DF-C91C-4D6D-9D80-12C44A983050}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Infrastructure", "Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj", "{D14B27C5-BE8B-4598-8376-CE3573D62D5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.Worker", "Almostengr.LightShowExtender.Worker\Almostengr.LightShowExtender.Worker.csproj", "{9330D9E7-CD22-433E-B50F-8747B3433737}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D0AD7AD-EC9B-4C57-864A-68F4D1D5686F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D0AD7AD-EC9B-4C57-864A-68F4D1D5686F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D0AD7AD-EC9B-4C57-864A-68F4D1D5686F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D0AD7AD-EC9B-4C57-864A-68F4D1D5686F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4326B1F1-CE98-4E0E-A132-24C00BE90C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4326B1F1-CE98-4E0E-A132-24C00BE90C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4326B1F1-CE98-4E0E-A132-24C00BE90C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4326B1F1-CE98-4E0E-A132-24C00BE90C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84216686-ECD0-452D-80C7-375966B4A2C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84216686-ECD0-452D-80C7-375966B4A2C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84216686-ECD0-452D-80C7-375966B4A2C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84216686-ECD0-452D-80C7-375966B4A2C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA56C5DF-C91C-4D6D-9D80-12C44A983050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA56C5DF-C91C-4D6D-9D80-12C44A983050}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA56C5DF-C91C-4D6D-9D80-12C44A983050}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA56C5DF-C91C-4D6D-9D80-12C44A983050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D14B27C5-BE8B-4598-8376-CE3573D62D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D14B27C5-BE8B-4598-8376-CE3573D62D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D14B27C5-BE8B-4598-8376-CE3573D62D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D14B27C5-BE8B-4598-8376-CE3573D62D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9330D9E7-CD22-433E-B50F-8747B3433737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9330D9E7-CD22-433E-B50F-8747B3433737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9330D9E7-CD22-433E-B50F-8747B3433737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9330D9E7-CD22-433E-B50F-8747B3433737}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

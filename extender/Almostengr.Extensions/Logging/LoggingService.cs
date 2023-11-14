@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Almostengr.Common.Logging;
+namespace Almostengr.Extensions.Logging;
 
 public sealed class LoggingService<T> : ILoggingService<T> where T : class
 {

@@ -1,19 +1,33 @@
 using Almostengr.Extensions;
 using Almostengr.Common.HomeAssistant.Common;
+using Almostengr.Extensions.Logging;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public static class TurnOnSwitchHandler
+public class TurnOnSwitchHandler
 {
-    public static async Task<TurnOnSwitchResponse> Handle(IHomeAssistantHttpClient homeAssistantHttpClient, string entityId, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(entityId))
-        {
-            throw new ArgumentNullException(nameof(entityId));
-        }
+    private readonly IHomeAssistantHttpClient _homeAssistantHttpClient;
+    private readonly ILoggingService<TurnOnSwitchHandler> _loggingService;
 
-        var request = new TurnOnSwitchRequest(entityId);
-        return await homeAssistantHttpClient.TurnOnSwitchAsync(request, cancellationToken);
+    public TurnOnSwitchHandler(
+        IHomeAssistantHttpClient homeAssistantHttpClient,
+        ILoggingService<TurnOnSwitchHandler> loggingService)
+    {
+        _loggingService = loggingService;
+        _homeAssistantHttpClient = homeAssistantHttpClient;
+    }
+
+    public async Task<TurnOnSwitchResponse> Handle(TurnOnSwitchRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await homeAssistantHttpClient.TurnOnSwitchAsync(request, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.Error(ex.Message);
+            return null;
+        }
     }
 }
 

@@ -65,55 +65,6 @@ internal sealed class LightShowWorker : BackgroundService
         return Int32.Parse(value);
     }
 
-    private async Task<TimeSpan> ServiceAsync(CancellationToken cancellationToken)
-    {
-        FppStatusResponse currentStatus;
-
-        try
-        {
-            currentStatus = await GetStatusHandler.Handle(_fppHttpClient, cancellationToken);
-
-            if (currentStatus.Current_Song == "" && _previousStatus.Current_Song == "")
-            {
-                return TimeSpan.FromSeconds(15);
-            }
-            else if (currentStatus.Current_Song == "" && _previousStatus.Current_Song != "")
-            {
-                await ShutdownShowAsync(currentStatus, cancellationToken);
-            }
-            else if (currentStatus.Current_Song != "" && _previousStatus.Current_Song == "")
-            {
-                await StartupShowAsync(currentStatus, cancellationToken);
-            }
-
-            TimeSpan timeDifference = DateTime.Now - _lastWeatherRefreshTime;
-            if (timeDifference.Hours >= 1)
-            {
-                _weatherObservation = await GetLatestObservationHandler.Handle(_nwsHttpClient, _nwsOptions.Value.StationId, cancellationToken);
-                _lastWeatherRefreshTime = DateTime.Now;
-            }
-
-            uint secondsRemaining = UInt32.Parse(currentStatus.Seconds_Remaining);
-            const uint FETCH_TIME = 5;
-            if (secondsRemaining >= FETCH_TIME)
-            {
-                _previousStatus = currentStatus;
-                return TimeSpan.FromSeconds(secondsRemaining);
-            }
-
-            var nextSong = await GetNextSongInQueueHandler.Handle(_websiteHttpClient, cancellationToken);
-            if (nextSong.Message == "")
-            {
-                return TimeSpan.FromSeconds(secondsRemaining);
-            }
-
-
-        }
-        catch (Exception ex)
-        {
-            return TimeSpan.FromSeconds(5);
-        }
-    }
 
     private async Task<TimeSpan> MonitorAsync(CancellationToken cancellationToken)
     {

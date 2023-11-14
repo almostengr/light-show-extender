@@ -1,15 +1,22 @@
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class InsertPlaylistAfterCurrentHandler
+public sealed class InsertPlaylistAfterCurrentHandler
 {
-    public static async Task Handle(IFppHttpClient fppHttpClient, string playlistName, CancellationToken cancellationToken)
+    private readonly IFppHttpClient _fppHttpClient;
+
+    public InsertPlaylistAfterCurrentHandler(IFppHttpClient fppHttpClient)
+    {
+        _fppHttpClient = fppHttpClient;
+    }
+
+    public async Task Handle(string playlistName, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(playlistName))
         {
             throw new ArgumentNullException(nameof(playlistName));
         }
 
-        var response = await fppHttpClient.GetInsertPlaylistAfterCurrent(playlistName, cancellationToken);
+        var response = await _fppHttpClient.GetInsertPlaylistAfterCurrent(playlistName, cancellationToken);
 
         if (response.ToUpper() != "PLAYLIST INSERTED")
         {

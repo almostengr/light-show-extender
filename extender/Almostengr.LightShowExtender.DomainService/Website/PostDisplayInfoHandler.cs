@@ -3,11 +3,18 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.Website;
 
-public static class PostDisplayInfoHandler
+public sealed class PostDisplayInfoHandler
 {
-    public static async Task<LightShowDisplayResponse> Handle(IWebsiteHttpClient websiteHttpClient, WebsiteDisplayInfoRequest request, CancellationToken cancellationToken)
+    private readonly IWebsiteHttpClient _websiteHttpClient;
+
+    public PostDisplayInfoHandler(IWebsiteHttpClient websiteHttpClient)
     {
-        return await websiteHttpClient.PostDisplayInfoAsync(request, cancellationToken);
+        _websiteHttpClient = websiteHttpClient;    
+    }
+
+    public async Task<LightShowDisplayResponse> Handle(WebsiteDisplayInfoRequest request, CancellationToken cancellationToken)
+    {
+        return await _websiteHttpClient.PostDisplayInfoAsync(request, cancellationToken);
     }
 }
 

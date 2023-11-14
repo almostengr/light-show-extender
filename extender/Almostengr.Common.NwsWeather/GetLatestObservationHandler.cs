@@ -1,10 +1,20 @@
 using Almostengr.Extensions;
+using Almostengr.Extensions.Logging;
 
 namespace Almostengr.Common.NwsWeather;
 
-public static class GetLatestObservationHandler
+public class GetLatestObservationHandler
 {
-    public static async Task<NwsLatestObservationResponse> Handle(INwsHttpClient nwsHttpClient, string stationId, CancellationToken cancellationToken)
+    private readonly INwsHttpClient _nwsHttpClient;
+    private readonly ILoggingService<GetLatestObservationHandler> _loggerService;
+
+    public GetLatestObservationHandler(INwsHttpClient nwsHttpClient, ILoggingService<GetLatestObservationHandler> loggerService)
+    {
+        _nwsHttpClient = nwsHttpClient;
+        _loggerService = loggerService;
+    }
+
+    public async Task<NwsLatestObservationResponse> Handle(string stationId, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(stationId))
         {

@@ -2,10 +2,17 @@ using Almostengr.LightShowExtender.DomainService.Website.Common;
 
 namespace Almostengr.LightShowExtender.DomainService.Website;
 
-public static class GetNextSongInQueueHandler
+public sealed class GetNextSongInQueueHandler
 {
-    public static async Task<LightShowDisplayResponse> Handle(IWebsiteHttpClient websiteHttpClient, CancellationToken cancellationToken)
+    private readonly IWebsiteHttpClient _websiteHttpClient;
+
+    public GetNextSongInQueueHandler(IWebsiteHttpClient websiteHttpClient)
     {
-        return await websiteHttpClient.GetNextSongInQueueAsync(cancellationToken);
+        _websiteHttpClient = websiteHttpClient;
+    }
+
+    public async Task<LightShowDisplayResponse> Handle(CancellationToken cancellationToken)
+    {
+        return await _websiteHttpClient.GetNextSongInQueueAsync(cancellationToken);
     }
 }

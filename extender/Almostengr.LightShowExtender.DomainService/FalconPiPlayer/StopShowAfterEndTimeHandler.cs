@@ -1,13 +1,20 @@
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class StopShowAfterEndTimeHandler
+public sealed class StopShowAfterEndTimeHandler
 {
-    public static async Task Handle(IFppHttpClient fppHttpClient, string currentPlaylist, CancellationToken cancellationToken)
+    private readonly IFppHttpClient _fppHttpClient;
+
+    public StopShowAfterEndTimeHandler(IFppHttpClient fppHttpClient)
+    {
+        _fppHttpClient = fppHttpClient;
+    }
+
+    public static async Task Handle(string currentPlaylist, CancellationToken cancellationToken)
     {
         var showEndTime = new TimeSpan(22, 15, 00);
         if (currentPlaylist.ToUpper().Contains("CHRISTMAS") && DateTime.Now.TimeOfDay >= showEndTime)
         {
-            await fppHttpClient.StopPlaylistGracefullyAsync(cancellationToken);
+            await _fppHttpClient.StopPlaylistGracefullyAsync(cancellationToken);
         }
     }
 }

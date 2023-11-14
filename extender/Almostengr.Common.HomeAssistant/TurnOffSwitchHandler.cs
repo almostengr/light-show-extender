@@ -1,19 +1,31 @@
 using Almostengr.Extensions;
 using Almostengr.Common.HomeAssistant.Common;
+using Almostengr.Extensions.Logging;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public static class TurnOffSwitchHandler
+public class TurnOffSwitchHandler
 {
-    public static async Task<TurnOffSwitchResponse> Handle(IHomeAssistantHttpClient homeAssistantHttpClient, string entityId, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(entityId))
-        {
-            throw new ArgumentNullException(nameof(entityId));
-        }
+    private readonly IHomeAssistantHttpClient _homeAssistantHttpClient;
+    private readonly ILoggingService<TurnOffSwitchHandler> _loggingService;
 
-        var request = new TurnOffSwitchRequest(entityId);
-        return await homeAssistantHttpClient.TurnOffSwitchAsync(request, cancellationToken);
+    public TurnOffSwitchHandler(IHomeAssistantHttpClient homeAssistantHttpClient, ILoggingService<TurnOffSwitchHandler> loggingService)
+    {
+        _homeAssistantHttpClient = homeAssistantHttpClient;
+        _loggingService = loggingService;
+    }
+
+    public async Task<TurnOffSwitchResponse> HandleAsync(TurnOffSwitchRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await homeAssistantHttpClient.TurnOffSwitchAsync(request, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.Error(ex.Message);
+            return null;
+        }
     }
 }
 
@@ -24,6 +36,6 @@ public sealed class TurnOffSwitchRequest : BaseSwitchRequest
     }
 }
 
-public sealed class TurnOffSwitchResponse  : BaseResponse
+public sealed class TurnOffSwitchResponse : BaseResponse
 {
 }

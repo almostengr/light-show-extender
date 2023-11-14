@@ -1,4 +1,4 @@
-namespace Almostengr.Common.Logging;
+namespace Almostengr.Extensions.Logging;
 
 public interface ILoggingService<T>
 {
