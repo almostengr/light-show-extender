@@ -1,7 +1,8 @@
 using Almostengr.LightShowExtender.Worker;
-using Almostengr.Common.Logging;
+using Almostengr.Extensions.Logging;
 using Almostengr.Common.HomeAssistant.Common;
 using Almostengr.Common.NwsWeather;
+using Almostengr.Common.NwsWeather.Common;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
@@ -39,18 +40,24 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.Configure<HomeAssistantOptions>(configuration.GetSection(nameof(HomeAssistantOptions)));
         services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
 
-        services.Configure<WebsiteOptions>(configuration.GetSection(nameof(WebsiteOptions)));
-        services.AddSingleton<IWebsiteHttpClient, WebsiteHttpClient>();
-
         services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
+
+        services.Configure<WebsiteOptions>(configuration.GetSection(nameof(WebsiteOptions)));
+        services.AddSingleton<IWebsiteHttpClient, WebsiteHttpClient>();
 
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
+        FppFeatureHandlers.AddHandlers(services);
+        HomeAssistantFeatureHandlers.AddHandlers(services);
+        NwsFeatureHandlers.AddHandlers(services);
+        WebsiteFeatureHandlers.AddHandlers(services);
+        WledFeatureHandlers.AddHandlers(services);
+
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
-        services.AddHostedService<LightShowWorker>();
+        services.AddHostedService<ExtenderWorker>();
     })
     .UseSystemd()
     .Build();

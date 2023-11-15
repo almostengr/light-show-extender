@@ -19,11 +19,11 @@ public class TurnOffSwitchHandler
     {
         try
         {
-            return await homeAssistantHttpClient.TurnOffSwitchAsync(request, cancellationToken);
+            return await _homeAssistantHttpClient.TurnOffSwitchAsync(request, cancellationToken);
         }
         catch (Exception ex)
         {
-            _loggingService.Error(ex.Message);
+            _loggingService.Error(ex, ex.Message);
             return null;
         }
     }

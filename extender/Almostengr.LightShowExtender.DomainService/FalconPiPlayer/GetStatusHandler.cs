@@ -1,25 +1,30 @@
 using System.Text.Json.Serialization;
 using Almostengr.Extensions;
+using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 public sealed class GetStatusHandler
 {
     private readonly IFppHttpClient _fppHttpClient;
+    private readonly ILoggingService<GetStatusHandler> _loggingService;
 
-    public GetStatusHandler(IFppHttpClient fppHttpClient)
+    public GetStatusHandler(IFppHttpClient fppHttpClient,
+        ILoggingService<GetStatusHandler> loggingService)
     {
         _fppHttpClient = fppHttpClient;
+        _loggingService = loggingService;
     }
 
-    public async Task<FppStatusResponse?> Handle(CancellationToken cancellationToken, string hostname = "")
+    public async Task<FppStatusResponse> Handle(CancellationToken cancellationToken, string hostname = "")
     {
         try
         {
             return await _fppHttpClient.GetFppdStatusAsync(cancellationToken, hostname);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _loggingService.Error(ex, ex.Message);
             return null;
         }
     }

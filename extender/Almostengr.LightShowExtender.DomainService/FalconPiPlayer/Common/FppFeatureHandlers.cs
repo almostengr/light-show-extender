@@ -1,6 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class FppFeatureHandlers : IFeatureHandlers
+public static class FppFeatureHandlers
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {

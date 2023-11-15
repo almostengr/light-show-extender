@@ -1,10 +1,13 @@
+using Almostengr.LightShowExtender.DomainService.Wled;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public static class WledFeatureHandlers : IFeatureHandlers
+public static class WledFeatureHandlers 
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<TurnOffHandler>();
-        serviceCollection.AddScoped<TurnOnHandler>();
+        serviceCollection.AddScoped<TurnOffWledHandler>();
+        serviceCollection.AddScoped<TurnOnWledHandler>();
     }
 }

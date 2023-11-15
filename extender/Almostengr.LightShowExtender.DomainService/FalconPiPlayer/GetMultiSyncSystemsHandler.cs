@@ -1,14 +1,19 @@
 using Almostengr.Extensions;
+using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 public sealed class GetMultiSyncSystemsHandler
 {
     private readonly IFppHttpClient _fppHttpClient;
+    private readonly ILoggingService<GetMultiSyncSystemsHandler> _loggingService;
 
-    public GetMultiSyncSystemsHandler(IFppHttpClient fppHttpClient)
+    public GetMultiSyncSystemsHandler(
+        IFppHttpClient fppHttpClient,
+        ILoggingService<GetMultiSyncSystemsHandler> loggingService)
     {
         _fppHttpClient = fppHttpClient;
+        _loggingService = loggingService;
     }
 
     public async Task<List<FppMultiSyncSystemsResponse.FppSystem>> Handle(CancellationToken cancellationToken, string type = "")
@@ -28,6 +33,7 @@ public sealed class GetMultiSyncSystemsHandler
         }
         catch (Exception ex)
         {
+            _loggingService.Error(ex, ex.Message);
             return null;
         }
     }

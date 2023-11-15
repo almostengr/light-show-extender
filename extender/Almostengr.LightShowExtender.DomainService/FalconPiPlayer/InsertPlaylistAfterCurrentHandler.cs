@@ -1,26 +1,39 @@
+using Almostengr.Extensions.Logging;
+
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 public sealed class InsertPlaylistAfterCurrentHandler
 {
     private readonly IFppHttpClient _fppHttpClient;
+    private readonly ILoggingService<InsertPlaylistAfterCurrentHandler> _loggingService;
 
-    public InsertPlaylistAfterCurrentHandler(IFppHttpClient fppHttpClient)
+    public InsertPlaylistAfterCurrentHandler(
+        IFppHttpClient fppHttpClient,
+        ILoggingService<InsertPlaylistAfterCurrentHandler> loggingservice)
     {
         _fppHttpClient = fppHttpClient;
+        _loggingService = loggingservice;
     }
 
     public async Task Handle(string playlistName, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(playlistName))
+        try
         {
-            throw new ArgumentNullException(nameof(playlistName));
+            if (string.IsNullOrWhiteSpace(playlistName))
+            {
+                throw new ArgumentNullException(nameof(playlistName));
+            }
+
+            var response = await _fppHttpClient.GetInsertPlaylistAfterCurrent(playlistName, cancellationToken);
+
+            if (response.ToUpper() != "PLAYLIST INSERTED")
+            {
+                throw new InvalidDataException($"Unexpected response from FPP. {response}");
+            }
         }
-
-        var response = await _fppHttpClient.GetInsertPlaylistAfterCurrent(playlistName, cancellationToken);
-
-        if (response.ToUpper() != "PLAYLIST INSERTED")
+        catch (Exception ex)
         {
-            throw new InvalidDataException($"Unexpected response from FPP. {response}");
+            _loggingService.Error(ex, ex.Message);
         }
     }
 }

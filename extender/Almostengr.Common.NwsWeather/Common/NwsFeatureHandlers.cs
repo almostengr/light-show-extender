@@ -1,8 +1,8 @@
-using Almostengr.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Almostengr.Common.NwsWeather.Common;
 
-public static class NwsFeatureHandlers : IFeatureHandlers
+public static class NwsFeatureHandlers
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {

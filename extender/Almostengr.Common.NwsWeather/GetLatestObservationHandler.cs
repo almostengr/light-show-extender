@@ -6,22 +6,30 @@ namespace Almostengr.Common.NwsWeather;
 public class GetLatestObservationHandler
 {
     private readonly INwsHttpClient _nwsHttpClient;
-    private readonly ILoggingService<GetLatestObservationHandler> _loggerService;
+    private readonly ILoggingService<GetLatestObservationHandler> _loggingService;
 
-    public GetLatestObservationHandler(INwsHttpClient nwsHttpClient, ILoggingService<GetLatestObservationHandler> loggerService)
+    public GetLatestObservationHandler(INwsHttpClient nwsHttpClient, ILoggingService<GetLatestObservationHandler> loggingService)
     {
         _nwsHttpClient = nwsHttpClient;
-        _loggerService = loggerService;
+        _loggingService = loggingService;
     }
 
     public async Task<NwsLatestObservationResponse> Handle(string stationId, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(stationId))
+        try
         {
-            throw new ArgumentNullException(nameof(stationId));
-        }
+            if (string.IsNullOrWhiteSpace(stationId))
+            {
+                throw new ArgumentNullException(nameof(stationId));
+            }
 
-        return await nwsHttpClient.GetLatestObservationAsync(stationId, cancellationToken);
+            return await _nwsHttpClient.GetLatestObservationAsync(stationId, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _loggingService.Error(ex.Message);
+            return null;
+        }
     }
 }
 
