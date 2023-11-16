@@ -70,7 +70,7 @@ async function getDisplayData() {
         let result = await response.json();
 
         if (result.title === "") {
-            songTitleElement.innerText = "RADIO OFF";
+            songTitleElement.innerText = "SHOW OFFLINE";
             artistElement.innerText = "Show times are listed below";
             jukeboxFormElement.classList.add(D_NONE);
             showMetaDataElement.classList.add(D_NONE);
