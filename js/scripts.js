@@ -12,6 +12,7 @@ const songTitleElement = document.getElementById("songTitle");
 const windChillElement = document.getElementById("windChill");
 const lastUpdatedElement = document.getElementById("lastUpdated");
 const errorsElement = document.getElementById("errors");
+const onAirElement = document.getElementById("onAir");
 
 function requestHeaders() {
     return { "Content-Type": "application/json" };
@@ -74,6 +75,7 @@ async function getDisplayData() {
             artistElement.innerText = "Show times are listed below";
             jukeboxFormElement.classList.add(D_NONE);
             showMetaDataElement.classList.add(D_NONE);
+            onAirElement.classList.add(D_NONE);
         }
         else {
             songTitleElement.innerText = result.title;
@@ -84,6 +86,7 @@ async function getDisplayData() {
             lastUpdatedElement.innerText = result.createdtime + " ET";
             jukeboxFormElement.classList.remove(D_NONE);
             showMetaDataElement.classList.remove(D_NONE);
+            onAirElement.classList.remove(D_NONE);
         }
 
         errorsElement.innerText = "";
