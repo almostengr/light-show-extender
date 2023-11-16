@@ -6,7 +6,7 @@ public static class HomeAssistantFeatureHandlers
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<TurnOffSwitchHandler>();
-        serviceCollection.AddScoped<TurnOnSwitchHandler>();
+        serviceCollection.AddSingleton<TurnOnSwitchHandler>();
+        serviceCollection.AddSingleton<TurnOffSwitchHandler>();
     }
 }

@@ -6,6 +6,6 @@ public static class NwsFeatureHandlers
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<GetLatestObservationHandler>();
+        serviceCollection.AddSingleton<GetLatestObservationHandler>();
     }
 }

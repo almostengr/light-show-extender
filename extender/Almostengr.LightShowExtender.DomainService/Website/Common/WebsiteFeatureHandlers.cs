@@ -7,8 +7,8 @@ public static class WebsiteFeatureHandlers
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<DeleteSongsInQueueHandler>();
-        serviceCollection.AddScoped<GetNextSongInQueueHandler>();
-        serviceCollection.AddScoped<PostDisplayInfoHandler>();        
+        serviceCollection.AddSingleton<DeleteSongsInQueueHandler>();
+        serviceCollection.AddSingleton<GetNextSongInQueueHandler>();
+        serviceCollection.AddSingleton<PostDisplayInfoHandler>();        
     }
 }

@@ -4,7 +4,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class GetStatusHandler
+public sealed class GetStatusHandler : IQueryHandler<string, FppStatusResponse>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<GetStatusHandler> _loggingService;
@@ -16,7 +16,7 @@ public sealed class GetStatusHandler
         _loggingService = loggingService;
     }
 
-    public async Task<FppStatusResponse> Handle(CancellationToken cancellationToken, string hostname = "")
+    public async Task<FppStatusResponse> ExecuteAsync(string hostname, CancellationToken cancellationToken)
     {
         try
         {

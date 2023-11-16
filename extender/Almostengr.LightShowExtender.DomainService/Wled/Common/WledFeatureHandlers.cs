@@ -7,7 +7,7 @@ public static class WledFeatureHandlers
 {
     public static void AddHandlers(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<TurnOffWledHandler>();
-        serviceCollection.AddScoped<TurnOnWledHandler>();
+        serviceCollection.AddSingleton<TurnOffWledHandler>();
+        serviceCollection.AddSingleton<TurnOnWledHandler>();
     }
 }

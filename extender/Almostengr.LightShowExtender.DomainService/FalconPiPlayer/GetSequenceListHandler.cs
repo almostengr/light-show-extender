@@ -1,8 +1,9 @@
+using Almostengr.Extensions;
 using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class GetSequenceListHandler
+public sealed class GetSequenceListHandler : IQueryHandler<List<string>>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<GetSequenceListHandler> _loggingService;
@@ -15,7 +16,7 @@ public sealed class GetSequenceListHandler
         _loggingService = loggingservice;
     }
 
-    public async Task<List<string>> Handle(CancellationToken cancellationToken)
+    public async Task<List<string>> ExecuteAsync(CancellationToken cancellationToken)
     {
         try
         {

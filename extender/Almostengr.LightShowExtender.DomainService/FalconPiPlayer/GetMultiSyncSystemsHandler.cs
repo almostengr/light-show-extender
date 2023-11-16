@@ -3,7 +3,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class GetMultiSyncSystemsHandler
+public sealed class GetMultiSyncSystemsHandler : IQueryHandler<string, List<FppMultiSyncSystemsResponse.FppSystem>>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<GetMultiSyncSystemsHandler> _loggingService;
@@ -16,7 +16,7 @@ public sealed class GetMultiSyncSystemsHandler
         _loggingService = loggingService;
     }
 
-    public async Task<List<FppMultiSyncSystemsResponse.FppSystem>> Handle(CancellationToken cancellationToken, string type = "")
+    public async Task<List<FppMultiSyncSystemsResponse.FppSystem>> ExecuteAsync(string type, CancellationToken cancellationToken)
     {
         try
         {

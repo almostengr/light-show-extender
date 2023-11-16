@@ -55,6 +55,13 @@ public static class AeHttpClient
         return address;
     }
 
+    public static async Task<string> GetStringAsync<T>(this HttpClient httpClient, string route, CancellationToken cancellationToken)
+    {
+        var response = await httpClient.GetAsync(route, cancellationToken);
+        await response.WasRequestSuccessfulAsync(cancellationToken);
+        return await response.Content.ReadAsStringAsync(cancellationToken);
+    }
+
     public static async Task<T> GetAsync<T>(this HttpClient httpClient, string route, CancellationToken cancellationToken)
     {
         var response = await httpClient.GetAsync(route, cancellationToken);

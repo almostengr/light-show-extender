@@ -1,9 +1,10 @@
+using Almostengr.Extensions;
 using Almostengr.Extensions.Logging;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
-public sealed class TurnOffWledHandler
+public sealed class TurnOffWledHandler : IQueryHandler<FppMultiSyncSystemsResponse.FppSystem, WledJsonResponse>
 {
     private readonly IWledHttpClient _wledHttpClient;
     private readonly ILoggingService<TurnOffWledHandler> _loggingService;
@@ -16,7 +17,7 @@ public sealed class TurnOffWledHandler
         _loggingService = loggingService;
     }
 
-    public async Task<WledJsonResponse> Handle(FppMultiSyncSystemsResponse.FppSystem system, CancellationToken cancellationToken)
+    public async Task<WledJsonResponse> ExecuteAsync(FppMultiSyncSystemsResponse.FppSystem system, CancellationToken cancellationToken)
     {
         try
         {
@@ -35,11 +36,11 @@ public sealed class TurnOffWledHandler
         }
     }
 
-    public async Task Handle(List<FppMultiSyncSystemsResponse.FppSystem> systems, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(List<FppMultiSyncSystemsResponse.FppSystem> systems, CancellationToken cancellationToken)
     {
         foreach (var system in systems)
         {
-            await Handle(system, cancellationToken);
+            await ExecuteAsync(system, cancellationToken);
         }
     }
 }

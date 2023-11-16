@@ -4,7 +4,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.Common.HomeAssistant;
 
-public class TurnOnSwitchHandler
+public class TurnOnSwitchHandler : IQueryHandler<TurnOnSwitchRequest, TurnOnSwitchResponse>
 {
     private readonly IHomeAssistantHttpClient _homeAssistantHttpClient;
     private readonly ILoggingService<TurnOnSwitchHandler> _loggingService;
@@ -17,7 +17,7 @@ public class TurnOnSwitchHandler
         _homeAssistantHttpClient = homeAssistantHttpClient;
     }
 
-    public async Task<TurnOnSwitchResponse> Handle(TurnOnSwitchRequest request, CancellationToken cancellationToken)
+    public async Task<TurnOnSwitchResponse> ExecuteAsync(TurnOnSwitchRequest request, CancellationToken cancellationToken)
     {
         try
         {

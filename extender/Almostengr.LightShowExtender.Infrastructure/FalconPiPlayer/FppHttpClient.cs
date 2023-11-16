@@ -49,7 +49,7 @@ public sealed class FppHttpClient : IFppHttpClient
     public async Task<string> GetInsertPlaylistAfterCurrent(string playlistName, CancellationToken cancellationToken)
     {
         string route = $"api/command/Insert Playlist After Current/{playlistName}";
-        return await _httpClient.GetAsync<string>(route, cancellationToken);
+        return await _httpClient.GetStringAsync(route, cancellationToken);
     }
 
     public async Task StopPlaylistGracefullyAsync(CancellationToken cancellationToken)

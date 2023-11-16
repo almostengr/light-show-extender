@@ -1,8 +1,9 @@
 using Almostengr.Extensions.Logging;
+using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class StopShowAfterEndTimeHandler
+public sealed class StopShowAfterEndTimeHandler : ICommandHandler<string>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<StopShowAfterEndTimeHandler> _loggingService;
@@ -15,7 +16,7 @@ public sealed class StopShowAfterEndTimeHandler
         _loggingService = loggingService;
     }
 
-    public async Task Handle(string currentPlaylist, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(string currentPlaylist, CancellationToken cancellationToken)
     {
         try
         {

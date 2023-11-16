@@ -4,7 +4,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.Website;
 
-public sealed class PostDisplayInfoHandler
+public sealed class PostDisplayInfoHandler : IQueryHandler<WebsiteDisplayInfoRequest, LightShowDisplayResponse>
 {
     private readonly IWebsiteHttpClient _websiteHttpClient;
     private readonly ILoggingService<PostDisplayInfoHandler> _loggingService;
@@ -16,7 +16,7 @@ public sealed class PostDisplayInfoHandler
         _loggingService = loggingService;
     }
 
-    public async Task<LightShowDisplayResponse> Handle(WebsiteDisplayInfoRequest request, CancellationToken cancellationToken)
+    public async Task<LightShowDisplayResponse> ExecuteAsync(WebsiteDisplayInfoRequest request, CancellationToken cancellationToken)
     {
         try
         {

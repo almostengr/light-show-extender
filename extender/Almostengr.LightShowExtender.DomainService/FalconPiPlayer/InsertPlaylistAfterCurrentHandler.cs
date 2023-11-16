@@ -1,8 +1,9 @@
 using Almostengr.Extensions.Logging;
+using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class InsertPlaylistAfterCurrentHandler
+public sealed class InsertPlaylistAfterCurrentHandler : ICommandHandler<string>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<InsertPlaylistAfterCurrentHandler> _loggingService;
@@ -15,7 +16,7 @@ public sealed class InsertPlaylistAfterCurrentHandler
         _loggingService = loggingservice;
     }
 
-    public async Task Handle(string playlistName, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(string playlistName, CancellationToken cancellationToken)
     {
         try
         {

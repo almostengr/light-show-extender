@@ -49,10 +49,10 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
+        WebsiteFeatureHandlers.AddHandlers(services);
         FppFeatureHandlers.AddHandlers(services);
         HomeAssistantFeatureHandlers.AddHandlers(services);
         NwsFeatureHandlers.AddHandlers(services);
-        WebsiteFeatureHandlers.AddHandlers(services);
         WledFeatureHandlers.AddHandlers(services);
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));

@@ -1,10 +1,11 @@
 using System.Text;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.Extensions.Logging;
+using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class GetCpuTemperaturesHandler
+public sealed class GetCpuTemperaturesHandler : IQueryHandler<string>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly GetMultiSyncSystemsHandler _getMultiSyncSystemsHandler;
@@ -24,20 +25,20 @@ public sealed class GetCpuTemperaturesHandler
         _getStatusHandler = getStatusHandler;
     }
 
-    public async Task<string> Handle(CancellationToken cancellationToken)
+    public async Task<string> ExecuteAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var multiSyncSystems = await _getMultiSyncSystemsHandler.Handle(cancellationToken);
+            var multiSyncSystems = await _getMultiSyncSystemsHandler.ExecuteAsync(string.Empty, cancellationToken);
 
-            var fppSystems = multiSyncSystems.Where(s => s.Type.StartsWith("Raspberry Pi"))
+            var fppSystems = multiSyncSystems.Where(s => s.Type.ToUpper().StartsWith("RASPBERRY PI"))
                 .Select(s => s.Address)
                 .ToList();
 
             StringBuilder output = new();
             foreach (var system in fppSystems)
             {
-                var response = await _getStatusHandler.Handle(cancellationToken, system);
+                var response = await _getStatusHandler.ExecuteAsync(system, cancellationToken);
 
                 var temp = (float)response.Sensors.Where(s => s.Label.StartsWith("CPU"))
                     .Select(s => s.Value)

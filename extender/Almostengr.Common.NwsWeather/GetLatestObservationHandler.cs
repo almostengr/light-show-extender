@@ -3,7 +3,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.Common.NwsWeather;
 
-public class GetLatestObservationHandler
+public class GetLatestObservationHandler : IQueryHandler<string, NwsLatestObservationResponse>
 {
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly ILoggingService<GetLatestObservationHandler> _loggingService;
@@ -14,7 +14,7 @@ public class GetLatestObservationHandler
         _loggingService = loggingService;
     }
 
-    public async Task<NwsLatestObservationResponse> Handle(string stationId, CancellationToken cancellationToken)
+    public async Task<NwsLatestObservationResponse> ExecuteAsync(string stationId, CancellationToken cancellationToken)
     {
         try
         {

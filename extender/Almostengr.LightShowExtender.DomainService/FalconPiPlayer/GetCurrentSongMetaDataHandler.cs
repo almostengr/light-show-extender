@@ -3,7 +3,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class GetCurrentSongMetaDataHandler
+public sealed class GetCurrentSongMetaDataHandler : IQueryHandler<string, FppMediaMetaResponse>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<GetCurrentSongMetaDataHandler> _loggingService;
@@ -16,7 +16,7 @@ public sealed class GetCurrentSongMetaDataHandler
         _loggingService = loggingService;
     }
 
-    public async Task<FppMediaMetaResponse> Handle(string currentSong, CancellationToken cancellationToken)
+    public async Task<FppMediaMetaResponse> ExecuteAsync(string currentSong, CancellationToken cancellationToken)
     {
         try
         {
