@@ -69,27 +69,31 @@
 
     {% if page and page.is_homepage %}
     <div class="container">
-      <div class="jumbotron bg-dark text-light">
+      <div class="text-white rounded p-4" style="background-color: black;">
+        <div class="row mb-2 px-3 d-none" id="onAir">
+          <div class="text-light p-1 mr-3 text-center rounded bg-info col-3">{{ config.theme.stationFrequency }}</div>
+          <div class="text-light p-1 mr-3 text-center rounded bg-danger col-2">LIVE</div>
+        </div>
         <div class="row">
           <div class="col-12">
-            <h2 class="pb-2 text-uppercase" id="songTitle">SHOW OFFLINE</h2>
-            <h4 class="pb-2 text-capitalize text-truncate" id="songArtist">Show times are listed below</h4>
+            <h2 class="pb-1 text-uppercase font-weight-bold" id="songTitle">SHOW OFFLINE</h2>
+            <h4 class="pb-1 text-truncate text-capitalize" id="songArtist">Show times are listed below</h4>
           </div>
           <div id="showMetaData" class="col-12 mt-2 d-none">
             <div class="row">
-              <div class="col-md-6 h6 text-info">
+              <div class="col-md-6 h6 text-secondary">
                 <strong>Outdoor:</strong>
                 <span id="nwsTemp">Loading</span>
               </div>
-              <div class="col-md-6 h6 text-info">
+              <div class="col-md-6 h6 text-secondary">
                 <strong>Wind Chill:</strong>
                 <span id="windChill">None</span>
               </div>
-              <div class="col-md-6 h6 text-info">
+              <div class="col-md-6 h6 text-secondary">
                 <strong>CPU(s):</strong>
                 <span id="cpuTemp">Loading</span>
               </div>
-              <div class="col-md-6 h6 text-info">
+              <div class="col-md-6 h6 text-secondary">
                 <strong>Updated:</strong>
                 <span id="lastUpdated">Loading</span>
               </div>
@@ -128,9 +132,9 @@
       </div>
     </footer>
   </div>
+  <script type="text/javascript" src="/js/jquery.js"></script>
   <script type="text/javascript" src="/assets/dist/js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="/js/scripts.min.js"></script>
-  <script type="text/javascript" src="/js/jquery.js"></script>
 </body>
 
 </html>

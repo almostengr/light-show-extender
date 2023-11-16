@@ -21,6 +21,7 @@ theme:
   static_templates:
     - api.php
     - jukeboxapi.php
+  stationFrequency: "90.3 FM"
 
 plugins:
   - minify:
