@@ -131,7 +131,7 @@ internal sealed class ExtenderWorker : BackgroundService
             await _insertPsaHandler.ExecuteAsync(string.Empty, cancellationToken);
             _songsSincePsa = 0;
             _previousStatus = currentStatus;
-            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
+            return TimeSpan.FromSeconds(FETCH_TIME);
         }
 
         var nextSong = await _getNextSongInQueueHandler.ExecuteAsync(cancellationToken);
