@@ -6,19 +6,55 @@
         {
             "label": "build",
             "command": "dotnet",
-            "type": "shell",
+            "type": "process",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
+                "${workspaceFolder}/Almostengr.LightShowExtender.Worker/Almostengr.LightShowExtender.Worker.csproj",
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
             ],
-            "group": "build",
-            "presentation": {
-                "reveal": "silent"
-            },
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "Clean Release Project",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "clean",
+                "-c",
+                "Release",
+            ],
+            "group": "none"
+        },
+        {
+            "label": "Publish Release",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "-r",
+                "linux-arm",
+                "--self-contained",
+                "-c",
+                "Release",
+                "*sln"
+            ],
+            "group": "none",
+            "dependsOn": [
+                "Clean Release Project"
+            ]
+        },
+        {
+            "label": "Deploy Production",
+            "command": "scp",
+            "type": "shell",
+            "args": [
+                "-pr",
+                "${workspaceRoot}/Almostengr.LightShowExtender.Worker/bin/Release/net6.0/linux-arm/publish/*",
+                "fpp@10.10.50.101://home/fpp/lightshowextender"
+            ],
+            "group": "none",
+            "dependsOn": ["Publish Release"],
+        },
     ]
 }
