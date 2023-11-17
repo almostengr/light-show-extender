@@ -20,6 +20,7 @@ public sealed class PostDisplayInfoHandler : IQueryHandler<WebsiteDisplayInfoReq
     {
         try
         {
+            _loggingService.Information($"Posting song {request.Title} - {request.Artist}");
             return await _websiteHttpClient.PostDisplayInfoAsync(request, cancellationToken);
         }
         catch (Exception ex)

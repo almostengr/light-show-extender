@@ -26,6 +26,7 @@ public sealed class InsertPlaylistAfterCurrentHandler : ICommandHandler<string>
             }
 
             var response = await _fppHttpClient.GetInsertPlaylistAfterCurrent(playlistName, cancellationToken);
+            _loggingService.Information($"Inserted request {playlistName}");
 
             if (response.ToUpper() != "PLAYLIST INSERTED")
             {

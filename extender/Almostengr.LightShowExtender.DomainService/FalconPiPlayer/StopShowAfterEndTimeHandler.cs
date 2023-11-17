@@ -24,6 +24,7 @@ public sealed class StopShowAfterEndTimeHandler : ICommandHandler<string>
             if (currentPlaylist.ToUpper().Contains("CHRISTMAS") && DateTime.Now.TimeOfDay >= showEndTime)
             {
                 await _fppHttpClient.StopPlaylistGracefullyAsync(cancellationToken);
+                _loggingService.Information("Stopping show after end time");
             }
         }
         catch (Exception ex)
