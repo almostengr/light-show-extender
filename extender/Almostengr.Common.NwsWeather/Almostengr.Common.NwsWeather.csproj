@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.Extensions\Almostengr.Extensions.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>National Weather Service Utilities</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.Common.NwsWeather</AssemblyName>
+    <RootNamespace>Almostengr.Common</RootNamespace>
+    <Version>$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
+  </PropertyGroup>
+
+</Project>

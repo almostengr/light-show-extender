@@ -4,47 +4,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/source/Almostengr.LightShowExtender.Worker/Almostengr.LightShowExtender.Worker.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "Clean Release Project",
-            "command": "dotnet",
-            "type": "shell",
-            "args": [
-                "clean",
-                "-c",
-                "Release",
-            ],
-            "group": "none"
-        },
-        {
-            "label": "Publish Release",
-            "command": "dotnet",
-            "type": "shell",
-            "args": [
-                "publish",
-                "-r",
-                "linux-arm",
-                "--self-contained",
-                "-c",
-                "Release",
-                "*sln"
-            ],
-            "group": "none",
-            "dependsOn": [
-                "Clean Release Project"
-            ]
-        },
-        {
             "label": "Tag Release",
             "command": "git",
             "type": "shell",
@@ -55,22 +14,6 @@
                 "-m",
                 "\"version $(date +%Y.%m.%d)\""
             ],
-            "dependsOn": [
-                "Publish Release"
-            ],
-        },
-        {
-            "label": "Deploy Production",
-            "command": "scp",
-            "type": "shell",
-            "args": [
-                "-pr",
-                "${workspaceRoot}/scripts/lightshowextender.service",
-                "${workspaceRoot}/source/Almostengr.LightShowExtender.Worker/bin/Release/net6.0/linux-arm/publish/*",
-                "fpp@10.10.107.116://home/fpp/lightshowextender"
-            ],
-            "group": "none",
-            "dependsOn": ["Tag Release"],
         },
     ]
 }
