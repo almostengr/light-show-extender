@@ -1,4 +1,5 @@
 using Almostengr.LightShowExtender.DomainService.Website;
+using Almostengr.LightShowExtender.DomainService.TweetInvi;
 using Almostengr.Common.NwsWeather;
 using Almostengr.LightShowExtender.DomainService.Wled;
 using Almostengr.LightShowExtender.DomainService.Common;
@@ -27,6 +28,7 @@ internal sealed class ExtenderWorker : BackgroundService
     private readonly InsertPlaylistAfterCurrentHandler _insertPlaylistAfterCurrentHandler;
     private readonly InsertPsaHandler _insertPsaHandler;
     private readonly PostDisplayInfoHandler _postDisplayInfoHandler;
+    private readonly PostTweetHandler _postTweetHandler;
     private readonly TurnOffWledHandler _turnOffWledHandler;
     private readonly TurnOnWledHandler _turnOnWledHandler;
 
@@ -43,6 +45,7 @@ internal sealed class ExtenderWorker : BackgroundService
         InsertPlaylistAfterCurrentHandler insertPlaylistAfterCurrentHandler,
         InsertPsaHandler insertPsaHandler,
         PostDisplayInfoHandler postDisplayInfoHandler,
+        PostTweetHandler postTweetHandler,
         StopShowAfterEndTimeHandler stopShowAfterEndTimeHandler,
         TurnOffWledHandler turnOffHandler,
         TurnOnWledHandler turnOnHandler
@@ -54,6 +57,7 @@ internal sealed class ExtenderWorker : BackgroundService
         _songsSincePsa = 0;
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
 
+        _postTweetHandler = postTweetHandler;
         _deleteSongsInQueueHandler = deleteSongsInQueueHandler;
         _getCpuTemperaturesHandler = getCpuTemperaturesHandler;
         _getCurrentSongMetaDataHandler = getCurrentSongMetaDataHandler;
@@ -106,6 +110,9 @@ internal sealed class ExtenderWorker : BackgroundService
 
         WebsiteDisplayInfoRequest displayRequest = await CreateDisplayRequestAsync(currentStatus, metaResponse, cancellationToken);
         await _postDisplayInfoHandler.ExecuteAsync(displayRequest, cancellationToken);
+
+        PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
+        await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
 
         uint secondsRemaining = ConvertStringToUint(currentStatus.Seconds_Remaining);
         if (secondsRemaining >= _appSettings.ExtenderDelay)

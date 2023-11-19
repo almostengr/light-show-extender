@@ -5,7 +5,7 @@ public interface ICommandHandler
     Task ExecuteAsync(CancellationToken cancellationToken);
 }
 
-public interface ICommandHandler<TCommand>
+public interface ICommandHandler<ICommand>
 {
     Task ExecuteAsync(ICommand command, CancellationToken cancellationToken);
 }
