@@ -3,7 +3,7 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class InsertPsaHandler : ICommandHandler<string>
+public sealed class InsertPsaHandler : IQueryHandler<InsertPlaylistAfterCurrentResponse>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly GetSequenceListHandler _getSequenceListHandler;
@@ -23,18 +23,22 @@ public sealed class InsertPsaHandler : ICommandHandler<string>
         _loggingService = loggingService;
     }
 
-    public async Task ExecuteAsync(string sequenceFilter, CancellationToken cancellationToken)
+    public async Task<InsertPlaylistAfterCurrentResponse> ExecuteAsync(CancellationToken cancellationToken)
     {
         try
         {
             var allSequences = await _getSequenceListHandler.ExecuteAsync(cancellationToken);
             string psaSequence = allSequences.Where(s => s.ToUpper().Contains("PSA")).First();
             psaSequence = psaSequence.Contains(".fseq") ? psaSequence : $"{psaSequence}.fseq";
-            await _insertPlaylistAfterCurrentHandler.ExecuteAsync(psaSequence, cancellationToken);
+
+            InsertPlaylistAfterCurrentRequest request = new(psaSequence);
+            return await _insertPlaylistAfterCurrentHandler.ExecuteAsync(request, cancellationToken);
         }
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
         }
+
+        return new InsertPlaylistAfterCurrentResponse(false);
     }
 }

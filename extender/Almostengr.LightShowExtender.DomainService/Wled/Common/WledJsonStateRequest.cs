@@ -3,7 +3,7 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
-public sealed class WledJsonStateRequest : BaseRequest
+public sealed class WledJsonStateRequest : IQueryRequest
 {
     public WledJsonStateRequest(bool onState, uint brightness = 255)
     {
@@ -11,6 +11,7 @@ public sealed class WledJsonStateRequest : BaseRequest
         Brightness = brightness;
     }
 
+    [JsonPropertyName("on")]
     public bool On { get; init; }
 
     [JsonPropertyName("bri")]

@@ -10,7 +10,7 @@ public class TurnOffSwitchHandler : IQueryHandler<TurnOffSwitchRequest, TurnOffS
     private readonly ILoggingService<TurnOffSwitchHandler> _loggingService;
 
     public TurnOffSwitchHandler(
-        IHomeAssistantHttpClient homeAssistantHttpClient, 
+        IHomeAssistantHttpClient homeAssistantHttpClient,
         ILoggingService<TurnOffSwitchHandler> loggingService)
     {
         _homeAssistantHttpClient = homeAssistantHttpClient;
@@ -21,12 +21,22 @@ public class TurnOffSwitchHandler : IQueryHandler<TurnOffSwitchRequest, TurnOffS
     {
         try
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.EntityId))
+            {
+                throw new ArgumentNullException(nameof(request.EntityId));
+            }
+            
             return await _homeAssistantHttpClient.TurnOffSwitchAsync(request, cancellationToken);
         }
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
-            return null;
+            return null!;
         }
     }
 }
@@ -38,6 +48,6 @@ public sealed class TurnOffSwitchRequest : BaseSwitchRequest
     }
 }
 
-public sealed class TurnOffSwitchResponse : BaseResponse
+public sealed class TurnOffSwitchResponse : IQueryResponse
 {
 }

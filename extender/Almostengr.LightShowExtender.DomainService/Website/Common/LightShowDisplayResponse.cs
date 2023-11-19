@@ -2,7 +2,7 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.Website.Common;
 
-public sealed class LightShowDisplayResponse : BaseResponse
+public sealed class LightShowDisplayResponse : IQueryResponse
 {
     public LightShowDisplayResponse(string message)
     {

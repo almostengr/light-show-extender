@@ -38,7 +38,8 @@ public sealed class GetCpuTemperaturesHandler : IQueryHandler<string>
             StringBuilder output = new();
             foreach (var system in fppSystems)
             {
-                var response = await _getStatusHandler.ExecuteAsync(system, cancellationToken);
+                FppStatusRequest request = new(system);
+                var response = await _getStatusHandler.ExecuteAsync(request, cancellationToken);
 
                 var temp = (float)response.Sensors.Where(s => s.Label.StartsWith("CPU"))
                     .Select(s => s.Value)
@@ -57,7 +58,7 @@ public sealed class GetCpuTemperaturesHandler : IQueryHandler<string>
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
-            return null;
+            return null!;
         }
     }
 }

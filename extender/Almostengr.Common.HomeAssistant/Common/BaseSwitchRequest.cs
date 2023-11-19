@@ -1,16 +1,12 @@
 using System.Text.Json.Serialization;
+using Almostengr.Extensions;
 
 namespace Almostengr.Common.HomeAssistant.Common;
 
-public abstract class BaseSwitchRequest
+public abstract class BaseSwitchRequest : IQueryRequest
 {
     public BaseSwitchRequest(string entityId)
     {
-        if (string.IsNullOrWhiteSpace(entityId))
-        {
-            throw new ArgumentNullException(nameof(entityId));
-        }
-
         EntityId = entityId;
     }
 

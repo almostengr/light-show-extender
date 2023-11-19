@@ -34,12 +34,12 @@ public sealed class GetMultiSyncSystemsHandler : IQueryHandler<string, List<FppM
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
-            return null;
+            return null!;
         }
     }
 }
 
-public sealed class FppMultiSyncSystemsResponse : BaseResponse
+public sealed class FppMultiSyncSystemsResponse : IQueryResponse
 {
     public List<FppSystem> Systems { get; init; } = new();
 
