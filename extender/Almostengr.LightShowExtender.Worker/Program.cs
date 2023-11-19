@@ -58,6 +58,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         HomeAssistantFeatureHandlers.AddHandlers(services);
         NwsFeatureHandlers.AddHandlers(services);
         WledFeatureHandlers.AddHandlers(services);
+        TwitterFeatureHandler.AddHandlers(services);
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 

@@ -4,6 +4,7 @@ using Almostengr.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tweetinvi;
 using Tweetinvi.Models;
+using Tweetinvi.Parameters;
 
 namespace Almostengr.LightShowExtender.DomainService.TweetInvi;
 
@@ -14,7 +15,6 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
     private readonly IOptions<TwitterOptions> _options;
 
     public PostTweetHandler(
-        ITwitterClient twitterClient,
         IOptions<TwitterOptions> options,
         ILoggingService<PostTweetHandler> loggingService
         )
@@ -26,7 +26,8 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
             _options.Value.ConsumerKey, _options.Value.ConsumerSecret,
             _options.Value.AccessToken, _options.Value.AccessSecret);
 
-        _twitterClient = twitterClient == null ? new TwitterClient(credentials) : twitterClient;
+        _twitterClient = new TwitterClient(credentials);
+        _twitterClient.Config.TweetMode = TweetMode.None;
     }
 
     public async Task ExecuteAsync(PostTweetCommand command, CancellationToken cancellationToken)
@@ -61,6 +62,7 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
             tweet.Append(hashTags);
 
             await _twitterClient.Tweets.PublishTweetAsync(tweet.ToString());
+            // await _twitterClient.TweetsV2.
         }
         catch (Exception ex)
         {

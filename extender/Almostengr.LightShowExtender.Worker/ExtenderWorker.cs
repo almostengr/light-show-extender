@@ -111,8 +111,8 @@ internal sealed class ExtenderWorker : BackgroundService
         WebsiteDisplayInfoRequest displayRequest = await CreateDisplayRequestAsync(currentStatus, metaResponse, cancellationToken);
         await _postDisplayInfoHandler.ExecuteAsync(displayRequest, cancellationToken);
 
-        PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
-        await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
+        // PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
+        // await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
 
         uint secondsRemaining = ConvertStringToUint(currentStatus.Seconds_Remaining);
         if (secondsRemaining >= _appSettings.ExtenderDelay)

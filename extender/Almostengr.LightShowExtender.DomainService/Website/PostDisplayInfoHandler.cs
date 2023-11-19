@@ -25,10 +25,6 @@ public sealed class PostDisplayInfoHandler : IQueryHandler<WebsiteDisplayInfoReq
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (string.IsNullOrWhiteSpace(request.Title))
-            {
-                throw new ArgumentNullException(nameof(request.Title));
-            }
 
             _loggingService.Information($"Posting song {request.Title} - {request.Artist}");
             return await _websiteHttpClient.PostDisplayInfoAsync(request, cancellationToken);
