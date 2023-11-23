@@ -55,13 +55,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link text-light" href="/details">Details</a></li>
+        {% for link in config.theme.header_links %}
+        <li class="nav-item"><a class="nav-link text-light" href="{{ link.url }}">{{ link.name }}</a></li>
+        {% endfor %}
       </ul>
     </div>
   </nav>
 
   <div class="bg-light pt-3 mb-0 pb-0">
-    {% if page and page.meta.announcement %}
+    {% if page and config.theme.announcement %}
     {% include "_announcement.html" %}
     {% endif %}
 
@@ -85,11 +87,11 @@
     <footer class="blog-footer text-dark text-left border-0">
       <div class="container pl-3">
         <div class="border-top pt-3">
-          <a class="pr-3" target="_blank" href="https://www.facebook.com/profile.php?id=100089303142244">Tech Talk (Facebook)</a>
-          <a class="pr-3" target="_blank" href="https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1">Tech Talk (YouTube)</a>
-          <a class="pr-3" target="_blank" href="https://github.com/almostengr/light-show-extender">Github</a>
+          {% for link in config.theme.footer_links %}
+          <a class="pr-3" href="{{ link.url }}">{{ link.name }}</a>
+          {% endfor %}
         </div>
-        <div>Copyright &copy; 2020-{{ build_date_utc.strftime("%Y") }} Kenny Robinson</div>
+        <div>Copyright &copy; {{ build_date_utc.strftime("%Y") }} {{ config.copyright }}</div>
         <div>
           Created by <a href="https://rhtservices.net" target="_blank">Robinson Handy and Technology Services</a>
         </div>

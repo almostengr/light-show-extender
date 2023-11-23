@@ -1,7 +1,7 @@
 site_name: HP Light Show
 site_description: Interactive Christmas Light Show
 site_author: Kenny Robinson, @almostengr
-copyright: Copyright &copy; 2020-2023 Kenny Robinson
+copyright: Kenny Robinson
 
 # repository information
 remote_name: origin
@@ -21,6 +21,7 @@ theme:
   static_templates:
     - api.php
     - jukeboxapi.php
+  # announcement: Testing
   stationFrequency: "90.3 FM"
   sequences:
     - playlistName: 20th Century Fox.fseq
@@ -57,6 +58,22 @@ theme:
       displayName: What You Want for Christmas - Quad City DJs and K-nock
     - playlistName: Wizards In Winter_Trans-Siberian Orchestra.fseq
       displayName: Wizards In Winter - Trans-Siberian Orchestra
+  header_links:
+    - url: /details
+      name: Details
+    - url: "https://twitter.com/hplightshow"
+      name: "@hplightshow Twitter"
+    - url: "https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1"
+      name: Tech Talk
+  footer_links:
+    - url: "https://twitter.com/hplightshow"
+      name: "@hplightshow (Twitter)"
+    - url: "https://www.facebook.com/profile.php?id=100089303142244"
+      name: Tech Talk (Facebook)
+    - url: "https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1"
+      name: Tech Talk (YouTube)
+    - url: "https://github.com/almostengr/light-show-extender"
+      name: Github
 
 plugins:
   - minify:

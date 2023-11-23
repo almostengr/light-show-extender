@@ -6,6 +6,8 @@ const D_NONE = "d-none";
 const artistElement = document.getElementById("songArtist");
 const cpuTempElement = document.getElementById("cpuTemp");
 const jukeboxFormElement = document.getElementById("jukeboxForm");
+const sequenceNameElement = document.getElementById("sequenceName");
+const codeElement = document.getElementById("code");
 const nwsTempElement = document.getElementById("nwsTemp");
 const showMetaDataElement = document.getElementById("showMetaData");
 const songTitleElement = document.getElementById("songTitle");
@@ -39,6 +41,9 @@ async function submitJukeboxRequest() {
         alertText.innerText = result.message;
         alertBody.classList.remove(ALERT_DANGER_CLASS);
         alertBody.classList.add(ALERT_SUCCESS_CLASS);
+
+        sequenceNameElement.selectedIndex = 0;
+        codeElement.value = "";
 
         const alertDisplaySeconds = 5 * 1000;
         setTimeout(() => {
