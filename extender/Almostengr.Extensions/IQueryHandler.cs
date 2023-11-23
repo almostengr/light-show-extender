@@ -3,12 +3,18 @@ namespace Almostengr.Extensions;
 public interface IQueryHandler
 { }
 
-public interface IQueryHandler<TResult> : IQueryHandler
+public interface IQueryHandler<IQueryResponse> : IQueryHandler
 {
-    Task<TResult> ExecuteAsync(CancellationToken cancellationToken);
+    Task<IQueryResponse> ExecuteAsync(CancellationToken cancellationToken);
 }
 
-public interface IQueryHandler<TQuery, TResult> : IQueryHandler
+public interface IQueryHandler<IQueryRequest, IQueryResponse> : IQueryHandler
 {
-    Task<TResult> ExecuteAsync(TQuery query, CancellationToken cancellationToken);
+    Task<IQueryResponse> ExecuteAsync(IQueryRequest request, CancellationToken cancellationToken);
 }
+
+public interface IQueryRequest
+{ }
+
+public interface IQueryResponse
+{ }

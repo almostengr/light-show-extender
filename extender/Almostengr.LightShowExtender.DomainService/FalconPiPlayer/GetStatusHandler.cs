@@ -4,7 +4,7 @@ using Almostengr.Extensions.Logging;
 
 namespace Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 
-public sealed class GetStatusHandler : IQueryHandler<string, FppStatusResponse>
+public sealed class GetStatusHandler : IQueryHandler<FppStatusRequest, FppStatusResponse>
 {
     private readonly IFppHttpClient _fppHttpClient;
     private readonly ILoggingService<GetStatusHandler> _loggingService;
@@ -16,51 +16,48 @@ public sealed class GetStatusHandler : IQueryHandler<string, FppStatusResponse>
         _loggingService = loggingService;
     }
 
-    public async Task<FppStatusResponse> ExecuteAsync(string hostname, CancellationToken cancellationToken)
+    public async Task<FppStatusResponse> ExecuteAsync(FppStatusRequest request, CancellationToken cancellationToken)
     {
         try
         {
-            return await _fppHttpClient.GetFppdStatusAsync(cancellationToken, hostname);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            return await _fppHttpClient.GetFppdStatusAsync(cancellationToken, request.Hostname);
         }
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
-            return null;
+            return null!;
         }
     }
 }
 
-public sealed class FppStatusResponse : BaseResponse
+public sealed class FppStatusResponse : IQueryResponse
 {
     public List<Sensor> Sensors { get; init; } = new();
 
     [JsonPropertyName("current_song")]
     public string Current_Song { get; init; } = string.Empty;
 
-    [JsonPropertyName("current_sequence")]
-    public string Current_Sequence { get; init; } = string.Empty;
-
     [JsonPropertyName("seconds_remaining")]
     public string Seconds_Remaining { get; init; } = string.Empty;
-
-    [JsonPropertyName("scheduler")]
-    public ScheduleDetail Scheduler { get; init; } = new();
-
-    public sealed class ScheduleDetail
-    {
-        [JsonPropertyName("currentPlaylist")]
-        public ActivePlaylist CurrentPlaylist { get; init; } = new();
-
-        public sealed class ActivePlaylist
-        {
-            [JsonPropertyName("scheduledEndTime")]
-            public string Playlist { get; init; } = string.Empty;
-        }
-    }
 
     public sealed class Sensor
     {
         public string Label { get; init; } = string.Empty;
         public double Value { get; init; }
     }
+}
+
+public sealed class FppStatusRequest : IQueryRequest
+{
+    public FppStatusRequest(string hostname = "")
+    {
+        Hostname = hostname;
+    }
+
+    public string Hostname { get; init; }
 }

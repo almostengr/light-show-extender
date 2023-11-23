@@ -20,18 +20,24 @@ public sealed class PostDisplayInfoHandler : IQueryHandler<WebsiteDisplayInfoReq
     {
         try
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+
             _loggingService.Information($"Posting song {request.Title} - {request.Artist}");
             return await _websiteHttpClient.PostDisplayInfoAsync(request, cancellationToken);
         }
         catch (Exception ex)
         {
             _loggingService.Error(ex.Message);
-            return null;
+            return null!;
         }
     }
 }
 
-public sealed class WebsiteDisplayInfoRequest : BaseRequest
+public sealed class WebsiteDisplayInfoRequest : IQueryRequest
 {
     public WebsiteDisplayInfoRequest(string title, bool acceptingRequests = false)
     {

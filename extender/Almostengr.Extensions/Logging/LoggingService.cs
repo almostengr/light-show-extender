@@ -28,11 +28,15 @@ public sealed class LoggingService<T> : ILoggingService<T> where T : class
 
     public void Information(string message, params object[] args)
     {
-        _logger.LogInformation(message, args);
+        #if !RELEASE
+            _logger.LogInformation(message, args);
+        #endif
     }
 
     public void Debug(string message, params object[] args)
     {
+        #if !RELEASE
         _logger.LogDebug(message, args);
+        #endif
     }
 }

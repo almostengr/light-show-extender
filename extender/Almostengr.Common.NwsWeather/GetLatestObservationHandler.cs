@@ -1,39 +1,42 @@
 using Almostengr.Extensions;
 using Almostengr.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Almostengr.Common.NwsWeather;
 
-public class GetLatestObservationHandler : IQueryHandler<string, NwsLatestObservationResponse>
+public class GetLatestObservationHandler : IQueryHandler<NwsLatestObservationResponse>
 {
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly ILoggingService<GetLatestObservationHandler> _loggingService;
+    private readonly IOptions<NwsOptions> _options;
 
-    public GetLatestObservationHandler(INwsHttpClient nwsHttpClient, ILoggingService<GetLatestObservationHandler> loggingService)
+    public GetLatestObservationHandler(INwsHttpClient nwsHttpClient, IOptions<NwsOptions> options, ILoggingService<GetLatestObservationHandler> loggingService)
     {
         _nwsHttpClient = nwsHttpClient;
         _loggingService = loggingService;
+        _options = options;
     }
 
-    public async Task<NwsLatestObservationResponse> ExecuteAsync(string stationId, CancellationToken cancellationToken)
+    public async Task<NwsLatestObservationResponse> ExecuteAsync(CancellationToken cancellationToken)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(stationId))
+            if (string.IsNullOrWhiteSpace(_options.Value.StationId))
             {
-                throw new ArgumentNullException(nameof(stationId));
+                throw new ArgumentNullException(nameof(_options.Value.StationId));
             }
 
-            return await _nwsHttpClient.GetLatestObservationAsync(stationId, cancellationToken);
+            return await _nwsHttpClient.GetLatestObservationAsync(_options.Value.StationId, cancellationToken);
         }
         catch (Exception ex)
         {
             _loggingService.Error(ex.Message);
-            return null;
+            return null!;
         }
     }
 }
 
-public sealed class NwsLatestObservationResponse : BaseResponse
+public sealed class NwsLatestObservationResponse : IQueryResponse
 {
     public NwsLatestObservationProperties Properties { get; init; } = new();
 

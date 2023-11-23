@@ -12,7 +12,7 @@ public sealed class WledHttpClient : IWledHttpClient
         _httpClient = new HttpClient();
     }
 
-    public async Task<WledJsonResponse> GetStatusAsync(string hostname, CancellationToken cancellationToken)
+    public async Task<WledJsonStateResponse> GetStatusAsync(string hostname, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(hostname))
         {
@@ -20,10 +20,10 @@ public sealed class WledHttpClient : IWledHttpClient
         }
 
         string route = $"{hostname}/json";
-        return await _httpClient.GetAsync<WledJsonResponse>(route.GetUrlWithProtocol(), cancellationToken);
+        return await _httpClient.GetAsync<WledJsonStateResponse>(route.GetUrlWithProtocol(), cancellationToken);
     }
 
-    public async Task<WledJsonResponse> PostStateAsync(string hostname, WledJsonStateRequest request, CancellationToken cancellationToken)
+    public async Task<WledJsonStateResponse> PostStateAsync(string hostname, WledJsonStateRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(hostname))
         {
@@ -31,6 +31,6 @@ public sealed class WledHttpClient : IWledHttpClient
         }
 
         string route = $"{hostname}/json/state";
-        return await _httpClient.PostAsync<WledJsonStateRequest, WledJsonResponse>(route.GetUrlWithProtocol(), request, cancellationToken);
+        return await _httpClient.PostAsync<WledJsonStateRequest, WledJsonStateResponse>(route.GetUrlWithProtocol(), request, cancellationToken);
     }
 }

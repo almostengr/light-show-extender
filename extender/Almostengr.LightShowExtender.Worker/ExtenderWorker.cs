@@ -1,11 +1,10 @@
 using Almostengr.LightShowExtender.DomainService.Website;
+using Almostengr.LightShowExtender.DomainService.TweetInvi;
 using Almostengr.Common.NwsWeather;
 using Almostengr.LightShowExtender.DomainService.Wled;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.Extensions.Logging;
-using Almostengr.Common.HomeAssistant;
-using Microsoft.Extensions.Options;
 
 namespace Almostengr.LightShowExtender.Worker;
 
@@ -13,11 +12,11 @@ internal sealed class ExtenderWorker : BackgroundService
 {
     private readonly ILoggingService<ExtenderWorker> _loggingService;
     private readonly AppSettings _appSettings;
-    private readonly IOptions<NwsOptions> _nwsOptions;
     private NwsLatestObservationResponse _weatherObservation;
     private uint _songsSincePsa;
+    private uint _songsSinceLastTweet;
     private DateTime _lastWeatherRefreshTime;
-    private FppStatusResponse _previousStatus;
+    private string _previousSong;
 
     private readonly DeleteSongsInQueueHandler _deleteSongsInQueueHandler;
     private readonly GetCpuTemperaturesHandler _getCpuTemperaturesHandler;
@@ -29,15 +28,12 @@ internal sealed class ExtenderWorker : BackgroundService
     private readonly InsertPlaylistAfterCurrentHandler _insertPlaylistAfterCurrentHandler;
     private readonly InsertPsaHandler _insertPsaHandler;
     private readonly PostDisplayInfoHandler _postDisplayInfoHandler;
-    private readonly StopShowAfterEndTimeHandler _stopShowAfterEndTimeHandler;
+    private readonly PostTweetHandler _postTweetHandler;
     private readonly TurnOffWledHandler _turnOffWledHandler;
-    private readonly TurnOffSwitchHandler _turnOffSwitchHandler;
     private readonly TurnOnWledHandler _turnOnWledHandler;
-    private readonly TurnOnSwitchHandler _turnOnSwitchHandler;
 
     public ExtenderWorker(
         AppSettings appSettings,
-        IOptions<NwsOptions> nwsOptions,
         ILoggingService<ExtenderWorker> logging,
         DeleteSongsInQueueHandler deleteSongsInQueueHandler,
         GetCpuTemperaturesHandler getCpuTemperaturesHandler,
@@ -49,21 +45,20 @@ internal sealed class ExtenderWorker : BackgroundService
         InsertPlaylistAfterCurrentHandler insertPlaylistAfterCurrentHandler,
         InsertPsaHandler insertPsaHandler,
         PostDisplayInfoHandler postDisplayInfoHandler,
+        PostTweetHandler postTweetHandler,
         StopShowAfterEndTimeHandler stopShowAfterEndTimeHandler,
         TurnOffWledHandler turnOffHandler,
-        TurnOffSwitchHandler turnOffSwitchHandler,
-        TurnOnWledHandler turnOnHandler,
-        TurnOnSwitchHandler turnOnSwitchHandler
+        TurnOnWledHandler turnOnHandler
         )
     {
         _appSettings = appSettings;
-        _nwsOptions = nwsOptions;
         _loggingService = logging;
         _weatherObservation = new();
         _songsSincePsa = 0;
+        _songsSinceLastTweet = _appSettings.MaxSongsBetweenPsa;
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
-        _previousStatus = new();
 
+        _postTweetHandler = postTweetHandler;
         _deleteSongsInQueueHandler = deleteSongsInQueueHandler;
         _getCpuTemperaturesHandler = getCpuTemperaturesHandler;
         _getCurrentSongMetaDataHandler = getCurrentSongMetaDataHandler;
@@ -74,11 +69,9 @@ internal sealed class ExtenderWorker : BackgroundService
         _insertPlaylistAfterCurrentHandler = insertPlaylistAfterCurrentHandler;
         _insertPsaHandler = insertPsaHandler;
         _postDisplayInfoHandler = postDisplayInfoHandler;
-        _stopShowAfterEndTimeHandler = stopShowAfterEndTimeHandler;
         _turnOffWledHandler = turnOffHandler;
-        _turnOffSwitchHandler = turnOffSwitchHandler;
         _turnOnWledHandler = turnOnHandler;
-        _turnOnSwitchHandler = turnOnSwitchHandler;
+        _previousSong = null!;
     }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -93,7 +86,8 @@ internal sealed class ExtenderWorker : BackgroundService
 
     private async Task<TimeSpan> MonitorAsync(CancellationToken cancellationToken)
     {
-        FppStatusResponse currentStatus = await _getStatusHandler.ExecuteAsync(string.Empty, cancellationToken);
+        FppStatusRequest currentStatusRequest = new(string.Empty);
+        FppStatusResponse currentStatus = await _getStatusHandler.ExecuteAsync(currentStatusRequest, cancellationToken);
 
         if (currentStatus == null)
         {
@@ -101,51 +95,60 @@ internal sealed class ExtenderWorker : BackgroundService
             return TimeSpan.FromSeconds(15);
         }
 
-        await ShutdownShowBasedOnConditionsAsync(currentStatus, cancellationToken);
-        await StartupShowBasedOnConditionsAsync(currentStatus, cancellationToken);
+        await ShutdownShowBasedOnConditionsAsync(currentStatus.Current_Song, cancellationToken);
+        await StartupShowBasedOnConditionsAsync(currentStatus.Current_Song, cancellationToken);
 
-        if (currentStatus.Current_Song == "")
+        if (currentStatus.Current_Song == string.Empty)
         {
-            _previousStatus = currentStatus;
+            UpdatePreviousSong(currentStatus.Current_Song);
             return TimeSpan.FromSeconds(15);
         }
 
         await GetLatestWeatherAsync(cancellationToken);
 
-        FppMediaMetaResponse metaResponse = await _getCurrentSongMetaDataHandler.ExecuteAsync(currentStatus.Current_Song, cancellationToken);
+        FppMediaMetaRequest metaRequest = new(currentStatus.Current_Song);
+        FppMediaMetaResponse metaResponse = await _getCurrentSongMetaDataHandler.ExecuteAsync(metaRequest, cancellationToken);
 
         WebsiteDisplayInfoRequest displayRequest = await CreateDisplayRequestAsync(currentStatus, metaResponse, cancellationToken);
         await _postDisplayInfoHandler.ExecuteAsync(displayRequest, cancellationToken);
 
-        uint secondsRemaining = ConvertStringToUint(currentStatus.Seconds_Remaining);
-        const uint FETCH_TIME = 5;
-        if (secondsRemaining > FETCH_TIME)
+        _songsSinceLastTweet++;
+        if (_songsSinceLastTweet >= _appSettings.SongsBetweenTweets)
         {
-            _previousStatus = currentStatus;
-            return TimeSpan.FromSeconds(secondsRemaining - FETCH_TIME);
+            PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
+            await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
+            _songsSinceLastTweet = 0;
+        }
+
+        uint secondsRemaining = ConvertStringToUint(currentStatus.Seconds_Remaining);
+        if (secondsRemaining >= _appSettings.ExtenderDelay)
+        {
+            UpdatePreviousSong(currentStatus.Current_Song);
+            return TimeSpan.FromSeconds(secondsRemaining - _appSettings.ExtenderDelay);
         }
 
         _songsSincePsa = currentStatus.Current_Song.ToUpper().Contains("PSA") ? 0 : _songsSincePsa;
         if (_songsSincePsa >= _appSettings.MaxSongsBetweenPsa)
         {
-            await _insertPsaHandler.ExecuteAsync(string.Empty, cancellationToken);
+            await _insertPsaHandler.ExecuteAsync(cancellationToken);
             _songsSincePsa = 0;
-            _previousStatus = currentStatus;
-            return TimeSpan.FromSeconds(FETCH_TIME);
+            UpdatePreviousSong(currentStatus.Current_Song);
+            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
         }
 
         var nextSong = await _getNextSongInQueueHandler.ExecuteAsync(cancellationToken);
         if (string.IsNullOrWhiteSpace(nextSong.Message))
         {
-            _previousStatus = currentStatus;
-            return TimeSpan.FromSeconds(FETCH_TIME);
+            UpdatePreviousSong(currentStatus.Current_Song);
+            return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
         }
 
-        await _insertPlaylistAfterCurrentHandler.ExecuteAsync(nextSong.Message, cancellationToken);
+        InsertPlaylistAfterCurrentRequest nextSongRequest = new(nextSong.Message);
+        await _insertPlaylistAfterCurrentHandler.ExecuteAsync(nextSongRequest, cancellationToken);
         _songsSincePsa++;
-        _previousStatus = currentStatus;
+        UpdatePreviousSong(currentStatus.Current_Song);
 
-        return TimeSpan.FromSeconds(FETCH_TIME);
+        return TimeSpan.FromSeconds(_appSettings.ExtenderDelay);
     }
 
     private uint ConvertStringToUint(string value)
@@ -158,8 +161,12 @@ internal sealed class ExtenderWorker : BackgroundService
         TimeSpan timeDifference = DateTime.Now - _lastWeatherRefreshTime;
         if (timeDifference.Hours >= 1)
         {
-            _weatherObservation = await _getLatestObservationHandler.ExecuteAsync(_nwsOptions.Value.StationId, cancellationToken);
-            _lastWeatherRefreshTime = DateTime.Now;
+            var latestResponse = await _getLatestObservationHandler.ExecuteAsync(cancellationToken);
+            if (latestResponse != null)
+            {
+                _weatherObservation = latestResponse;
+                _lastWeatherRefreshTime = DateTime.Now;
+            }
         }
     }
 
@@ -175,9 +182,9 @@ internal sealed class ExtenderWorker : BackgroundService
         return displayRequest;
     }
 
-    private async Task ShutdownShowBasedOnConditionsAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
+    private async Task ShutdownShowBasedOnConditionsAsync(string currentSong, CancellationToken cancellationToken)
     {
-        if (currentStatus.Current_Song == "" && _previousStatus.Current_Song != "")
+        if (currentSong == "" && _previousSong != "")
         {
             var wledSystems = await _getMultiSyncSystemsHandler.ExecuteAsync("WLED", cancellationToken);
             await _turnOffWledHandler.ExecuteAsync(wledSystems, cancellationToken);
@@ -185,22 +192,30 @@ internal sealed class ExtenderWorker : BackgroundService
             WebsiteDisplayInfoRequest displayRequest = new(string.Empty, false);
             await _postDisplayInfoHandler.ExecuteAsync(displayRequest, cancellationToken);
 
-            TurnOnSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
-            // await _turnOnSwitchHandler.ExecuteAsync(switchRequest, cancellationToken);
+            // TurnOnSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
+            // await _turnOnSwitchHandler.ExecuteAsync(switchRequest, cancellationToken);  // todo when HA configured
 
-            _previousStatus = currentStatus;
+            UpdatePreviousSong(currentSong);
+
+            PostTweetCommand tweetCommand = new($"Light show is now offline.");
+            await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
         }
     }
 
-    private async Task StartupShowBasedOnConditionsAsync(FppStatusResponse currentStatus, CancellationToken cancellationToken)
+    private void UpdatePreviousSong(string currentSong)
     {
-        if (currentStatus.Current_Song != "" && _previousStatus.Current_Song == "")
+        _previousSong = currentSong;
+    }
+
+    private async Task StartupShowBasedOnConditionsAsync(string currentSong, CancellationToken cancellationToken)
+    {
+        if (currentSong != "" && _previousSong == "")
         {
             var wledSystems = await _getMultiSyncSystemsHandler.ExecuteAsync("WLED", cancellationToken);
             await _turnOnWledHandler.ExecuteAsync(wledSystems, cancellationToken);
 
-            TurnOffSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
-            // await _turnOffSwitchHandler.ExecuteAsync(switchRequest, cancellationToken);
+            // TurnOffSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
+            // await _turnOffSwitchHandler.ExecuteAsync(switchRequest, cancellationToken);  // todo when HA configured
 
             await _deleteSongsInQueueHandler.ExecuteAsync(cancellationToken);
         }

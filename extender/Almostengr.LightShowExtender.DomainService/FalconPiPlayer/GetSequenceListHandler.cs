@@ -25,7 +25,7 @@ public sealed class GetSequenceListHandler : IQueryHandler<List<string>>
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
-            return null;
+            return null!;
         }
     }
 }

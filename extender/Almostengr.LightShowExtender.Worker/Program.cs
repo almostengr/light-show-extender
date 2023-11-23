@@ -1,3 +1,4 @@
+using Almostengr.LightShowExtender.DomainService.TweetInvi;
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.Extensions.Logging;
 using Almostengr.Common.HomeAssistant.Common;
@@ -46,6 +47,9 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.Configure<WebsiteOptions>(configuration.GetSection(nameof(WebsiteOptions)));
         services.AddSingleton<IWebsiteHttpClient, WebsiteHttpClient>();
 
+        services.Configure<TwitterOptions>(configuration.GetSection(nameof(TwitterOptions)));
+        TwitterOptions twitterOptions = configuration.GetSection(nameof(TwitterOptions)).Get<TwitterOptions>();
+
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
@@ -54,6 +58,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         HomeAssistantFeatureHandlers.AddHandlers(services);
         NwsFeatureHandlers.AddHandlers(services);
         WledFeatureHandlers.AddHandlers(services);
+        TwitterFeatureHandler.AddHandlers(services);
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 

@@ -21,4 +21,9 @@ public static class Extensions
         string output = $"{fahrenheitInt}F ({celsiusInt}C)";
         return output;
     }
+
+    public static bool IsNotNullOrWhiteSpace(this string value)
+    {
+        return !string.IsNullOrWhiteSpace(value);
+    }
 }
