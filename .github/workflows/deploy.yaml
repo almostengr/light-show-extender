@@ -1,0 +1,42 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.7
+    - run: /usr/bin/python3 -m pip install --upgrade pip
+    - run: /usr/bin/python3 -m pip install --upgrade setuptools
+    - run: /usr/bin/python3 -m pip install mkdocs==1.1.2
+    - run: /usr/bin/python3 -m pip install --upgrade mkdocs-minify-plugin
+
+    - name: Check out main branch
+      uses: actions/checkout@v3
+      with:
+        ref: main
+
+    - run: git fetch -p
+    - run: /usr/bin/python3 -m mkdocs gh-deploy -f website/mkdocs.yml -b website
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Deploy to Production
+      uses: fifsky/ssh-action@master
+      with:
+        command: cd && cd lightshow.thealmostengineer.com && git pull origin website 
+        host: ${{ secrets.HOSTNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: ${{ secrets.PORT_NUMBER }}
+        user: ${{ secrets.USERNAME }}
