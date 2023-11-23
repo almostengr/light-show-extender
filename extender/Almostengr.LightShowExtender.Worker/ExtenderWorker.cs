@@ -5,7 +5,6 @@ using Almostengr.LightShowExtender.DomainService.Wled;
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.Extensions.Logging;
-using Almostengr.Common.HomeAssistant;
 
 namespace Almostengr.LightShowExtender.Worker;
 
@@ -15,6 +14,7 @@ internal sealed class ExtenderWorker : BackgroundService
     private readonly AppSettings _appSettings;
     private NwsLatestObservationResponse _weatherObservation;
     private uint _songsSincePsa;
+    private uint _songsSinceLastTweet;
     private DateTime _lastWeatherRefreshTime;
     private string _previousSong;
 
@@ -55,6 +55,7 @@ internal sealed class ExtenderWorker : BackgroundService
         _loggingService = logging;
         _weatherObservation = new();
         _songsSincePsa = 0;
+        _songsSinceLastTweet = _appSettings.MaxSongsBetweenPsa;
         _lastWeatherRefreshTime = DateTime.Now.AddHours(-2);
 
         _postTweetHandler = postTweetHandler;
@@ -111,8 +112,13 @@ internal sealed class ExtenderWorker : BackgroundService
         WebsiteDisplayInfoRequest displayRequest = await CreateDisplayRequestAsync(currentStatus, metaResponse, cancellationToken);
         await _postDisplayInfoHandler.ExecuteAsync(displayRequest, cancellationToken);
 
-        // PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
-        // await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
+        _songsSinceLastTweet++;
+        if (_songsSinceLastTweet >= _appSettings.SongsBetweenTweets)
+        {
+            PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
+            await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
+            _songsSinceLastTweet = 0;
+        }
 
         uint secondsRemaining = ConvertStringToUint(currentStatus.Seconds_Remaining);
         if (secondsRemaining >= _appSettings.ExtenderDelay)
@@ -186,10 +192,13 @@ internal sealed class ExtenderWorker : BackgroundService
             WebsiteDisplayInfoRequest displayRequest = new(string.Empty, false);
             await _postDisplayInfoHandler.ExecuteAsync(displayRequest, cancellationToken);
 
-            TurnOnSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
+            // TurnOnSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
             // await _turnOnSwitchHandler.ExecuteAsync(switchRequest, cancellationToken);  // todo when HA configured
 
             UpdatePreviousSong(currentSong);
+
+            PostTweetCommand tweetCommand = new($"Light show is now offline.");
+            await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
         }
     }
 
@@ -205,7 +214,7 @@ internal sealed class ExtenderWorker : BackgroundService
             var wledSystems = await _getMultiSyncSystemsHandler.ExecuteAsync("WLED", cancellationToken);
             await _turnOnWledHandler.ExecuteAsync(wledSystems, cancellationToken);
 
-            TurnOffSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
+            // TurnOffSwitchRequest switchRequest = new(_appSettings.ExteriorLightEntity);
             // await _turnOffSwitchHandler.ExecuteAsync(switchRequest, cancellationToken);  // todo when HA configured
 
             await _deleteSongsInQueueHandler.ExecuteAsync(cancellationToken);

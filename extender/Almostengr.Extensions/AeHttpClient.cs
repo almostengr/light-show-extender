@@ -18,7 +18,7 @@ public static class AeHttpClient
         response.EnsureSuccessStatusCode();
     }
 
-    private static StringContent SerializeRequestBodyAsync<T>(this T request)
+    public static StringContent SerializeRequestBody<T>(this T request)
     {
         string json = JsonSerializer.Serialize(request);
         StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -36,7 +36,6 @@ public static class AeHttpClient
 
         return JsonSerializer.Deserialize<T>(result, serializeOptions)!;
     }
-
 
     public static string GetUrlWithProtocol(this string address)
     {
@@ -71,7 +70,7 @@ public static class AeHttpClient
 
     public static async Task<X> PostAsync<T, X>(this HttpClient httpClient, string route, T request, CancellationToken cancellationToken)
     {
-        var serializedRequest = request.SerializeRequestBodyAsync<T>();
+        var serializedRequest = request.SerializeRequestBody<T>();
         var response = await httpClient.PostAsync(route, serializedRequest, cancellationToken);
         await response.WasRequestSuccessfulAsync(cancellationToken);
         return await response.DeserializeResponseBodyAsync<X>(cancellationToken);
@@ -79,7 +78,7 @@ public static class AeHttpClient
 
     public static async Task<X> PutAsync<T, X>(this HttpClient httpClient, string route, T request, CancellationToken cancellationToken)
     {
-        var serializedRequest = request.SerializeRequestBodyAsync<T>();
+        var serializedRequest = request.SerializeRequestBody<T>();
         var response = await httpClient.PutAsync(route, serializedRequest, cancellationToken);
         await response.WasRequestSuccessfulAsync(cancellationToken);
         return await response.DeserializeResponseBodyAsync<X>(cancellationToken);

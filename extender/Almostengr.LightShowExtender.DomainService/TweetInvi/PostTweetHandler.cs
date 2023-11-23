@@ -1,10 +1,11 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Almostengr.Extensions;
 using Almostengr.Extensions.Logging;
+using Almostengr.LightShowExtender.DomainService.Common;
 using Microsoft.Extensions.Options;
 using Tweetinvi;
 using Tweetinvi.Models;
-using Tweetinvi.Parameters;
 
 namespace Almostengr.LightShowExtender.DomainService.TweetInvi;
 
@@ -44,25 +45,47 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
                 throw new ArgumentNullException(nameof(command));
             }
 
-            if (string.IsNullOrWhiteSpace(command.Title))
+            if (string.IsNullOrWhiteSpace(command.Title) && string.IsNullOrWhiteSpace(command.StatusChange))
             {
                 throw new ArgumentNullException(nameof(command.Title));
             }
 
-            StringBuilder tweet = new($"Playing {command.Title} ");
+            StringBuilder tweet = new();
 
-            if (!string.IsNullOrWhiteSpace(command.Aritst))
+            if (command.Title.IsNotNullOrWhiteSpace())
             {
-                tweet.Append($"by {command.Aritst} ");
-            }
+                tweet.Append($"Playing {command.Title} ");
 
-            tweet.Append($"at {DateTime.Now.TimeOfDay} ");
+                if (command.Aritst.IsNotNullOrWhiteSpace())
+                {
+                    tweet.Append($"by {command.Aritst} ");
+                }
+
+                tweet.Append($"at {DateTime.Now.TimeOfDay} ");
+            }
+            else
+            {
+                tweet.Append($"{command.StatusChange} ");
+            }
 
             string hashTags = GetHashTags();
             tweet.Append(hashTags);
 
-            await _twitterClient.Tweets.PublishTweetAsync(tweet.ToString());
-            // await _twitterClient.TweetsV2.
+            // below code taken from https://github.com/linvi/tweetinvi/issues/1147
+            TweetV2PostRequest tweetParams = new(tweet.ToString());
+
+            await _twitterClient.Execute.AdvanceRequestAsync(
+                (ITwitterRequest request) =>
+                {
+                    // var jsonBody = _twitterClient.Json.Serialize(tweetParams);
+                    // var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                    var content = AeHttpClient.SerializeRequestBody<TweetV2PostRequest>(tweetParams);
+
+                    request.Query.Url = "https://api.twitter.com/2/tweets";
+                    request.Query.HttpMethod = Tweetinvi.Models.HttpMethod.POST;
+                    request.Query.HttpContent = content;
+                }
+            );
         }
         catch (Exception ex)
         {
@@ -74,7 +97,7 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
     {
         string[] hashTags = {
             "#ChristmasLights", "#LightShow", "#HolidayLightShows", "#HolidayLights",
-            "#HappyHolidays", "#ChristmasMagic", "#ChristmasLighting"
+            "#HappyHolidays", "#ChristmasMagic", "#ChristmasLighting", $"#Christmas{DateTime.Now.Year}"
         };
 
         Random random = new();
@@ -93,6 +116,17 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
 
         return tags.ToString();
     }
+
+    public sealed class TweetV2PostRequest
+    {
+        public TweetV2PostRequest(string text)
+        {
+            Text = text;
+        }
+
+        [JsonPropertyName("text")]
+        public string Text { get; init; } = string.Empty;
+    }
 }
 
 public sealed class PostTweetCommand : ICommand
@@ -103,6 +137,12 @@ public sealed class PostTweetCommand : ICommand
         Aritst = aritst;
     }
 
+    public PostTweetCommand(string statusChange)
+    {
+        StatusChange = statusChange;
+    }
+
     public string Title { get; init; } = string.Empty;
     public string Aritst { get; init; } = string.Empty;
+    public string StatusChange { get; init; } = string.Empty;
 }
