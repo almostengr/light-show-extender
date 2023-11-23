@@ -6,6 +6,10 @@
     <ProjectReference Include="..\Almostengr.Extensions\Almostengr.Extensions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -3,7 +3,7 @@ using Almostengr.Extensions;
 
 namespace Almostengr.LightShowExtender.DomainService.Wled;
 
-public sealed class WledJsonResponse : BaseResponse
+public sealed class WledJsonResponse : IQueryResponse
 {
     [JsonPropertyName("state")]
     public WledState State { get; init; } = new();

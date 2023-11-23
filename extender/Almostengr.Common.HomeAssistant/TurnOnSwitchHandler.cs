@@ -21,12 +21,22 @@ public class TurnOnSwitchHandler : IQueryHandler<TurnOnSwitchRequest, TurnOnSwit
     {
         try
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.EntityId))
+            {
+                throw new ArgumentNullException(nameof(request.EntityId));
+            }
+
             return await _homeAssistantHttpClient.TurnOnSwitchAsync(request, cancellationToken);
         }
         catch (Exception ex)
         {
             _loggingService.Error(ex, ex.Message);
-            return null;
+            return null!;
         }
     }
 }
@@ -38,6 +48,6 @@ public sealed class TurnOnSwitchRequest : BaseSwitchRequest
     }
 }
 
-public sealed class TurnOnSwitchResponse : BaseResponse
+public sealed class TurnOnSwitchResponse : IQueryResponse
 {
 }

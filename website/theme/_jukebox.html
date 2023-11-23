@@ -1,4 +1,4 @@
-<form id="jukeboxForm" class="d-none mt-2" onsubmit="event.preventDefault(); submitJukeboxRequest();">
+<form id="jukeboxForm" class="d-none my-2" onsubmit="event.preventDefault(); submitJukeboxRequest();">
     <h2 class="pt-3">Request A Song</h2>
     <p>
         You say it; we will play it. Select the song that you would like to see and hear and we will play your requests
@@ -11,25 +11,9 @@
         <label for="sequenceName">Song *</label>
         <select name="sequenceName" id="sequenceName" class="form-control" required>
             <option value="">-Select A Song-</option>
-            <option value="20th Century Fox.fseq">20th Century Fox</option>
-            <option value="About Damn Time (Clean) - Lizzo.fseq">About Damn Time (Clean) - Lizzo</option>
-            <option value="All I Really Want For Christmas-Lil Jon featuring Kool-Aid Man.fseq">All I Really Want For Christmas-Lil Jon featuring
-                Kool-Aid Man</option>
-            <option value="Baby Shark.fseq">Baby Shark</option>
-            <option value="Batman Theme.fseq">Batman Theme</option>
-            <option value="Christmas Eve-Sarajevo.fseq">Christmas Eve - Sarajevo</option>
-            <option value="Christmas Time Is Party Time_Luke.fseq">Christmas Time Is Party Time - Luke</option>
-            <option value="December - Earth Wind and Fire.fseq">December - Earth Wind and Fire</option>
-            <option value="Holidays - Meghan Trainor.fseq">Holidays - Meghan Trainor</option>
-            <option value="Nutrocker_Trans-Siberian Orchestra.fseq">Nutrocker - Trans-Siberian Orchestra</option>
-            <option value="Shaft - Issac Hayes.fseq">Shaft - Issac Hayes (RIP Richard Roundtree)</option>
-            <option value="Spongebob Square Pants.fseq">Spongebob Square Pants</option>
-            <option value="The Polar Express-Tom Hanks.fseq">The Polar Express - Tom Hanks</option>
-            <option value="The Song That Doesnt End - Shari Lewis.fseq">The Song That Doesnt End - Shari Lewis</option>
-            <option value="Uptown Funk - Mark Ronson.fseq">Uptown Funk - Mark Ronson</option>
-            <option value="WAP - Cardi B feat Megan The Stallion.fseq">WAP - Cardi B feat Megan The Stallion</option>
-            <option value="What You Want for Christmas_Quad City DJs and K-nock.fseq">What You Want for Christmas - Quad City DJs and K-nock</option>
-            <option value="Wizards In Winter_Trans-Siberian Orchestra.fseq">Wizards In Winter - Trans-Siberian Orchestra</option>
+            {% for sequence in config.theme.sequences %}
+            <option value="{{ sequence.playlistName }}">{{ sequence.displayName }}</option>
+            {% endfor %}
         </select>
     </div>
     <div class="form-group">

@@ -55,62 +55,28 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link text-light" href="/details">Details</a></li>
+        {% for link in config.theme.header_links %}
+        <li class="nav-item"><a class="nav-link text-light" href="{{ link.url }}">{{ link.name }}</a></li>
+        {% endfor %}
       </ul>
     </div>
   </nav>
 
   <div class="bg-light pt-3 mb-0 pb-0">
-    {% if page and page.meta.announcement %}
-    <div id="alert" class="alert fade show alert-warning" role="alert">
-      {{ page.meta.announcement }}
-    </div>
+    {% if page and config.theme.announcement %}
+    {% include "_announcement.html" %}
     {% endif %}
 
     {% if page and page.is_homepage %}
-    <div class="container">
-      <div class="text-white rounded p-4" style="background-color: black;">
-        <div class="row mb-2 px-3 d-none" id="onAir">
-          <div class="text-light p-1 mr-3 text-center rounded bg-info col-3">{{ config.theme.stationFrequency }}</div>
-          <div class="text-light p-1 mr-3 text-center rounded bg-danger col-2">LIVE</div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <h2 class="pb-1 text-uppercase font-weight-bold" id="songTitle">SHOW OFFLINE</h2>
-            <h4 class="pb-1 text-truncate text-capitalize" id="songArtist">Show times are listed below</h4>
-          </div>
-          <div id="showMetaData" class="col-12 mt-2 d-none">
-            <div class="row">
-              <div class="col-md-6 h6 text-secondary">
-                <strong>Outdoor:</strong>
-                <span id="nwsTemp">Loading</span>
-              </div>
-              <div class="col-md-6 h6 text-secondary">
-                <strong>Wind Chill:</strong>
-                <span id="windChill">None</span>
-              </div>
-              <div class="col-md-6 h6 text-secondary">
-                <strong>CPU(s):</strong>
-                <span id="cpuTemp">Loading</span>
-              </div>
-              <div class="col-md-6 h6 text-secondary">
-                <strong>Updated:</strong>
-                <span id="lastUpdated">Loading</span>
-              </div>
-            </div>
-            <h6 class="text-danger h6" id="errors"></h6>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% include "_radioDisplay.html" %}
     {% endif %}
 
     <main role="main" class="container">
+      {%- block content %}
       {% if page and page.is_homepage == false %}
       <h1>{{ page.title }}</h1>
       {% endif %}
 
-      {%- block content %}
       {% if page and page.is_homepage %}
       {% include "_jukebox.html" %}
       {% endif %}
@@ -121,11 +87,11 @@
     <footer class="blog-footer text-dark text-left border-0">
       <div class="container pl-3">
         <div class="border-top pt-3">
-          <a class="pr-3" target="_blank" href="https://www.facebook.com/profile.php?id=100089303142244">Tech Talk (Facebook)</a>
-          <a class="pr-3" target="_blank" href="https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1">Tech Talk (YouTube)</a>
-          <a class="pr-3" target="_blank" href="https://github.com/almostengr/light-show-extender">Github</a>
+          {% for link in config.theme.footer_links %}
+          <a class="pr-3" href="{{ link.url }}">{{ link.name }}</a>
+          {% endfor %}
         </div>
-        <div>Copyright &copy; 2020-{{ build_date_utc.strftime("%Y") }} Kenny Robinson</div>
+        <div>Copyright &copy; {{ build_date_utc.strftime("%Y") }} {{ config.copyright }}</div>
         <div>
           Created by <a href="https://rhtservices.net" target="_blank">Robinson Handy and Technology Services</a>
         </div>

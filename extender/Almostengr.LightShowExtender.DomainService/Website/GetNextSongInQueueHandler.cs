@@ -26,7 +26,7 @@ public sealed class GetNextSongInQueueHandler : IQueryHandler<LightShowDisplayRe
         catch (Exception ex)
         {
             _loggingService.Error(ex.Message);
-            return null;
+            return null!;
         }
     }
 }
