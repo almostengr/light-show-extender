@@ -4,8 +4,7 @@ title: Christmas Light Show Details
 
 ## Show Dates and Times
 
-Show will run nightly from Black Friday (November 24, 2023) until New Year's Eve (December 31, 2023)
-from 5:30 PM (17:30) until 10:00 PM (22:00).
+Show will run nightly from Black Friday (November 24, 2023) until New Year's Eve (December 31, 2023).
 
 During times of heavy rain or severe weather the light show may be stopped to reduce the
 chance of electrical shorts occurring and for safety of individuals watching. Latest information
@@ -23,8 +22,6 @@ played in the order that they have been requested.
 * Numerous hours of programming
 * Over 200 Feet of electrical wire
 * 36 channels
-* Raspberry Pi 3B+
-* 2 ESP32 microcontrollers
 
 ## Other Information
 
