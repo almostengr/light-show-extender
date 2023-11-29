@@ -4,7 +4,7 @@ meta: none
 
 ## Ground Rules and Information
 
-* Show runs from November 24, 2023 to December 31, 2023. Sunday through Thursday from 5:30 PM (17:30) to 10 PM (22:00). Friday and Saturday from 5:30 PM (17:30) to 10:30 PM (22:30).
+* Show runs from November 24, 2023 to December 31, 2023. Sunday through Thursday from 5:30 PM (17:30) to 10 PM (22:00). Friday and Saturday from 5:30 PM (17:30) to 11 PM (23:00).
 * Tune your radio to 90.3 FM to hear the music. Please keep the radio at a reasonable volume.
 * The show code to request a song via the jukebox will be provided by the show between songs.
 * Please do not block the road or driveways while watching the show.
