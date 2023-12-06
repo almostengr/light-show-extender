@@ -18,10 +18,12 @@ played in the order that they have been requested.
 
 ## Fun Facts
 
-* 5000 LED lights
+* Over 5,000 LED lights
 * Numerous hours of programming
 * Over 200 Feet of electrical wire
 * 36 channels
+* On average, about 330 songs are played per night
+* Custom software interfaces with the National Weather Service for weather information
 
 ## Other Information
 
