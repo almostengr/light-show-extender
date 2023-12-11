@@ -15,7 +15,7 @@ meta: none
 * Videos of the show will be posted on the Tech Talk with RHT Services [Facebook page](https://www.facebook.com/profile.php?id=100089303142244) and [YouTube channel](https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1).
 * Additional show information is available on the [Details page](/details).
 
-# As Seen On
+## As Seen On
 
 <a target="_blank" href="https://www.tackylighttour.com/christmas-lights/hp-light-show" title= "HP Light Show Christmas lights">
 <img src="https://www.tackylighttour.com/images/1/AsSeenOn_728x90.png" height='90' width='728' alt='Christmas Lights' />
