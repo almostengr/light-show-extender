@@ -2,7 +2,7 @@
 meta: none
 ---
 
-## Ground Rules and Information
+## Show Rules and Information
 
 * Show runs from November 24, 2023 to December 31, 2023. Sunday through Thursday from 5:30 PM (17:30) to 10 PM (22:00). Friday and Saturday from 5:30 PM (17:30) to 11 PM (23:00).
 * Tune your radio to 90.3 FM to hear the music. Please keep the radio at a reasonable volume.
@@ -18,5 +18,9 @@ meta: none
 ## As Seen On
 
 <a target="_blank" href="https://www.tackylighttour.com/christmas-lights/hp-light-show" title= "HP Light Show Christmas lights">
-<img src="https://www.tackylighttour.com/images/1/AsSeenOn_728x90.png" height='90' width='728' alt='Christmas Lights' />
+<img src="/images/tackylighttour.jpg" height='90' width='728' alt='Tacky Light Tour' />
+</a>
+
+<a target="_blank" href="https://www.christmaslightfinder.com/displays/display-details/?id=4278" title="Original Christmas Light Finder">
+<img src="/images/christmaslightfinder.jpg" alt="Christmas Light Finder" />
 </a>
