@@ -109,7 +109,7 @@ final class PostRequestHandler extends BaseRequestHandler
 
     public function validateCode(): void
     {
-        $validCodeForToday = strtoupper($this->getCodeForToday());
+        $validCodeForToday = strtoupper(trim($this->getCodeForToday()));
         if ($this->code !== $validCodeForToday) {
             throw new Exception("Invalid code. Please listen to the show announcement for the code.", 400);
         }
@@ -142,7 +142,7 @@ final class PostRequestHandler extends BaseRequestHandler
         $statement->bind_param("sss", $this->sequenceName, $this->ipAddress, $this->ipAddress);
         $statement->execute();
 
-        $message = "Your request has been submitted. There are " . $songsAhead . " song(s) ahead of your request.";
+        $message = "Your request has been submitted. It will play after the current selection ends. There are " . $songsAhead . " song(s) ahead of your request.";
         $response = new JsonResponse(201, $message);
         $response->toJsonEncode();
     }

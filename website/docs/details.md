@@ -23,7 +23,7 @@ played in the order that they have been requested.
 * Over 200 Feet of electrical wire
 * 36 channels
 * On average, about 330 songs are played per night
-* Custom software interfaces with the National Weather Service for weather information
+* Custom software that interfaces with the National Weather Service for weather information and Twitter to share show information
 
 ## Other Information
 
