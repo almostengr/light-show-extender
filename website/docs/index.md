@@ -1,5 +1,5 @@
 ---
-meta: none
+title: Interactive Musical Light Show
 ---
 
 ## Show Rules and Information

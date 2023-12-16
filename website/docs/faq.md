@@ -183,7 +183,7 @@ Lights used are the same ones that you can get at a big box retailer.
 
 Music is transmitted over radio via a low-power FM transmitter. Music goes into the transmitter directly from
 the Raspberry Pi and broadcasted via the radio. Radio Locator
-[mentioned below](/projects/light-show-faq#where-can-i-find-out-more-information-or-ask-questions)
+[mentioned below](/faq#where-can-i-find-out-more-information-or-ask-questions)
 was used to locate the best frequency based on the area.
 
 #### GFCI (Ground Fault Circuit Interrupter)
@@ -221,7 +221,7 @@ For assistance with configuring or issues with Falcon Pi Player, you can post in
 
 #### Light Show Extender
 
-The [Light Show Extender](/projects/light-show-extender) is a custom C# application that provides additional 
+The [Light Show Extender](https://thealmostengineer.com/projects/light-show-extender) is a custom C# application that provides additional 
 functionality for the light show. This application serves as an interface between the Falcon Pi Player that 
 runs the show, the National Weather Service for getting weather information, and thealmostengineer.com 
 website where users make their song requests and see current show information.
@@ -244,7 +244,7 @@ For assistance with configuring or issues with xLights, you can post in the
 
 ### Song updates used to be posted to Twitter. How does that work?
 
-See the [Falcon Pi Twitter](/projects/falcon-pi-twitter) page for more information about
+See the [Falcon Pi Twitter](https://thealmostengineer.com/projects/falcon-pi-twitter) page for more information about
 that project.
  
 ### What is the legality of using an FM transmitter for light shows?
@@ -295,14 +295,14 @@ this feature by turning on "live mode". Check your vehicle's owners manual for h
 
 ### How does the jukebox work?
 
-When you submit your request on the [Light Show Jukebox Page](https://lightshow.thealmostengineer.com), the request is placed in 
+When you submit your request on the [Light Show Jukebox Page](/), the request is placed in 
 a queue. As a song is finishing, the light show system will check to see if a new request has been submitted. 
 If a new song has been requested, it will then prepare to and play that song.
 
 ### What technology runs the jukebox?
 
 The jukebox uses C#, HTML, CSS, PHP, and MySQL. More infomration about the jukebox set up and how it 
-operates can be found on the [Light Show Extender project page](/projects/light-show-extender).
+operates can be found on the [Light Show Extender project page](https://thealmostengineer.com/projects/light-show-extender).
 
 ## Resources
 
