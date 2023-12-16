@@ -15,7 +15,7 @@ final class ResponseDto
         $this->message = $message;
     }
 
-    public function toJsonEncode()
+    public function toJsonEncode(): void
     {
         http_response_code($this->code);
         $output = array(
@@ -27,7 +27,7 @@ final class ResponseDto
     }
 }
 
-function validateApiKey()
+function validateApiKey(): void
 {
     $xAuthToken = 'X-Auth-Token';
     $headers = apache_request_headers();
@@ -46,7 +46,7 @@ function connectToDatabase()
     return $dbConnection;
 }
 
-function deleteAllRequests($dbConnection)
+function deleteAllRequests($dbConnection): void
 {
     $query = "UPDATE songrequest SET played = 1, modifiedTime = ?, modifiedIpAddress = ? where played = 0";
     $statement = $dbConnection->prepare($query);
@@ -60,7 +60,7 @@ function deleteAllRequests($dbConnection)
     $response->toJsonEncode();
 }
 
-function getNextUnplayedRequest($dbConnection)
+function getNextUnplayedRequest($dbConnection): void
 {
     $query = "SELECT id, sequencename FROM songrequest WHERE played = 0 ORDER BY createdTime ASC LIMIT 1";
     $statement = $dbConnection->prepare($query);
@@ -96,7 +96,7 @@ function getNextUnplayedRequest($dbConnection)
     $response->toJsonEncode();
 }
 
-function insertCurrentVitals($dbConnection, $json)
+function insertCurrentVitals($dbConnection, $json): void
 {
     $query = "insert into lightshowdisplay (windchill, nwstemp, cputemp, title, artist, createdipaddress) values (?,?,?,?,?,?)";
     $statement = $dbConnection->prepare($query);
@@ -137,8 +137,7 @@ try {
             break;
 
         default:
-            $response = new ResponseDto(405, "Method not allowed");
-            $response->toJsonEncode();
+            throw new Exception("Method not allowed", 405);
     }
 } catch (Exception $exception) {
     $response = new ResponseDto($exception->getCode(), $exception->getMessage());

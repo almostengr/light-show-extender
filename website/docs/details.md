@@ -25,6 +25,12 @@ played in the order that they have been requested.
 * On average, about 330 songs are played per night
 * Custom software that interfaces with the National Weather Service for weather information and Twitter to share show information
 
+## Song Suggestions
+
+We do take suggestions for future light shows. Sned your song suggestion to us via Twitter my mentioning 
+or sending a DM to 
+<a href="https://twitter.com/hplightshow" target="_blank">@hplightshow</a>.
+
 ## Other Information
 
 To find out more about the light show, including previous years show information and behind the
