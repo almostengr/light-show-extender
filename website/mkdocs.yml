@@ -63,6 +63,8 @@ theme:
   header_links:
     - url: /details
       name: Details
+    - url: /faq
+      name: FAQ
     - url: "https://twitter.com/hplightshow"
       name: "@hplightshow Twitter"
     - url: "https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1"

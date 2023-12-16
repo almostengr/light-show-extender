@@ -1,7 +1,7 @@
 ---
 title: Light Show FAQ (Frequently Asked Questions)
 description: Frequently asked questions about this and other light shows.
-updated: 2022-10-23
+updated: 2023-12-15
 ---
 
 Here are the most common questions that are asked about the light show.
@@ -28,7 +28,7 @@ Yes, there are many that exist. There are also commercial light shows. See the l
 * <a href="https://www.youtube.com/c/CanispaterChristmas" target="_blank">Canispater Christmas</a>
 * <a href="https://www.christmaslightfinder.com/" target="_blank">Christmas Light Finder</a>
 * <a href="https://www.christmasoncandleflower.com" target="_blank">Christmas on Candleflower</a>
-* <a href="https://www.cityofwetumpka.com/Default.asp?ID=452&pg=Decorations+Contest" target="_blank">Christmas on the Coosa (MGM)</a>
+* <a href="https://wetumpkaal.gov/christmas-on-the-coosa/" target="_blank">Christmas on the Coosa (MGM)</a>
 * <a href="https://www.facebook.com/ChristmasWonderlandAlabama/" target="_blank">Christmas Wonderland</a>
 * <a href="https://www.davislights.org/" target="_blank">Davis Family Christmas Light Show</a>
 * <a href="http://thehormanns.net/" target="_blank">The Hormanns</a>
@@ -47,7 +47,7 @@ Yes, there are many that exist. There are also commercial light shows. See the l
 * <a href="https://www.facebook.com/theminionhouse334" target="_blank">The Minion House (MGM)</a>
 * <a href="https://tzchristmas.com" target="_blank">Thyno Zgouvas' Christmas Wonderland (MGM)</a>
 * <a href="https://www.wayoffbroadwaylights.com/" target="_blank">Way Off Broadway Lights (MGM)</a>
-* <a href="https://www.wsfa.com/video/2020/11/30/wetumpka-family-puts-griswold-christmas-display-th-year/" target="_blank">Wetumpka Griswold Christmas (MGM)</a>
+* <a href="https://www.facebook.com/707riveroaksct/" target="_blank">Wetumpka Griswold Christmas (MGM)</a>
 * <a href="https://woodardfamilylights.weebly.com/" target="_blank">Woodard Family Lights</a>
 
 ### Why did you start doing this?
@@ -139,7 +139,7 @@ or the AC lights that I already had on hand.
 
 ### What are the parts that I need to build my own control box?
 
-![Photo of control box](/images/20201220presentation/20201204_120013.jpg)
+![Photo of control box](https://thealmostengineer.com/images/20201220presentation/20201204_120013.jpg)
 
 This is the list of the electrical related components. The full list of components will vary depending
 upon how to you choose to design your control box. The prices were how much the items costed in 2020.
