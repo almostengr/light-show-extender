@@ -31,5 +31,6 @@ To find out more about the light show, including previous years show information
 scenes looks, visit one of the pages listed below.
 
 * <a href="https://www.youtube.com/watch?v=-1xZ8bZFQcM" target="_blank">Behind The Scenes of the 2022 Christmas Light Show</a>
+* <a href="https://www.youtube.com/watch?v=9zVLhOTrREI" target="_blank">2023 Christmas Light Show on YouTube</a>
 * [FAQs (Frequently Asked Questions)](/faq)
 * Visit <a href="https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw" target="_blank">Tech Talk with RHT Services</a> to go behind the scenes and learn more about the light show.
