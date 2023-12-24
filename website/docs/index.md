@@ -1,5 +1,5 @@
 ---
-meta: none
+title: Interactive Musical Light Show
 ---
 
 ## Show Rules and Information
@@ -14,6 +14,7 @@ meta: none
 * Follow the show on Twitter at <a href="https://twitter.com/hplightshow" target="_blank">@hplightshow</a>
 * Videos of the show will be posted on the Tech Talk with RHT Services [Facebook page](https://www.facebook.com/profile.php?id=100089303142244) and [YouTube channel](https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1).
 * Additional show information is available on the [Details page](/details).
+* Send your song suggestions for next year's show to lights[at]thealmostengineer.com
 
 ## As Seen On
 

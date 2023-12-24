@@ -110,9 +110,11 @@ final class PostRequestHandler extends BaseRequestHandler
     public function validateCode(): void
     {
         $validCodeForToday = strtoupper(trim($this->getCodeForToday()));
-        if ($this->code !== $validCodeForToday) {
-            throw new Exception("Invalid code. Please listen to the show announcement for the code.", 400);
+        if ($this->code === $validCodeForToday || $this->code === OVERRIDE_CODE) {
+            return;
         }
+
+        throw new Exception("Invalid code. Please listen to the show announcement for the code.", 400);
     }
 
     public function validateRequestNotAlreadyInQueue(): void

@@ -13,3 +13,4 @@ define('THURSDAY_CODE', '');
 define('FRIDAY_CODE', '');
 define('SATURDAY_CODE', '');
 define('SUNDAY_CODE', '');
+define('OVERRIDE_CODE', '');
