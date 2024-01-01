@@ -69,6 +69,8 @@ theme:
       name: "@hplightshow Twitter"
     - url: "https://www.youtube.com/channel/UC4xp-TEEIAL-4XtMVvfRaQw?sub_confirmation=1"
       name: Tech Talk
+    - url: /calendar
+      name: Lighting Calendar
   footer_links:
     - url: "https://twitter.com/hplightshow"
       name: "@hplightshow (Twitter)"
