@@ -30,24 +30,24 @@ $menuEntries = Array(
 #		'page' => 'output.php',
 #		'wrap' => 1
 #	),
+	// Array(
+	// 	'text' => 'Template - Help',
+	// 	'type' => 'help',
+	// 	'page' => 'help/help.php',
+	// 	'wrap' => 1
+	// ),
 	Array(
-		'text' => 'Template - Help',
+		'text' => 'Project Repo',
 		'type' => 'help',
-		'page' => 'help/help.php',
+		'page' => 'https://github.com/almostengr/light-show-extender',
 		'wrap' => 1
 	),
-	Array(
-		'text' => 'Template - Home',
-		'type' => 'help',
-		'page' => 'https://github.com/FalconChristmas/fpp-plugin-Template',
-		'wrap' => 1
-	),
-	Array(
-		'text' => 'Template - About',
-		'type' => 'help',
-		'page' => 'about.php',
-		'wrap' => 1
-	)
+	// Array(
+	// 	'text' => 'Template - About',
+	// 	'type' => 'help',
+	// 	'page' => 'about.php',
+	// 	'wrap' => 1
+	// )
 );
 
 ##############################################################################
