@@ -3,14 +3,15 @@ title: Lighting Calendar
 ---
 
 Throughout the year, the lighting is changed for special occasions and holidays. Lights run from sunset 
-until 11 PM.
+until 10:30 PM (22:30).
 
 Colors are subject to change without notice.
 
 
 ## January
 
-* Martin Luther King Jr Day - Red, Black, Green
+* New Year's Day - Blue
+* Martin Luther King Jr Weekend - Red, Green, Black
 
 ## February 
 
@@ -23,7 +24,7 @@ Colors are subject to change without notice.
 
 ## April
 
-* Autism Awareness Month - Blue
+* Autism Awareness Day - Blue
 * Earth Day - Green
 * Easter Weekend - Pink, Cyan, Yellow
 
@@ -33,7 +34,8 @@ Colors are subject to change without notice.
 
 ## June
 
-* Juneteeth - Red, Green, Black
+* Flag Day - Red, Blue
+* Juneteeth Weekend - Red, Green, Black
 
 ## July
 
@@ -42,6 +44,11 @@ Colors are subject to change without notice.
 ## September
 
 * Labor Day Weekend - Red, Blue
+
+## October
+
+* Breast Cancer Awareness Month - Pink
+* Halloween - Yellow
 
 ## November
 
