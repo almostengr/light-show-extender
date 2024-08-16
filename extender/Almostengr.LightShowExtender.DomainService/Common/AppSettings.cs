@@ -2,13 +2,21 @@ namespace Almostengr.LightShowExtender.DomainService.Common;
 
 public sealed class AppSettings
 {
-    public FalconSetting FalconPlayer { get; init; } = new();
+    public FalconSettings FalconPlayer { get; init; } = new();
+    public TwitterSettings Twitter { get; init; } = new();
     public uint SongsBetweenTweets { get; init; } = 10;
-    public uint MaxSongsBetweenPsa { get; init; } = 2;
     public uint ExtenderDelay { get; init; } = 5;
-    public string ExteriorLightEntity { get; init; } = string.Empty;
 
-    public sealed class FalconSetting
+    public sealed class TwitterSettings
+    {
+        public string AccessSecret { get; init; } = string.Empty;
+        public string AccessToken { get; init; } = string.Empty;
+        public string ConsumerKey { get; init; } = string.Empty;
+        public string ConsumerSecret { get; init; } = string.Empty;
+        public uint HashTagCount { get; init; } = 3;
+    }
+
+    public sealed class FalconSettings
     {
         public string ApiUrl { get; init; } = "http://localhost";
         public double MaxCpuTemperatureC { get; init; } = 60.0;
