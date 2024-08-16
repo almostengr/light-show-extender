@@ -57,10 +57,4 @@ public sealed class FppHttpClient : IFppHttpClient
         string route = "api/playlists/stopgracefully";
         await _httpClient.GetAsync(route, cancellationToken);
     }
-
-    public async Task<List<string>> GetSequenceListAsync(CancellationToken cancellationToken)
-    {
-        string route = "api/sequence";
-        return await _httpClient.GetAsync<List<string>>(route, cancellationToken);
-    }
 }

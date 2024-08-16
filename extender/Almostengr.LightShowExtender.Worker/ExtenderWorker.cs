@@ -1,4 +1,3 @@
-using Almostengr.LightShowExtender.DomainService.Website;
 using Almostengr.LightShowExtender.DomainService.TweetInvi;
 using Almostengr.Common.NwsWeather;
 using Almostengr.LightShowExtender.DomainService.Wled;
@@ -79,8 +78,11 @@ internal sealed class ExtenderWorker : BackgroundService
         TimeSpan delayTime;
         while (!cancellationToken.IsCancellationRequested)
         {
-            delayTime = await MonitorAsync(cancellationToken);
-            await Task.Delay(delayTime, cancellationToken);
+            // delayTime = await MonitorAsync(cancellationToken);
+
+            
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         }
     }
 
