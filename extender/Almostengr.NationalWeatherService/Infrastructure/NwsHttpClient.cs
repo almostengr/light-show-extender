@@ -5,10 +5,10 @@ namespace Almostengr.NationalWeatherService.Infrastructure;
 
 public sealed class NwsHttpClient : INwsHttpClient
 {
-    private readonly NwsOptions _nwsOptions;
+    private readonly NwsAppSettings _nwsOptions;
     private readonly HttpClient _httpClient;
 
-    public NwsHttpClient(NwsOptions nwsOptions)
+    public NwsHttpClient(NwsAppSettings nwsOptions)
     {
         _nwsOptions = nwsOptions;
         _httpClient = new HttpClient();

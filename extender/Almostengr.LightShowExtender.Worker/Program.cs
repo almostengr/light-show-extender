@@ -1,7 +1,10 @@
-using Almostengr.LightShowExtender.DomainService.TweetInvi;
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.Extensions.Logging;
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.FalconPiPlayer.DomainService.FalconPiPlayer;
+using Almostengr.FalconPiPlayer.Infrastructure.FalconPiPlayer;
+using Almostengr.NationalWeatherService.DomainService;
+using Almostengr.NationalWeatherService.Infrastructure;
+using Almostengr.LightShowExtender.Worker.Common;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
@@ -29,22 +32,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
         services.AddSingleton(appSettings);
 
-        services.Configure<HomeAssistantOptions>(configuration.GetSection(nameof(HomeAssistantOptions)));
-        services.AddSingleton<IHomeAssistantHttpClient, HomeAssistantHttpClient>();
-
-        services.Configure<NwsOptions>(configuration.GetSection(nameof(NwsOptions)));
-        services.AddSingleton<INwsHttpClient, NwsHttpClient>();
-
-        services.Configure<WebsiteOptions>(configuration.GetSection(nameof(WebsiteOptions)));
-        services.AddSingleton<IWebsiteHttpClient, WebsiteHttpClient>();
-
-        services.Configure<TwitterOptions>(configuration.GetSection(nameof(TwitterOptions)));
-        TwitterOptions twitterOptions = configuration.GetSection(nameof(TwitterOptions)).Get<TwitterOptions>();
-
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
-        services.AddSingleton<IWledHttpClient, WledHttpClient>();
-
-        TwitterFeatureHandler.AddHandlers(services);
+        services.AddSingleton<INwsHttpClient, NwsHttpClient>();
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 

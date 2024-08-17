@@ -13,6 +13,8 @@ public sealed class FppStatusResponse : IQueryResponse
     [JsonPropertyName("current_sequence")]
     public string Current_Sequence { get; init; } = string.Empty;
 
+    public int Status { get; init; } = 0;
+
     public sealed class Sensor
     {
         public string Label { get; init; } = string.Empty;

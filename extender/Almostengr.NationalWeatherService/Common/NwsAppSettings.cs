@@ -1,6 +1,6 @@
 namespace Almostengr.NationalWeatherService;
 
-public sealed class NwsOptions
+public sealed class NwsAppSettings
 {
     public string ApiUrl { get; init; } = string.Empty;
     public string StationId { get; init; } = string.Empty;

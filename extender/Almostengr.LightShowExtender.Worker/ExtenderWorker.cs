@@ -117,7 +117,7 @@ internal sealed class ExtenderWorker : BackgroundService
         _songsSinceLastTweet++;
         if (_songsSinceLastTweet >= _appSettings.SongsBetweenTweets)
         {
-            PostTweetCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
+            PostUpdateCommand tweetCommand = new(displayRequest.Title, displayRequest.Artist);
             await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
             _songsSinceLastTweet = 0;
         }
@@ -199,7 +199,7 @@ internal sealed class ExtenderWorker : BackgroundService
 
             UpdatePreviousSong(currentSong);
 
-            PostTweetCommand tweetCommand = new($"Light show is now offline.");
+            PostUpdateCommand tweetCommand = new($"Light show is now offline.");
             await _postTweetHandler.ExecuteAsync(tweetCommand, cancellationToken);
         }
     }

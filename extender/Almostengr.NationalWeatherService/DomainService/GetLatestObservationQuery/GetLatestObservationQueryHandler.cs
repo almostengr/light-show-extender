@@ -1,14 +1,13 @@
 using Almostengr.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace Almostengr.NationalWeatherService.DomainService;
 
 public class GetLatestObservationQueryHandler : IQueryHandler<NwsLatestObservationResponse>
 {
     private readonly INwsHttpClient _nwsHttpClient;
-    private readonly IOptions<NwsOptions> _options;
+    private readonly NwsAppSettings _options;
 
-    public GetLatestObservationQueryHandler(INwsHttpClient nwsHttpClient, IOptions<NwsOptions> options)
+    public GetLatestObservationQueryHandler(INwsHttpClient nwsHttpClient, NwsAppSettings options)
     {
         _nwsHttpClient = nwsHttpClient;
         _options = options;
@@ -16,11 +15,11 @@ public class GetLatestObservationQueryHandler : IQueryHandler<NwsLatestObservati
 
     public async Task<NwsLatestObservationResponse> ExecuteAsync(CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(_options.Value.StationId))
+        if (string.IsNullOrWhiteSpace(_options.StationId))
         {
-            throw new ArgumentNullException(nameof(_options.Value.StationId));
+            throw new ArgumentNullException(nameof(_options.StationId));
         }
 
-        return await _nwsHttpClient.GetLatestObservationAsync(_options.Value.StationId, cancellationToken);
+        return await _nwsHttpClient.GetLatestObservationAsync(_options.StationId, cancellationToken);
     }
 }
