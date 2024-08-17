@@ -1,9 +1,8 @@
-name: Deploy to Production
+name: Release
 
 on:
-  push:
-    release:
-      - '*'
+  release:
+      types: [published]
 
 jobs:
   build:
