@@ -10,11 +10,8 @@ public interface IQueryHandler<IQueryResponse> : IQueryHandler
 
 public interface IQueryHandler<IQueryRequest, IQueryResponse> : IQueryHandler
 {
-    Task<IQueryResponse> ExecuteAsync(IQueryRequest request, CancellationToken cancellationToken);
+    Task<IQueryResponse> ExecuteAsync(CancellationToken cancellationToken, IQueryRequest request);
 }
 
 public interface IQueryRequest
-{ }
-
-public interface IQueryResponse
 { }

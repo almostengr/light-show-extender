@@ -1,16 +1,7 @@
 using Almostengr.LightShowExtender.DomainService.TweetInvi;
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.Extensions.Logging;
-using Almostengr.Common.HomeAssistant.Common;
-using Almostengr.Common.NwsWeather;
-using Almostengr.Common.NwsWeather.Common;
 using Almostengr.LightShowExtender.DomainService.Common;
-using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.LightShowExtender.Infrastructure.FalconPiPlayer;
-using Almostengr.LightShowExtender.Infrastructure.Wled;
-using Almostengr.LightShowExtender.DomainService.Wled;
-using Almostengr.LightShowExtender.DomainService.Website.Common;
-using Almostengr.LightShowExtender.Infrastructure.Website;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
@@ -53,11 +44,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<IWledHttpClient, WledHttpClient>();
 
-        WebsiteFeatureHandlers.AddHandlers(services);
-        FppFeatureHandlers.AddHandlers(services);
-        HomeAssistantFeatureHandlers.AddHandlers(services);
-        NwsFeatureHandlers.AddHandlers(services);
-        WledFeatureHandlers.AddHandlers(services);
         TwitterFeatureHandler.AddHandlers(services);
 
         services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));

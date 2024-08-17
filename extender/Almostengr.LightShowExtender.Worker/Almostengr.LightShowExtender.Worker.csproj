@@ -18,7 +18,12 @@
     <Content Remove="appsettings.json" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <ProjectReference Include="..\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj" />
-    <ProjectReference Include="..\Almostengr.LightShowExtender.Infrastructure\Almostengr.LightShowExtender.Infrastructure.csproj" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.Extensions\Almostengr.Extensions.csproj" />
+    <ProjectReference Include="..\Almostengr.FalconPiPlayer\Almostengr.FalconPiPlayer.csproj" />
+    <ProjectReference Include="..\Almostengr.NationalWeatherService\Almostengr.NationalWeatherService.csproj" />
   </ItemGroup>
 </Project>

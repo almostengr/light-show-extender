@@ -1,6 +1,6 @@
 using Almostengr.LightShowExtender.DomainService.TweetInvi;
-using Almostengr.Common.NwsWeather;
-using Almostengr.LightShowExtender.DomainService.Wled;
+using Almostengr.NationalWeatherService;
+using Almostengr.Wled.DomainService
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
 using Almostengr.Extensions.Logging;
@@ -20,7 +20,7 @@ internal sealed class ExtenderWorker : BackgroundService
     private readonly DeleteSongsInQueueHandler _deleteSongsInQueueHandler;
     private readonly GetCpuTemperaturesHandler _getCpuTemperaturesHandler;
     private readonly GetCurrentSongMetaDataHandler _getCurrentSongMetaDataHandler;
-    private readonly GetLatestObservationHandler _getLatestObservationHandler;
+    private readonly GetLatestObservationQueryHandler _getLatestObservationHandler;
     private readonly GetMultiSyncSystemsHandler _getMultiSyncSystemsHandler;
     private readonly GetNextSongInQueueHandler _getNextSongInQueueHandler;
     private readonly GetStatusHandler _getStatusHandler;
@@ -37,7 +37,7 @@ internal sealed class ExtenderWorker : BackgroundService
         DeleteSongsInQueueHandler deleteSongsInQueueHandler,
         GetCpuTemperaturesHandler getCpuTemperaturesHandler,
         GetCurrentSongMetaDataHandler getCurrentSongMetaDataHandler,
-        GetLatestObservationHandler getLatestObservationHandler,
+        GetLatestObservationQueryHandler getLatestObservationHandler,
         GetMultiSyncSystemsHandler getMultiSyncSystemsHandler,
         GetNextSongInQueueHandler getNextSongInQueueHandler,
         GetStatusHandler getStatusHandler,

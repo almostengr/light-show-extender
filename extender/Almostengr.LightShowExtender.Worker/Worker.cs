@@ -22,7 +22,7 @@ internal sealed class Worker : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(_appSettings.ExtenderDelay));
         }
     }
 }
