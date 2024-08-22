@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using Almostengr.Extensions;
+using Almostengr.Common.Query;
 
-namespace Almostengr.Common.HomeAssistant.Common;
+namespace Almostengr.HomeAssistant.Common;
 
 public abstract class BaseSwitchRequest : IQueryRequest
 {

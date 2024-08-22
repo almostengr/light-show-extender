@@ -1,4 +1,4 @@
-namespace Almostengr.Common.HomeAssistant.Common;
+namespace Almostengr.HomeAssistant.Common;
 
 public sealed class HomeAssistantOptions
 {

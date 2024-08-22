@@ -98,7 +98,6 @@ internal sealed class Worker : BackgroundService
 
     private async Task ShowShutDownAsync(CancellationToken cancellationToken)
     {
-        // wled turn off instances
         // turn on driveway lights
         // turn off live stream
         await Task.CompletedTask;
@@ -106,7 +105,6 @@ internal sealed class Worker : BackgroundService
 
     private async Task ShowStartupAsync(CancellationToken cancellationToken)
     {
-        // wled turn on instances
         // turn off driveway lights
         // turn on live stream
         await Task.CompletedTask;

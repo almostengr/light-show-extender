@@ -1,8 +1,8 @@
 using Almostengr.FalconPiPlayer.Common;
-using Almostengr.FalconPiPlayer.DomainService.FalconPiPlayer;
-using Almostengr.Extensions;
+using Almostengr.Common;
+using Almostengr.FalconPiPlayer.DomainService;
 
-namespace Almostengr.FalconPiPlayer.Infrastructure.FalconPiPlayer;
+namespace Almostengr.FalconPiPlayer.Infrastructure;
 
 public sealed class FppHttpClient : IFppHttpClient
 {
@@ -40,9 +40,9 @@ public sealed class FppHttpClient : IFppHttpClient
         return await _httpClient.GetAsync<FppStatusResponse>(route, cancellationToken);
     }
 
-    public async Task<FppMultiSyncSystemsResponse> GetMultiSyncSystemsAsync(CancellationToken cancellationToken)
+    public async Task<MultiSyncSystemsQueryResponse> GetMultiSyncSystemsAsync(CancellationToken cancellationToken)
     {
         string route = "api/fppd/multiSyncSystems";
-        return await _httpClient.GetAsync<FppMultiSyncSystemsResponse>(route, cancellationToken);
+        return await _httpClient.GetAsync<MultiSyncSystemsQueryResponse>(route, cancellationToken);
     }
 }

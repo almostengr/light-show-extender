@@ -1,4 +1,4 @@
-using Almostengr.Extensions;
+using Almostengr.Common;
 using Almostengr.NationalWeatherService.DomainService;
 
 namespace Almostengr.NationalWeatherService.Infrastructure;

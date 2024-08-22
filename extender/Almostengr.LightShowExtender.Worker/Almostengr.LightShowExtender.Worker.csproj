@@ -22,8 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Almostengr.Extensions\Almostengr.Extensions.csproj" />
+    <ProjectReference Include="..\Almostengr.Common\Almostengr.Common.csproj" />
     <ProjectReference Include="..\Almostengr.FalconPiPlayer\Almostengr.FalconPiPlayer.csproj" />
     <ProjectReference Include="..\Almostengr.NationalWeatherService\Almostengr.NationalWeatherService.csproj" />
+    <ProjectReference Include="..\Almostengr.HomeAssistant\Almostengr.HomeAssistant.csproj" />
   </ItemGroup>
 </Project>

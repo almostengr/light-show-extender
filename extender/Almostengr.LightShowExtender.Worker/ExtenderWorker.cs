@@ -3,7 +3,7 @@ using Almostengr.NationalWeatherService;
 using Almostengr.Wled.DomainService
 using Almostengr.LightShowExtender.DomainService.Common;
 using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.Extensions.Logging;
+using Almostengr.Common.Logging;
 
 namespace Almostengr.LightShowExtender.Worker;
 
