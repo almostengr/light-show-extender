@@ -1,10 +1,9 @@
 using Almostengr.LightShowExtender.Worker;
-using Almostengr.Common.Logging;
-using Almostengr.FalconPiPlayer.DomainService.FalconPiPlayer;
-using Almostengr.FalconPiPlayer.Infrastructure.FalconPiPlayer;
 using Almostengr.NationalWeatherService.DomainService;
 using Almostengr.NationalWeatherService.Infrastructure;
 using Almostengr.LightShowExtender.Worker.Common;
+using Almostengr.FalconPiPlayer.DomainService;
+using Almostengr.FalconPiPlayer.Infrastructure;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 

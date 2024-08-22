@@ -1,10 +1,3 @@
-using Almostengr.LightShowExtender.DomainService.TweetInvi;
-using Almostengr.NationalWeatherService;
-using Almostengr.Wled.DomainService
-using Almostengr.LightShowExtender.DomainService.Common;
-using Almostengr.LightShowExtender.DomainService.FalconPiPlayer;
-using Almostengr.Common.Logging;
-
 namespace Almostengr.LightShowExtender.Worker;
 
 internal sealed class ExtenderWorker : BackgroundService
