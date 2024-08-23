@@ -1,8 +1,6 @@
 using System.Text;
-using Almostengr.FalconPiPlayer.DomainService.FalconPiPlayer;
-using Almostengr.FalconPiPlayer.DomainService.FalconPiPlayer.CpuTemperatureQueryHandler;
+using Almostengr.FalconPiPlayer.DomainService;
 using Almostengr.LightShowExtender.DomainService.Twitter;
-using Almostengr.LightShowExtender.Worker.Common;
 using Almostengr.NationalWeatherService.DomainService;
 using Tweetinvi;
 
@@ -73,7 +71,7 @@ internal sealed class Worker : BackgroundService
 
                 if (tweet.Length > 0)
                 {
-                    var updateCommand = new PostUpdateCommand(tweet.ToString());
+                    var updateCommand = new PostTweetCommand(tweet.ToString());
                     var tweetHandler = new PostTweetHandler(_appSettings.Twitter);
                     await tweetHandler.ExecuteAsync(cancellationToken, updateCommand);
                     // _logger.LogInformation(tweet.ToString() + DateTime.Now);

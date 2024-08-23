@@ -2,6 +2,6 @@ namespace Almostengr.HomeAssistant.DomainService;
 
 public interface IHomeAssistantHttpClient
 {
-    Task<TurnOffSwitchResponse> TurnOffSwitchAsync(TurnOffSwitchRequest request, CancellationToken cancellationToken);
-    Task<TurnOnSwitchResponse> TurnOnSwitchAsync(TurnOnSwitchRequest request, CancellationToken cancellationToken);
+    Task<TurnOffSwitchResponse> TurnOffSwitchAsync(CancellationToken cancellationToken, TurnOffSwitchRequest request);
+    Task<TurnOnSwitchResponse> TurnOnSwitchAsync(CancellationToken cancellationToken, TurnOnSwitchRequest request);
 }

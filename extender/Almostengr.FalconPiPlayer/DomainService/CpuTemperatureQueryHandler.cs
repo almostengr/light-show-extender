@@ -6,8 +6,6 @@ namespace Almostengr.FalconPiPlayer.DomainService;
 
 public sealed class CpuTemperatureQueryHandler : IQueryHandler<string>
 {
-    private const string RASPBERRY_PI = "RASPBERRY PI";
-    private const string CPU = "CPU";
     private readonly IFppHttpClient _fppHttpClient;
 
     public CpuTemperatureQueryHandler(IFppHttpClient fppHttpClient)
@@ -20,10 +18,12 @@ public sealed class CpuTemperatureQueryHandler : IQueryHandler<string>
         var systemsHandler = new MultiSyncSystemsQueryHandler(_fppHttpClient);
         var result = await systemsHandler.ExecuteAsync(cancellationToken, MultiSyncSystemsType.All);
 
+        const string RASPBERRY_PI = "RASPBERRY PI";
         var fppSystems = result.Where(s => s.Type.ToUpper().StartsWith(RASPBERRY_PI))
             .Select(s => s.Address)
             .ToList();
 
+        const string CPU = "CPU";
         StringBuilder output = new();
         var statusHandler = new FppStatusQueryHandler(_fppHttpClient);
         foreach (var system in fppSystems)

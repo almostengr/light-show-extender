@@ -1,5 +1,3 @@
-using Almostengr.HomeAssistant.Common;
-
 namespace Almostengr.HomeAssistant.DomainService;
 
 public sealed class TurnOffSwitchRequest : BaseSwitchRequest

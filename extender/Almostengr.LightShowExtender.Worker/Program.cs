@@ -1,7 +1,6 @@
 using Almostengr.LightShowExtender.Worker;
 using Almostengr.NationalWeatherService.DomainService;
 using Almostengr.NationalWeatherService.Infrastructure;
-using Almostengr.LightShowExtender.Worker.Common;
 using Almostengr.FalconPiPlayer.DomainService;
 using Almostengr.FalconPiPlayer.Infrastructure;
 
@@ -34,7 +33,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
 
-        services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
+        // services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
 
         services.AddHostedService<ExtenderWorker>();
     })

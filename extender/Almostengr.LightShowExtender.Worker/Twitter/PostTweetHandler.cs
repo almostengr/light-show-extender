@@ -7,7 +7,7 @@ using Tweetinvi.Models;
 
 namespace Almostengr.LightShowExtender.DomainService.Twitter;
 
-public sealed class PostTweetHandler : ICommandHandler<PostUpdateCommand>
+public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
 {
     private readonly ITwitterClient _twitterClient;
     private readonly TwitterSettings _twitterSettings;
@@ -24,7 +24,7 @@ public sealed class PostTweetHandler : ICommandHandler<PostUpdateCommand>
         _twitterClient.Config.TweetMode = TweetMode.None;
     }
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken, PostUpdateCommand command)
+    public async Task ExecuteAsync(CancellationToken cancellationToken, PostTweetCommand command)
     {
         if (_twitterClient == null)
         {

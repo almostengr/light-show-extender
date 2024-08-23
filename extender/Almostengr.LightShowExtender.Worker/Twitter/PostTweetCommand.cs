@@ -1,12 +1,12 @@
 using System.Text;
 using Almostengr.Common;
-using Almostengr.LightShowExtender.DomainService.Common;
+using Almostengr.Common.Command;
 
 namespace Almostengr.LightShowExtender.DomainService.Twitter;
 
-public sealed class PostUpdateCommand : ICommand
+public sealed class PostTweetCommand : ICommandRequest
 {
-    public PostUpdateCommand(string title, string artist)
+    public PostTweetCommand(string title, string artist)
     {
         StringBuilder text = new StringBuilder();
 
@@ -22,7 +22,7 @@ public sealed class PostUpdateCommand : ICommand
         Text = text.ToString();
     }
 
-    public PostUpdateCommand(string text)
+    public PostTweetCommand(string text)
     {
         Text = text;
     }

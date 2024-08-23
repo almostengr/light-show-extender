@@ -1,7 +1,7 @@
-using Almostengr.FalconPiPlayer.Common;
+using Almostengr.FalconPiPlayer;
 using Almostengr.NationalWeatherService;
 
-namespace Almostengr.LightShowExtender.Worker.Common;
+namespace Almostengr.LightShowExtender.Worker;
 
 public sealed class AppSettings
 {

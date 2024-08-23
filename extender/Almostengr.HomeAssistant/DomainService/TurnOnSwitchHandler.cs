@@ -6,9 +6,7 @@ public class TurnOnSwitchHandler : IQueryHandler<TurnOnSwitchRequest, TurnOnSwit
 {
     private readonly IHomeAssistantHttpClient _homeAssistantHttpClient;
 
-    public TurnOnSwitchHandler(
-        IHomeAssistantHttpClient homeAssistantHttpClient
-        )
+    public TurnOnSwitchHandler(IHomeAssistantHttpClient homeAssistantHttpClient)
     {
         _homeAssistantHttpClient = homeAssistantHttpClient;
     }
@@ -25,6 +23,6 @@ public class TurnOnSwitchHandler : IQueryHandler<TurnOnSwitchRequest, TurnOnSwit
             throw new ArgumentNullException(nameof(request.EntityId));
         }
 
-        return await _homeAssistantHttpClient.TurnOnSwitchAsync(request, cancellationToken);
+        return await _homeAssistantHttpClient.TurnOnSwitchAsync(cancellationToken, request);
     }
 }

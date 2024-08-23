@@ -1,5 +1,4 @@
 using Almostengr.Common;
-using Almostengr.HomeAssistant.Common;
 using Almostengr.HomeAssistant.DomainService;
 
 namespace Almostengr.HomeAssistant.Infrastructure;

@@ -5,16 +5,16 @@ namespace Almostengr.NationalWeatherService.Infrastructure;
 
 public sealed class NwsHttpClient : INwsHttpClient
 {
-    private readonly NwsAppSettings _nwsOptions;
+    private readonly NwsAppSettings _nwsAppSettings;
     private readonly HttpClient _httpClient;
 
-    public NwsHttpClient(NwsAppSettings nwsOptions)
+    public NwsHttpClient(NwsAppSettings nwsAppSettings)
     {
-        _nwsOptions = nwsOptions;
+        _nwsAppSettings = nwsAppSettings;
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(nwsOptions.ApiUrl);
+        _httpClient.BaseAddress = new Uri(nwsAppSettings.ApiUrl);
         _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", nwsOptions.UserAgent);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", nwsAppSettings.UserAgent);
     }
 
     public async Task<NwsLatestObservationResponse> GetLatestObservationAsync(string stationId, CancellationToken cancellationToken)
