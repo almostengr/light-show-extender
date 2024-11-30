@@ -2,11 +2,11 @@ using Almostengr.Common.Query;
 
 namespace Almostengr.FalconPiPlayer.DomainService;
 
-public sealed class FppStatusRequest : IQueryRequest
+public sealed class FppStatusQuery : IQueryRequest
 {
     public string Hostname { get; init; }
 
-    public FppStatusRequest(string hostname)
+    public FppStatusQuery(string hostname)
     {
         Hostname = hostname;
     }

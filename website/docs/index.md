@@ -4,7 +4,7 @@ title: Interactive Musical Light Show
 
 ## Show Rules and Information
 
-* Show runs from Black Friday until New Year's Eve. Sunday through Thursday from 5:30 PM (17:30) to 10 PM (22:00). Friday and Saturday from 5:30 PM (17:30) to 11 PM (23:00).
+* Show runs from Black Friday until New Year's Eve. Starting at Dusk until 11 PM (23:00).
 * Tune your radio to 90.3 FM to hear the music. Please keep the radio at a reasonable volume.
 * The show code to request a song via the jukebox will be provided by the show between songs.
 * Please do not block the road or driveways while watching the show.

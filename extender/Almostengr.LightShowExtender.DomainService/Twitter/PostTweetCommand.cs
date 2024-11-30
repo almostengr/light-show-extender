@@ -4,7 +4,7 @@ using Almostengr.Common.Command;
 
 namespace Almostengr.LightShowExtender.DomainService.Twitter;
 
-public sealed class PostTweetCommand : ICommandRequest
+public sealed class PostTweetCommand : ICommand
 {
     public PostTweetCommand(string title, string artist)
     {

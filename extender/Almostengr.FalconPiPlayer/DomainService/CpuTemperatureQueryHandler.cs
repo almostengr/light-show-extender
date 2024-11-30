@@ -28,7 +28,7 @@ public sealed class CpuTemperatureQueryHandler : IQueryHandler<string>
         var statusHandler = new FppStatusQueryHandler(_fppHttpClient);
         foreach (var system in fppSystems)
         {
-            FppStatusRequest request = new(system);
+            FppStatusQuery request = new(system);
             var response = await statusHandler.ExecuteAsync(cancellationToken, request);
 
             var temp = (float)response.Sensors.Where(s => s.Label.StartsWith(CPU))

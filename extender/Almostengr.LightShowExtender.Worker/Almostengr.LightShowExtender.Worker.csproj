@@ -26,5 +26,6 @@
     <ProjectReference Include="..\Almostengr.FalconPiPlayer\Almostengr.FalconPiPlayer.csproj" />
     <ProjectReference Include="..\Almostengr.NationalWeatherService\Almostengr.NationalWeatherService.csproj" />
     <ProjectReference Include="..\Almostengr.HomeAssistant\Almostengr.HomeAssistant.csproj" />
+    <ProjectReference Include="..\Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj" />
   </ItemGroup>
 </Project>

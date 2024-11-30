@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtende
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.NationalWeatherService", "Almostengr.NationalWeatherService\Almostengr.NationalWeatherService.csproj", "{75792599-DFA0-4558-9734-55ADEDA3280E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.LightShowExtender.DomainService", "Almostengr.LightShowExtender.DomainService\Almostengr.LightShowExtender.DomainService.csproj", "{F268EA00-4BDA-4D56-A728-FEC6E2055695}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,5 +88,17 @@ Global
 		{75792599-DFA0-4558-9734-55ADEDA3280E}.Release|x64.Build.0 = Release|Any CPU
 		{75792599-DFA0-4558-9734-55ADEDA3280E}.Release|x86.ActiveCfg = Release|Any CPU
 		{75792599-DFA0-4558-9734-55ADEDA3280E}.Release|x86.Build.0 = Release|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Debug|x64.Build.0 = Debug|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Debug|x86.Build.0 = Debug|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Release|x64.ActiveCfg = Release|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Release|x64.Build.0 = Release|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Release|x86.ActiveCfg = Release|Any CPU
+		{F268EA00-4BDA-4D56-A728-FEC6E2055695}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

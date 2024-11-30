@@ -1,4 +1,4 @@
 namespace Almostengr.Common.Command;
 
-public interface ICommandRequest
+public interface ICommand
 { }

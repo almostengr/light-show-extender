@@ -3,6 +3,8 @@ using Almostengr.NationalWeatherService.DomainService;
 using Almostengr.NationalWeatherService.Infrastructure;
 using Almostengr.FalconPiPlayer.DomainService;
 using Almostengr.FalconPiPlayer.Infrastructure;
+using Almostengr.NationalWeatherService;
+using Almostengr.FalconPiPlayer;
 
 Console.WriteLine(typeof(Program).Assembly.ToString());
 
@@ -28,14 +30,16 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         AppSettings appSettings = configuration.GetSection(nameof(AppSettings)).Get<AppSettings>();
-        services.AddSingleton(appSettings);
+        // services.AddSingleton(appSettings);
+        services.AddSingleton<FppAppSettings>(appSettings.FalconPlayer);
+        services.AddSingleton<NwsAppSettings>(appSettings.Nws);
+        // services.AddSingleton<TwitterAppSettings>(appSettings.Twitter);
 
         services.AddSingleton<IFppHttpClient, FppHttpClient>();
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
 
-        // services.AddSingleton(typeof(ILoggingService<>), typeof(LoggingService<>));
-
-        services.AddHostedService<ExtenderWorker>();
+        services.AddHostedService<VitalsWorker>();
+        services.AddHostedService<HolidayCountdownWorker>();
     })
     .UseSystemd()
     .Build();

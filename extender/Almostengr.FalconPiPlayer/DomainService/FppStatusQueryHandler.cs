@@ -2,7 +2,7 @@ using Almostengr.Common.Query;
 
 namespace Almostengr.FalconPiPlayer.DomainService;
 
-public sealed class FppStatusQueryHandler : IQueryHandler<FppStatusRequest, FppStatusResponse>
+public sealed class FppStatusQueryHandler : IQueryHandler<FppStatusQuery, FppStatusResponse>
 {
     private readonly IFppHttpClient _fppHttpClient;
 
@@ -11,7 +11,7 @@ public sealed class FppStatusQueryHandler : IQueryHandler<FppStatusRequest, FppS
         _fppHttpClient = fppHttpClient;
     }
 
-    public async Task<FppStatusResponse> ExecuteAsync(CancellationToken cancellationToken, FppStatusRequest request)
+    public async Task<FppStatusResponse> ExecuteAsync(CancellationToken cancellationToken, FppStatusQuery request)
     {
         if (request == null)
         {

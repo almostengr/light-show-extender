@@ -1,18 +1,20 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using Almostengr.Common;
+using Almostengr.Common.Command;
 using Almostengr.LightShowExtender.Worker;
+using Almostengr.LightShowExtender.Worker.Twitter;
 using Tweetinvi;
 using Tweetinvi.Models;
 
 namespace Almostengr.LightShowExtender.DomainService.Twitter;
 
-public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
+public sealed class PostTweetCommandHandler : ICommandHandler<PostTweetCommand, PostTweetResponse>
 {
     private readonly ITwitterClient _twitterClient;
-    private readonly TwitterSettings _twitterSettings;
+    private readonly TwitterAppSettings _twitterSettings;
 
-    public PostTweetHandler(TwitterSettings twitterSettings)
+    public PostTweetCommandHandler(TwitterAppSettings twitterSettings)
     {
         _twitterSettings = twitterSettings;
 
@@ -24,7 +26,7 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
         _twitterClient.Config.TweetMode = TweetMode.None;
     }
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken, PostTweetCommand command)
+    public async Task<PostTweetResponse> ExecuteAsync(CancellationToken cancellationToken, PostTweetCommand command)
     {
         if (_twitterClient == null)
         {
@@ -42,23 +44,6 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
         }
 
         StringBuilder tweet = new(command.Text);
-        // StringBuilder tweet = new();
-
-        // if (command.Text.IsNotNullOrWhiteSpace())
-        // {
-        //     tweet.Append($"Playing {command.Text} ");
-
-        //     if (command.Aritst.IsNotNullOrWhiteSpace())
-        //     {
-        //         tweet.Append($"by {command.Aritst} ");
-        //     }
-
-        //     tweet.Append($"at {DateTime.Now.TimeOfDay} ");
-        // }
-        // else
-        // {
-        //     tweet.Append($"{command.StatusChange} ");
-        // }
 
         string hashTags = GetHashTags();
         tweet.Append(hashTags);
@@ -66,7 +51,7 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
         // below code taken from https://github.com/linvi/tweetinvi/issues/1147
         TweetV2PostRequest tweetParams = new(tweet.ToString());
 
-        await _twitterClient.Execute.AdvanceRequestAsync(
+        Tweetinvi.Core.Web.ITwitterResult result = await _twitterClient.Execute.AdvanceRequestAsync(
             (ITwitterRequest request) =>
             {
                 // var jsonBody = _twitterClient.Json.Serialize(tweetParams);
@@ -78,6 +63,13 @@ public sealed class PostTweetHandler : ICommandHandler<PostTweetCommand>
                 request.Query.HttpContent = content;
             }
         );
+
+        if (result.Response.IsSuccessStatusCode)
+        {
+            return new PostTweetResponse(true);
+        }
+
+        return new PostTweetResponse(false);
     }
 
     private string GetHashTags()

@@ -1,6 +1,6 @@
 namespace Almostengr.LightShowExtender.Worker;
 
-public sealed class TwitterSettings
+public sealed class TwitterAppSettings
 {
     public string AccessSecret { get; init; } = string.Empty;
     public string AccessToken { get; init; } = string.Empty;

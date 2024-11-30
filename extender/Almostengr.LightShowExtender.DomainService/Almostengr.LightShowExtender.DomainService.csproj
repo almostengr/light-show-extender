@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Content Remove="appsettings.json" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.Common\Almostengr.Common.csproj" />
+    <ProjectReference Include="..\Almostengr.FalconPiPlayer\Almostengr.FalconPiPlayer.csproj" />
+    <ProjectReference Include="..\Almostengr.NationalWeatherService\Almostengr.NationalWeatherService.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
