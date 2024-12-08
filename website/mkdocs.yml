@@ -50,8 +50,8 @@ theme:
       displayName: Holidays - Meghan Trainor
     - playlistName: Nutrocker - Trans-Siberian Orchestra.fseq
       displayName: Nutrocker - Trans-Siberian Orchestra
-    # - playlistName: Scarred - Uncle Luke.fseq
-    #   displayName: Scarred - Uncle Luke
+    - playlistName: Scarred - Uncle Luke.fseq
+      displayName: Scarred - Uncle Luke
     - playlistName: Shaft - Issac Hayes.fseq
       displayName: Shaft - Issac Hayes
     - playlistName: Spongebob Square Pants.fseq
