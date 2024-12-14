@@ -34,7 +34,7 @@ jobs:
     - name: Deploy to Production
       uses: fifsky/ssh-action@master
       with:
-        command: cd && cd lightshow.thealmostengineer.com && git pull origin website 
+        command: cd && cd prod_lightshow && git pull origin website 
         host: ${{ secrets.HOSTNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.PORT_NUMBER }}
