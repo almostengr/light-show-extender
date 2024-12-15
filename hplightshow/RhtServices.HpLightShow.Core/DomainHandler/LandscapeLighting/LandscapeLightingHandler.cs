@@ -6,7 +6,6 @@ public sealed class LandscapeLightingHandler : IHandler<LandscapeLightingRequest
 {
     public async Task<LandscapeLightingResult> ExecuteAsync(LandscapeLightingRequest request)
     {
-
         throw new NotImplementedException();
     }
 }
