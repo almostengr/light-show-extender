@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.HpLightShow.Worker", "Almostengr.HpLightShow.Worker\Almostengr.HpLightShow.Worker.csproj", "{01097A13-E394-477C-8DE0-5CB18B047990}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.HpLightShow.Worker", "RhtServices.HpLightShow.Worker\RhtServices.HpLightShow.Worker.csproj", "{01097A13-E394-477C-8DE0-5CB18B047990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.HpLightShow.Core", "Almostengr.HpLightShow.Core\Almostengr.HpLightShow.Core.csproj", "{CD6F55D9-ACFF-4C74-BC80-E82A8E75B3D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.HpLightShow.Core", "RhtServices.HpLightShow.Core\RhtServices.HpLightShow.Core.csproj", "{CD6F55D9-ACFF-4C74-BC80-E82A8E75B3D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.HpLightShow.Core.Tests", "Almostengr.HpLightShow.Core.Tests\Almostengr.HpLightShow.Core.Tests.csproj", "{B3F57FDD-A69A-488D-BD6B-14504C80E88D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.HpLightShow.Core.Tests", "RhtServices.HpLightShow.Core.Tests\RhtServices.HpLightShow.Core.Tests.csproj", "{B3F57FDD-A69A-488D-BD6B-14504C80E88D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.Utilities", "Almostengr.Common.Utilities\Almostengr.Common.Utilities.csproj", "{314FDE79-6974-4FB3-AA82-0C666AF47289}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.Common.Utilities", "RhtServices.Common.Utilities\RhtServices.Common.Utilities.csproj", "{314FDE79-6974-4FB3-AA82-0C666AF47289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
