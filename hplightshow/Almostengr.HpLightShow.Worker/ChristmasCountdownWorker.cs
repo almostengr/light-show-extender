@@ -1,4 +1,4 @@
-using Almostengr.HpLightShow.DomainService.ChristmasCountdown;
+using Almostengr.HpLightShow.Core.DomainHandler.ChristmasCountdown;
 
 namespace Almostengr.HpLightShow.Worker;
 

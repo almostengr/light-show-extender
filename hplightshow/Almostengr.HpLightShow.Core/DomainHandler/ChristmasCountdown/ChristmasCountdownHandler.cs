@@ -1,7 +1,7 @@
-using System.Text;
-using Almostengr.HpLightShow.DomainService.Common;
+using Almostengr.Common.Utilities.DomainService;
+using Almostengr.HpLightShow.Core.Common.DomainHandler.Common;
 
-namespace Almostengr.HpLightShow.DomainService.ChristmasCountdown;
+namespace Almostengr.HpLightShow.Core.DomainHandler.ChristmasCountdown;
 
 public sealed class ChristmasCountdownHandler : IHandler<ChristmasCountdownRequest, ChristmasCountdownResult>
 {

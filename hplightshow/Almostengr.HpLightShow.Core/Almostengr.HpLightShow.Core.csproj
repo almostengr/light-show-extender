@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Almostengr.Common.Utilities\Almostengr.Common.Utilities.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

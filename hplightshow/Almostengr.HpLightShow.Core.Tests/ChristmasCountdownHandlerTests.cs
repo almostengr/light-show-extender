@@ -1,9 +1,8 @@
-using Almostengr.HpLightShow.DomainService.ChristmasCountdown;
-using Almostengr.HpLightShow.DomainService.Common;
+using Almostengr.HpLightShow.Core.DomainHandler.ChristmasCountdown;
 using Moq;
-using Xunit;
+using Almostengr.HpLightShow.Core.Common.DomainHandler.Common;
 
-namespace Almostengr.HpLightShow.DomainService.Tests;
+namespace Almostengr.HpLightShow.Core.Tests;
 
 public class ChristmasCountdownHandlerTests
 {

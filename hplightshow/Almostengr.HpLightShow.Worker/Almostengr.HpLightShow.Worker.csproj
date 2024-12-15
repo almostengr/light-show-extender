@@ -12,6 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Almostengr.HpLightShow.DomainService\Almostengr.HpLightShow.DomainService.csproj" />
+    <ProjectReference Include="..\Almostengr.HpLightShow.Core\Almostengr.HpLightShow.Core.csproj" />
   </ItemGroup>
 </Project>
