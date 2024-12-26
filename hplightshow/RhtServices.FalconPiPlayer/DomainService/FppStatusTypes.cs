@@ -1,7 +1,7 @@
 namespace RhtServices.FalconPiPlayer.DomainService;
 
-public sealed class FppStatusTypes
+public enum FppStatusTypes
 {
-    public const int Idle = 0;
-    public const int Playing = 1;
+    Idle = 0,
+    Playing = 1
 }

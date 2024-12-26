@@ -1,4 +1,4 @@
-using RhtServices.Common;
+using RhtServices.Common.Utilities.Infrastructure;
 using RhtServices.FalconPiPlayer.DomainService;
 
 namespace RhtServices.FalconPiPlayer.Infrastructure;
@@ -15,33 +15,26 @@ public sealed class FppHttpClient : IFppHttpClient
         _httpClient.BaseAddress = new Uri(_appSettings.ApiUrl.GetUrlWithProtocol());
     }
 
-    public async Task<MediaMetaResponse> GetCurrentSongMetaDataAsync(string currentSong, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(currentSong))
-        {
-            throw new ArgumentNullException(nameof(currentSong));
-        }
-
-        string route = $"api/media/{currentSong}/meta";
-        return await _httpClient.GetAsync<MediaMetaResponse>(route, cancellationToken);
-    }
-
-    public async Task<FppStatusResponse> GetFppdStatusAsync(CancellationToken cancellationToken, string hostname = "")
+    public async Task<FppStatusResult> GetFppdStatusAsync()
     {
         string route = "api/fppd/status";
-
-        if (!string.IsNullOrWhiteSpace(hostname))
-        {
-            hostname = hostname.GetUrlWithProtocol();
-            route = $"{hostname}api/fppd/status";
-        }
-
-        return await _httpClient.GetAsync<FppStatusResponse>(route, cancellationToken);
+        return await _httpClient.GetAsync<FppStatusResult>(route);
     }
 
-    public async Task<MultiSyncSystemsQueryResponse> GetMultiSyncSystemsAsync(CancellationToken cancellationToken)
+    public async Task<MultiSyncSystemsQueryResponse> GetMultiSyncSystemsAsync()
     {
         string route = "api/fppd/multiSyncSystems";
-        return await _httpClient.GetAsync<MultiSyncSystemsQueryResponse>(route, cancellationToken);
+        return await _httpClient.GetAsync<MultiSyncSystemsQueryResponse>(route);
+    }
+
+    public async Task<string> StartPlaylistAsync(string playlist)
+    {
+        if (string.IsNullOrWhiteSpace(playlist))
+        {
+            throw new ArgumentNullException("Invalid playlist name.");
+        }
+
+        string route = $"api/command/Start Playlist/{playlist}/true/false";
+        return await _httpClient.GetAsync<string>(route);
     }
 }

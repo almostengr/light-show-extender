@@ -7,12 +7,12 @@ namespace RhtServices.Common.Utilities.Infrastructure;
 
 public static class AeHttpClient
 {
-    private static async Task WasRequestSuccessfulAsync(this HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async Task WasRequestSuccessfulAsync(this HttpResponseMessage response)
     {
         if (response.StatusCode >= HttpStatusCode.InternalServerError ||
             response.StatusCode == HttpStatusCode.RequestTimeout)
         {
-            string body = await response.Content.ReadAsStringAsync(cancellationToken);
+            string body = await response.Content.ReadAsStringAsync();
             throw new ServerErrorException(response.StatusCode, body);
         }
 
@@ -26,9 +26,9 @@ public static class AeHttpClient
         return content;
     }
 
-    private static async Task<T> DeserializeResponseBodyAsync<T>(this HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async Task<T> DeserializeResponseBodyAsync<T>(this HttpResponseMessage response)
     {
-        var result = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = await response.Content.ReadAsStringAsync();
 
         JsonSerializerOptions serializeOptions = new JsonSerializerOptions
         {
@@ -38,56 +38,56 @@ public static class AeHttpClient
         return JsonSerializer.Deserialize<T>(result, serializeOptions)!;
     }
 
-    public static string GetUrlWithProtocol(this string address)
+    public static string GetUrlWithProtocol(this string url)
     {
-        const string HTTP = "http://";
-
-        if (!address.StartsWith(HTTP) && !address.StartsWith("https://"))
+        if (string.IsNullOrWhiteSpace(url))
         {
-            address = HTTP + address;
+            throw new ArgumentNullException("Invalid url provided.");
         }
 
-        if (!address.EndsWith("/"))
+        if (url.ToLower().StartsWith("http"))
         {
-            address = address + "/";
+            return url;
         }
 
-        return address;
+        url = url.EndsWith("/") ? url.Substring(0, url.Length - 1) : url;
+
+        return "http://" + url;
     }
 
-    public static async Task<string> GetStringAsync<T>(this HttpClient httpClient, string route, CancellationToken cancellationToken)
+    public static async Task<string> GetStringAsync<T>(this HttpClient httpClient, string route)
     {
-        var response = await httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.Content.ReadAsStringAsync(cancellationToken);
+        var response = await httpClient.GetAsync(route);
+        await response.WasRequestSuccessfulAsync();
+        return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task<T> GetAsync<T>(this HttpClient httpClient, string route, CancellationToken cancellationToken)
+    public static async Task<T> GetAsync<T>(this HttpClient httpClient, string route)
     {
-        var response = await httpClient.GetAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<T>(cancellationToken);
+        var response = await httpClient.GetAsync(route);
+        await response.WasRequestSuccessfulAsync();
+        return await response.DeserializeResponseBodyAsync<T>();
     }
 
-    public static async Task<X> PostAsync<T, X>(this HttpClient httpClient, string route, T request, CancellationToken cancellationToken)
-    {
-        var serializedRequest = request.SerializeRequestBody<T>();
-        var response = await httpClient.PostAsync(route, serializedRequest, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<X>(cancellationToken);
-    }
-
-    public static async Task<X> PutAsync<T, X>(this HttpClient httpClient, string route, T request, CancellationToken cancellationToken)
+    public static async Task<X> PostAsync<T, X>(this HttpClient httpClient, string route, T request)
     {
         var serializedRequest = request.SerializeRequestBody<T>();
-        var response = await httpClient.PutAsync(route, serializedRequest, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
-        return await response.DeserializeResponseBodyAsync<X>(cancellationToken);
+        var response = await httpClient.PostAsync(route, serializedRequest);
+        await response.WasRequestSuccessfulAsync();
+        return await response.DeserializeResponseBodyAsync<X>();
     }
 
-    public static async Task DeleteAsync(this HttpClient httpClient, string route, CancellationToken cancellationToken)
+    public static async Task<X> PutAsync<T, X>(this HttpClient httpClient, string route, T request)
     {
-        var response = await httpClient.DeleteAsync(route, cancellationToken);
-        await response.WasRequestSuccessfulAsync(cancellationToken);
+        var serializedRequest = request.SerializeRequestBody<T>();
+        var response = await httpClient.PutAsync(route, serializedRequest);
+        await response.WasRequestSuccessfulAsync();
+        return await response.DeserializeResponseBodyAsync<X>();
+    }
+
+    public static async Task DeleteAsync(this HttpClient httpClient, string route)
+    {
+        var response = await httpClient.DeleteAsync(route);
+        await response.WasRequestSuccessfulAsync();
     }
 }

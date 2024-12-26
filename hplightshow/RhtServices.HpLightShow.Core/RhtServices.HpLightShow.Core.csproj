@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RhtServices.Common.Utilities\RhtServices.Common.Utilities.csproj" />
+    <ProjectReference Include="..\RhtServices.FalconPiPlayer\RhtServices.FalconPiPlayer.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

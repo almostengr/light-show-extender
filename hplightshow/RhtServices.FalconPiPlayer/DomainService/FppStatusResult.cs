@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
-using RhtServices.Common.Query;
+using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.FalconPiPlayer.DomainService;
 
-public sealed class FppStatusResponse : IQueryResponse
+public sealed class FppStatusResult : IHandlerResult
 {
     public List<Sensor> Sensors { get; init; } = new();
 

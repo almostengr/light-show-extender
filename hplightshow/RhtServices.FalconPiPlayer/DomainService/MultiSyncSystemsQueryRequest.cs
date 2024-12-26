@@ -1,8 +1,8 @@
-using RhtServices.Common.Query;
+using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.FalconPiPlayer.DomainService;
 
-public sealed class MultiSyncSystemsQueryResponse : IQueryResponse
+public sealed class MultiSyncSystemsQueryResponse : IHandlerRequest
 {
     public List<FppSystem> Systems { get; init; } = new();
 

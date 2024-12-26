@@ -21,4 +21,5 @@ public static class Extensions
 
         return firstOccurrence.AddDays((occurrence - 1) * 7);
     }
+
 }

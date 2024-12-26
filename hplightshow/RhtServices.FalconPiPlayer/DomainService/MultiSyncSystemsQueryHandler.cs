@@ -1,8 +1,8 @@
-using RhtServices.Common.Query;
+using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.FalconPiPlayer.DomainService;
 
-public sealed class MultiSyncSystemsQueryHandler : IQueryHandler<MultiSyncSystemsType, List<MultiSyncSystemsQueryResponse.FppSystem>>
+public sealed class MultiSyncSystemsQueryHandler : IHandler<MultiSyncSystemsType, List<MultiSyncSystemsQueryResponse.FppSystem>>
 {
     private readonly IFppHttpClient _fppHttpClient;
 
@@ -11,9 +11,9 @@ public sealed class MultiSyncSystemsQueryHandler : IQueryHandler<MultiSyncSystem
         _fppHttpClient = fppHttpClient;
     }
 
-    public async Task<List<MultiSyncSystemsQueryResponse.FppSystem>> ExecuteAsync(CancellationToken cancellationToken, MultiSyncSystemsType type)
+    public async Task<List<MultiSyncSystemsQueryResponse.FppSystem>> ExecuteAsync( MultiSyncSystemsType type)
     {
-        var systems = await _fppHttpClient.GetMultiSyncSystemsAsync(cancellationToken);
+        var systems = await _fppHttpClient.GetMultiSyncSystemsAsync();
 
         if (type == MultiSyncSystemsType.All)
         {

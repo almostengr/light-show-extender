@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.HpLightShow.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.Common.Utilities", "RhtServices.Common.Utilities\RhtServices.Common.Utilities.csproj", "{314FDE79-6974-4FB3-AA82-0C666AF47289}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhtServices.FalconPiPlayer", "RhtServices.FalconPiPlayer\RhtServices.FalconPiPlayer.csproj", "{C4F918C4-EE38-4624-B89F-333A1C11EC6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{314FDE79-6974-4FB3-AA82-0C666AF47289}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{314FDE79-6974-4FB3-AA82-0C666AF47289}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314FDE79-6974-4FB3-AA82-0C666AF47289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F918C4-EE38-4624-B89F-333A1C11EC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F918C4-EE38-4624-B89F-333A1C11EC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F918C4-EE38-4624-B89F-333A1C11EC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F918C4-EE38-4624-B89F-333A1C11EC6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
