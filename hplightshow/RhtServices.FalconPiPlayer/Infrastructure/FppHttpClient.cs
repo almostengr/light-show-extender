@@ -5,14 +5,13 @@ namespace RhtServices.FalconPiPlayer.Infrastructure;
 
 public sealed class FppHttpClient : IFppHttpClient
 {
-    private readonly FppAppSettings _appSettings;
     private readonly HttpClient _httpClient;
 
-    public FppHttpClient(FppAppSettings appSettings)
+    public FppHttpClient()
     {
-        _appSettings = appSettings;
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(_appSettings.ApiUrl.GetUrlWithProtocol());
+        _httpClient.BaseAddress = new Uri("http://127.0.0.1");
+        _httpClient.Timeout = TimeSpan.FromSeconds(15);
     }
 
     public async Task<FppStatusResult> GetFppdStatusAsync()

@@ -3,28 +3,28 @@ using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.HpLightShow.Core.DomainHandler.ShowCountdown;
 
-public sealed class ShowCountdownHandler : IHandler<ShowCountdownRequest, ShowCountdownResult>
+public sealed class ShowCountdownHandler : IHandler<ShowCountdownDto, HandlerResult>
 {
-    public async Task<ShowCountdownResult> ExecuteAsync(ShowCountdownRequest request)
+    public async Task<HandlerResult> ExecuteAsync(ShowCountdownDto countdownDto)
     {
         // todo separate dates for Christmas and 4th of July in configuraiton file
 
-        if (request.IsChrismtas)
+        if (countdownDto.IsChrismtas)
         {
-            await ChristmasCountdownAsync(request);
-            return new ShowCountdownResult(true);
+            await ChristmasCountdownAsync(countdownDto);
+            return new HandlerResult(true);
         }
 
-        await IndependenceCountdownAsync(request);
-        return new ShowCountdownResult(true);
+        await IndependenceCountdownAsync(countdownDto);
+        return new HandlerResult(true);
     }
 
-    private async Task ChristmasCountdownAsync(ShowCountdownRequest request)
+    private async Task ChristmasCountdownAsync(ShowCountdownDto countdownDto)
     {
 
     }
 
-    private async Task IndependenceCountdownAsync(ShowCountdownRequest request)
+    private async Task IndependenceCountdownAsync(ShowCountdownDto countdownDto)
     {
 
     }

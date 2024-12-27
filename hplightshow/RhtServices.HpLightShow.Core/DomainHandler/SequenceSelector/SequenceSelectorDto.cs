@@ -2,9 +2,9 @@ using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.HpLightShow.Core.DomainHandler.SequenceSelector;
 
-public sealed class SequenceSelectorRequest : IHandlerRequest
+public sealed class SequenceSelectorDto : IHandlerDto
 {
-    public SequenceSelectorRequest(DateOnly currentDate)
+    public SequenceSelectorDto(DateOnly currentDate)
     {
         CurrentDate = currentDate;
     }

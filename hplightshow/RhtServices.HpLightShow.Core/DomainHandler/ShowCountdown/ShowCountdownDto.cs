@@ -2,7 +2,7 @@ using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.HpLightShow.Core.DomainHandler.ShowCountdown;
 
-public sealed class ShowCountdownRequest : IHandlerRequest
+public sealed class ShowCountdownDto : IHandlerDto
 {
     public DateTime CurrentDate { get; set; }
     public DateTime NextShowDate { get; set; }

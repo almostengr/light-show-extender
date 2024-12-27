@@ -16,7 +16,7 @@ public class ChristmasCountdownHandlerTests
         var mockPoster = new Mock<ISocialMediaPoster>();
         mockPoster.Setup(p => p.PostAsync(It.IsAny<string>())).Verifiable(); 
 
-        var request = new ChristmasCountdownRequest(new DateOnly(currentDate[0], currentDate[1], 1), new DateOnly(christmasDate[0], christmasDate[1], 1));
+        var request = new ChristmasCountdownDto(new DateOnly(currentDate[0], currentDate[1], 1), new DateOnly(christmasDate[0], christmasDate[1], 1));
         var handler = new ChristmasCountdownHandler(mockPoster.Object);
 
         // Act
@@ -34,7 +34,7 @@ public class ChristmasCountdownHandlerTests
         var mockPoster = new Mock<ISocialMediaPoster>();
         mockPoster.Setup(p => p.PostAsync(It.IsAny<string>())).Verifiable(); 
 
-        var request = new ChristmasCountdownRequest(new DateOnly(26, 12, 1), new DateOnly(25, 12, 1));
+        var request = new ChristmasCountdownDto(new DateOnly(26, 12, 1), new DateOnly(25, 12, 1));
         var handler = new ChristmasCountdownHandler(mockPoster.Object);
 
         // Act

@@ -8,7 +8,7 @@ public interface IHandler<IHandlerResult> : IHandler
     Task<IHandlerResult> ExecuteAsync();
 }
 
-public interface IHandler<IHandlerRequest, IHandlerResult> : IHandler
+public interface IHandler<IHandlerResource, IHandlerResult> : IHandler
 {
-    Task<IHandlerResult> ExecuteAsync(IHandlerRequest request);
+    Task<IHandlerResult> ExecuteAsync(IHandlerResource resource);
 }

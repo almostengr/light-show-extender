@@ -1,11 +1,19 @@
 namespace RhtServices.Common.Utilities.DomainService;
 
-public abstract class HandlerResult : IHandlerResult
+public class HandlerResult : IHandlerResult
 {
     public HandlerResult(bool succeeded)
     {
         Succeeded = succeeded;
+        Dto = null;
+    }
+
+    public HandlerResult(bool succeeded, IHandlerDto handlerDto)
+    {
+        Succeeded = succeeded;
+        Dto = handlerDto;
     }
 
     public bool Succeeded { get; init; }
+    public IHandlerDto? Dto { get; init; }
 }

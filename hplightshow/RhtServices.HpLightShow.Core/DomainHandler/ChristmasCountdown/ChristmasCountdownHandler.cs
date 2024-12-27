@@ -3,7 +3,7 @@ using RhtServices.HpLightShow.Core.Common.DomainHandler.Common;
 
 namespace RhtServices.HpLightShow.Core.DomainHandler.ChristmasCountdown;
 
-public sealed class ChristmasCountdownHandler : IHandler<ChristmasCountdownRequest, ChristmasCountdownResult>
+public sealed class ChristmasCountdownHandler : IHandler<ChristmasCountdownDto, HandlerResult>
 {
     private readonly ISocialMediaPoster _socialMediaPoster;
 
@@ -12,11 +12,11 @@ public sealed class ChristmasCountdownHandler : IHandler<ChristmasCountdownReque
         _socialMediaPoster = socialMediaPoster;
     }
 
-    public async Task<ChristmasCountdownResult> ExecuteAsync(ChristmasCountdownRequest request)
+    public async Task<HandlerResult> ExecuteAsync(ChristmasCountdownDto countdownDto)
     {
         string? message = null;
 
-        int daysDifference = request.ChristmasDate.DayNumber - request.CurrentDate.DayNumber;
+        int daysDifference = countdownDto.ChristmasDate.DayNumber - countdownDto.CurrentDate.DayNumber;
         if (daysDifference > 0)
         {
             message = daysDifference == 1 ? $"1 day " : $"{daysDifference} days ";
@@ -31,6 +31,6 @@ public sealed class ChristmasCountdownHandler : IHandler<ChristmasCountdownReque
             await _socialMediaPoster.PostAsync(message);
         }
 
-        return await Task.FromResult<ChristmasCountdownResult>(new ChristmasCountdownResult(true));
+        return new HandlerResult(true);
     }
 }

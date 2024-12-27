@@ -2,7 +2,7 @@ using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.FalconPiPlayer.DomainService;
 
-public sealed class MultiSyncSystemsQueryResponse : IHandlerRequest
+public sealed class MultiSyncSystemsQueryResponse : IHandlerDto
 {
     public List<FppSystem> Systems { get; init; } = new();
 

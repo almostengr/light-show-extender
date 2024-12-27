@@ -3,7 +3,7 @@ using RhtServices.FalconPiPlayer.DomainService;
 
 namespace RhtServices.HpLightShow.Core.DomainHandler.SequenceSelector;
 
-public sealed class SequenceSelectorHandler : IHandler<SequenceSelectorRequest, SequenceSelectorResult>
+public sealed class SequenceSelectorHandler : IHandler<SequenceSelectorDto, HandlerResult>
 {
     private readonly IFppHttpClient _fppHttpClient;
 
@@ -12,16 +12,16 @@ public sealed class SequenceSelectorHandler : IHandler<SequenceSelectorRequest, 
         _fppHttpClient = fppHttpClient;
     }
 
-    public async Task<SequenceSelectorResult> ExecuteAsync(SequenceSelectorRequest request)
+    public async Task<HandlerResult> ExecuteAsync(SequenceSelectorDto selectorDto)
     {
-        IList<SequenceRule> rules = GetSequenceRules(request.CurrentDate.Year);
+        IList<SequenceRule> rules = GetSequenceRules(selectorDto.CurrentDate.Year);
         string selectedSequence = LightingSequence.Blue.Value;
         foreach (var rule in rules)
         {
             if (
-                request.CurrentDate >= rule.StartDate &&
-                request.CurrentDate <= rule.EndDate &&
-                (rule.DaysOfWeek == null || rule.DaysOfWeek.Contains(request.CurrentDate.DayOfWeek))
+                selectorDto.CurrentDate >= rule.StartDate &&
+                selectorDto.CurrentDate <= rule.EndDate &&
+                (rule.DaysOfWeek == null || rule.DaysOfWeek.Contains(selectorDto.CurrentDate.DayOfWeek))
             )
             {
                 selectedSequence = rule.Sequence.Value;
@@ -31,7 +31,7 @@ public sealed class SequenceSelectorHandler : IHandler<SequenceSelectorRequest, 
 
         await _fppHttpClient.StartPlaylistAsync(selectedSequence);
 
-        return new SequenceSelectorResult(true);
+        return new HandlerResult(true);
     }
 
     private IList<SequenceRule> GetSequenceRules(int currentYear)

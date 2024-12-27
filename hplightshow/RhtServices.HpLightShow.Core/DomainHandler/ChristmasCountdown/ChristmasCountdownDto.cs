@@ -2,9 +2,9 @@ using RhtServices.Common.Utilities.DomainService;
 
 namespace RhtServices.HpLightShow.Core.DomainHandler.ChristmasCountdown;
 
-public sealed class ChristmasCountdownRequest : IHandlerRequest
+public sealed class ChristmasCountdownDto : IHandlerDto
 {
-    public ChristmasCountdownRequest(DateOnly christmasDate, DateOnly currentDate)
+    public ChristmasCountdownDto(DateOnly christmasDate, DateOnly currentDate)
     {
         CurrentDate = currentDate;
         ChristmasDate = christmasDate;

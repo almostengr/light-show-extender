@@ -1,8 +1,9 @@
+using RhtServices.Common.Utilities.DomainService;
 using RhtServices.HpLightShow.Core.DomainHandler.ChristmasCountdown;
 
 namespace RhtServices.HpLightShow.Worker;
 
-public sealed class ChristmasCountdownWorker : BackgroundService
+internal sealed class ChristmasCountdownWorker : BackgroundService
 {
     private readonly ILogger<ChristmasCountdownWorker> _logger;
     private readonly ChristmasCountdownHandler _handler;
@@ -23,9 +24,9 @@ public sealed class ChristmasCountdownWorker : BackgroundService
             {
                 DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
                 DateOnly christmasDate = DateOnly.FromDateTime(new DateTime(DateTime.Now.Year, 12, 25));
-                ChristmasCountdownRequest request = new(christmasDate, currentDate);
+                ChristmasCountdownDto request = new(christmasDate, currentDate);
 
-                ChristmasCountdownResult result = await _handler.ExecuteAsync(request);
+                HandlerResult result = await _handler.ExecuteAsync(request);
                 if (result.Succeeded == false)
                 {
                     _logger.LogError("Error when posting about Christmas holiday countdown.");

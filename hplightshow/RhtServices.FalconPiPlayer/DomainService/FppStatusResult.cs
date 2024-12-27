@@ -14,6 +14,7 @@ public sealed class FppStatusResult : IHandlerResult
     public string Current_Sequence { get; init; } = string.Empty;
 
     public int Status { get; init; } = 0;
+    public List<string> Warnings { get; init; } = new();
 
     public sealed class Sensor
     {
