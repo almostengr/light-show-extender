@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.FalconPiPlayer", "Almostengr.FalconPiPlayer.csproj", "{595AD8E0-C35A-E6E7-D670-24A4C40393A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{595AD8E0-C35A-E6E7-D670-24A4C40393A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{595AD8E0-C35A-E6E7-D670-24A4C40393A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{595AD8E0-C35A-E6E7-D670-24A4C40393A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{595AD8E0-C35A-E6E7-D670-24A4C40393A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {540DDDDF-49AD-415A-9EEB-5603783B5137}
+	EndGlobalSection
+EndGlobal
