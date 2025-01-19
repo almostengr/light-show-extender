@@ -7,6 +7,13 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>Almostengr HP Light Show Core Tests</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.HpLightShow.Core.Tests</AssemblyName>
+    <RootNamespace>Almostengr.HpLightShow</RootNamespace>
+    <Version>8.$([System.DateTime]::UtcNow.ToString(yyyyMMdd.HHmm))</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,9 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.FalconPiPlayer\Almostengr.FalconPiPlayer.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Company>Robinson Handy and Technology Services LLC</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
+    <Product>Almostengr HP Light Show</Product>
+    <Authors>Kenny Robinson</Authors>
+    <AssemblyName>Almostengr.HpLightShow.Core</AssemblyName>
+    <RootNamespace>Almostengr.HpLightShow</RootNamespace>
+    <Version>8.$([System.DateTime]::UtcNow.ToString(yyyyMMdd.HHmm))</Version>
   </PropertyGroup>
 
 </Project>
