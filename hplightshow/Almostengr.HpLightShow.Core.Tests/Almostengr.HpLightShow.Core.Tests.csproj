@@ -13,7 +13,11 @@
     <Authors>Kenny Robinson</Authors>
     <AssemblyName>Almostengr.HpLightShow.Core.Tests</AssemblyName>
     <RootNamespace>Almostengr.HpLightShow</RootNamespace>
-    <Version>8.$([System.DateTime]::UtcNow.ToString(yyyyMMdd.HHmm))</Version>
+    <Version>8.$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
+    <PackageReadmeFile>./README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/almostengr/light-show-extender.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/almostengr/light-show-extender</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
