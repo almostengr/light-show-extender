@@ -17,21 +17,30 @@ internal sealed class CountdownWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        const int ERROR_DELAY = 6;
+        
         while (!stoppingToken.IsCancellationRequested)
         {
+            int hoursDelay = 24;
             try
             {
                 DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-                var dto = new ChristmasCountdownDto(currentDate);
+                var countdownDto = new ChristmasCountdownDto(currentDate);
 
-                await _service.PostCountdownAsync(dto);
-                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+                var result = await _service.PostCountdownAsync(countdownDto);
+                if (result.Failed)
+                {
+                    result.Errors.ToList().ForEach(e => _logger.LogWarning(e));
+                    hoursDelay = ERROR_DELAY;
+                }
             }
             catch (Exception exception)
             {
                 _logger.LogError(exception.Message);
-                await Task.Delay(TimeSpan.FromHours(6), stoppingToken);
+                hoursDelay = ERROR_DELAY;
             }
+
+            await Task.Delay(TimeSpan.FromHours(hoursDelay), stoppingToken);
         }
     }
 }

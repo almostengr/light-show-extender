@@ -1,0 +1,38 @@
+using Almostengr.Common.Infrastructure;
+using Almostengr.HpLightShow.Core.Common;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DataTransferObjects;
+
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
+
+public sealed class FppClient : IFppClient
+{
+    private readonly AppSettings _appSettings;
+    private readonly HttpClient _httpClient;
+
+    public FppClient(HttpClient httpClient, AppSettings appSettings)
+    {
+        _appSettings = appSettings;
+        
+        _httpClient = httpClient;
+        _httpClient.BaseAddress = new Uri(_appSettings.FppApiUrl);
+        _httpClient.Timeout = TimeSpan.FromSeconds(15);
+        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
+
+    public async Task<FppStatusDto> GetFppdStatusAsync()
+    {
+        string route = "api/fppd/status";
+        return await _httpClient.GetAsync<FppStatusDto>(route);
+    }
+
+    public async Task<string> StartPlaylistAsync(string playlist)
+    {
+        if (string.IsNullOrWhiteSpace(playlist))
+        {
+            throw new ArgumentNullException("Invalid playlist name.");
+        }
+
+        string route = $"api/command/Start Playlist/{playlist}/true/false";
+        return await _httpClient.GetAsync<string>(route);
+    }
+}

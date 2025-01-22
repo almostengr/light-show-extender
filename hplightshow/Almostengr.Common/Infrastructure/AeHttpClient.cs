@@ -20,6 +20,8 @@ public static class AeHttpClient
 
     private static StringContent SerializeRequestBody<T>(this T request)
     {
+        _ = request ?? throw new ArgumentNullException(nameof(request));
+
         string json = JsonSerializer.Serialize(request);
         StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
         return content;
@@ -27,6 +29,8 @@ public static class AeHttpClient
 
     private static async Task<T> DeserializeResponseBodyAsync<T>(this HttpResponseMessage response)
     {
+        _ = response ?? throw new ArgumentNullException(nameof(response));
+
         var result = await response.Content.ReadAsStringAsync();
 
         JsonSerializerOptions serializeOptions = new JsonSerializerOptions
@@ -56,6 +60,9 @@ public static class AeHttpClient
 
     public static async Task<string> GetStringAsync<T>(this HttpClient httpClient, string route)
     {
+        _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _ = route ?? throw new ArgumentNullException(nameof(route));
+
         var response = await httpClient.GetAsync(route);
         await response.WasRequestSuccessfulAsync();
         return await response.Content.ReadAsStringAsync();
@@ -63,6 +70,9 @@ public static class AeHttpClient
 
     public static async Task<T> GetAsync<T>(this HttpClient httpClient, string route)
     {
+        _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _ = route ?? throw new ArgumentNullException(nameof(route));
+
         var response = await httpClient.GetAsync(route);
         await response.WasRequestSuccessfulAsync();
         return await response.DeserializeResponseBodyAsync<T>();
@@ -70,6 +80,10 @@ public static class AeHttpClient
 
     public static async Task<X> PostAsync<T, X>(this HttpClient httpClient, string route, T request)
     {
+        _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _ = route ?? throw new ArgumentNullException(nameof(route));
+        _ = request ?? throw new ArgumentNullException(nameof(request));
+
         var serializedRequest = request.SerializeRequestBody<T>();
         var response = await httpClient.PostAsync(route, serializedRequest);
         await response.WasRequestSuccessfulAsync();
@@ -78,6 +92,10 @@ public static class AeHttpClient
 
     public static async Task<X> PutAsync<T, X>(this HttpClient httpClient, string route, T request)
     {
+        _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _ = route ?? throw new ArgumentNullException(nameof(route));
+        _ = request ?? throw new ArgumentNullException(nameof(request));
+
         var serializedRequest = request.SerializeRequestBody<T>();
         var response = await httpClient.PutAsync(route, serializedRequest);
         await response.WasRequestSuccessfulAsync();
@@ -86,6 +104,9 @@ public static class AeHttpClient
 
     public static async Task DeleteAsync(this HttpClient httpClient, string route)
     {
+        _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _ = route ?? throw new ArgumentNullException(nameof(route));
+
         var response = await httpClient.DeleteAsync(route);
         await response.WasRequestSuccessfulAsync();
     }

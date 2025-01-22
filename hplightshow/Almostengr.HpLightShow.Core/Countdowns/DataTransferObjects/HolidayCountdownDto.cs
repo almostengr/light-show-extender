@@ -4,9 +4,14 @@ public class HolidayCountdownDto
 {
     public HolidayCountdownDto(DateOnly currentDate, DateOnly holidayDate, string dayOfMessage, string holidayName)
     {
-        if (string.IsNullOrWhiteSpace(dayOfMessage) || string.IsNullOrWhiteSpace(holidayName))
+        if (string.IsNullOrWhiteSpace(dayOfMessage))
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(dayOfMessage));
+        }
+
+        if (string.IsNullOrWhiteSpace(holidayName))
+        {
+            throw new ArgumentNullException(nameof(holidayName));
         }
 
         CurrentDate = currentDate;

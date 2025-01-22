@@ -1,4 +1,4 @@
-namespace Almostengr.HpLightShow.Core.SequenceSelector.DataTransferObjects;
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.DataTransferObjects;
 
 public sealed class SequenceSelectorDto
 {

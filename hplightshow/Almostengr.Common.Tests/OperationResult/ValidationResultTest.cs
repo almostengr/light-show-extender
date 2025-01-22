@@ -6,7 +6,7 @@ public class ValidationResultTest
     public void TestName()
     {
         // Given
-        var result = new ValidationResult();
+        var result = ValidationResult.Create();
         string numberError = "The number is too large";
 
         // When

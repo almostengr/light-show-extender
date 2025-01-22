@@ -1,4 +1,4 @@
-namespace Almostengr.HpLightShow.Core.SequenceSelector.Enums;
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
 
 internal sealed class SequenceRule
 {

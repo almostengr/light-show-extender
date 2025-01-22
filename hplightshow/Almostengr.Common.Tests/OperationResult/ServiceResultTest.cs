@@ -9,9 +9,10 @@ public class ServiceResultTest
     {
         string testingEnttiy = "entity correct";
 
-        ServiceResult<string> ServiceResult = ServiceResult<string>.Success(testingEnttiy);
+        ServiceResult<string> result = ServiceResult<string>.Create();
+        result.SetEntity(testingEnttiy);
 
-        Assert.Equal("entity correct", ServiceResult.Entity);
+        Assert.Equal("entity correct", result.Entity);
     }
 
     [Fact]
@@ -19,8 +20,9 @@ public class ServiceResultTest
     {
         Exception exception = new Exception("I just threw an exception");
 
-        ServiceResult<string> ServiceResult = ServiceResult<string>.Failure(exception);
+        ServiceResult<string> result = ServiceResult<string>.Create();
+        result.AddError(exception);
 
-        Assert.Single(ServiceResult.Errors);
+        Assert.Single(result.Errors);
     }
 }

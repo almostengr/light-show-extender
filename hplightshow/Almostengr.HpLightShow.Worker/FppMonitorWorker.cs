@@ -1,3 +1,4 @@
+using Almostengr.Common.OperationResult;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 
 namespace Almostengr.HpLightShow.Worker;
@@ -21,7 +22,11 @@ internal sealed class FppMonitorWorker : BackgroundService
         {
             try
             {
-                await _fppdService.MonitorAsync();
+                ServiceResult<int> result = await _fppdService.MonitorAsync();
+                if (result.Failed)
+                {
+                    result.Errors.ToList().ForEach(e => _logger.LogWarning(e));
+                }
             }
             catch (Exception exception)
             {

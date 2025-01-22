@@ -6,46 +6,20 @@ public sealed class ServiceResult<TEntity>
     public bool Succeeded => _errors.Count() == 0;
     public bool Failed => !Succeeded;
     public TEntity? Entity { get; private set; }
-    public IReadOnlyList<string> Errors => _errors.ToList();
+    public IReadOnlyList<string> Errors => _errors.AsReadOnly();
 
-    private ServiceResult(TEntity? entity, IEnumerable<string> errors)
-    {
-        _ = errors ?? throw new ArgumentNullException(nameof(errors));
-
-        Entity = entity;
-        _errors.AddRange(errors);
-    }
-
-    public static ServiceResult<TEntity> Success(TEntity entity)
-    {
-        return new ServiceResult<TEntity>(entity, []);
-    }
-
-    public static ServiceResult<TEntity> Failure(Exception exception)
-    {
-        return new ServiceResult<TEntity>(default, [exception.Message]);
-    }
-
-    public static ServiceResult<TEntity> Failure(string error)
-    {
-        if (string.IsNullOrWhiteSpace(error))
-        {
-            throw new ArgumentNullException(nameof(error));
-        }
-
-        return new ServiceResult<TEntity>(default, [error]);
-    }
-
-    public static ServiceResult<TEntity> Failure(IEnumerable<string> errors)
-    {
-        _ = errors ?? throw new ArgumentNullException(nameof(errors));
-
-        return new ServiceResult<TEntity>(default, errors);
-    }
+    private ServiceResult() { }
 
     public static ServiceResult<TEntity> Create()
     {
-        return new ServiceResult<TEntity>(default, []);
+        return new ServiceResult<TEntity>();
+    }
+
+    public void AddError(Exception exception)
+    {
+        _ = exception ?? throw new ArgumentNullException(nameof(exception));
+
+        _errors.Add(exception.Message);
     }
 
     public void AddError(string error)
