@@ -12,7 +12,8 @@ public sealed class NwsHttpClient : INwsHttpClient
     {
         _nwsAppSettings = nwsAppSettings;
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(nwsAppSettings.ApiUrl);
+        // _httpClient.BaseAddress = new Uri(nwsAppSettings.ApiUrl);
+        _httpClient.BaseAddress = new Uri("https://api.weather.gov");
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("User-Agent", nwsAppSettings.UserAgent);
     }

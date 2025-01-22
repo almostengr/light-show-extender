@@ -1,4 +1,4 @@
-namespace Almostengr.FalconPiPlayer;
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Common;
 
 public sealed class FppAppSettings
 {

@@ -1,18 +1,18 @@
-using Almostengr.HpLightShow.Core.DomainHandler.FppMonitor;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 
 namespace Almostengr.HpLightShow.Worker;
 
 internal sealed class FppMonitorWorker : BackgroundService
 {
     private readonly ILogger<FppMonitorWorker> _logger;
-    private readonly FppMonitorHandler _fppMonitorHandler;
+    private readonly IFppdService _fppdService;
 
     public FppMonitorWorker(
         ILogger<FppMonitorWorker> logger,
-        FppMonitorHandler fppMonitorHandler)
+        IFppdService fppdService)
     {
         _logger = logger;
-        _fppMonitorHandler = fppMonitorHandler;
+        _fppdService = fppdService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -21,7 +21,7 @@ internal sealed class FppMonitorWorker : BackgroundService
         {
             try
             {
-                await _fppMonitorHandler.ExecuteAsync();
+                await _fppdService.MonitorAsync();
             }
             catch (Exception exception)
             {

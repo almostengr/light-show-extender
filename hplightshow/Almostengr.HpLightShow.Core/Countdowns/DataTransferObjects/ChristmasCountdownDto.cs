@@ -1,0 +1,9 @@
+namespace Almostengr.HpLightShow.Core.Countdowns;
+
+public sealed class ChristmasCountdownDto : HolidayCountdownDto
+{
+    public ChristmasCountdownDto(DateOnly currentDate) :
+        base(currentDate, new DateOnly(DateTime.Now.Year, 12, 25), "Today is Christmas!", "Christmas")
+    {
+    }
+}

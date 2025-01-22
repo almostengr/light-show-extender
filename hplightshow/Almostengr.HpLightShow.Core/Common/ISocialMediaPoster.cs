@@ -1,4 +1,4 @@
-namespace Almostengr.HpLightShow.Core.Common.DomainHandler.Common;
+namespace Almostengr.HpLightShow.Core.Common.Common;
 
 public interface ISocialMediaPoster
 {

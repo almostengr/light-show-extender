@@ -11,23 +11,21 @@ public sealed class CheckVitalsCommandHandler : ICommandHandler<CheckVitalsComma
     private readonly IFppHttpClient _fppHttpClient;
     // private readonly TwitterAppSettings _twitterSettings;
     private FppStatusResponse _previousStatus;
-    private ILogger<CheckVitalsCommandHandler> _logger;
     private readonly INwsHttpClient _nwsHttpClient;
     private readonly NwsAppSettings _nwsAppSettings;
     private uint failCount = 0;
     private DateTime lastWeatherTime;
 
-    public CheckVitalsCommandHandler(ILogger<CheckVitalsCommandHandler> logger)
+    public CheckVitalsCommandHandler()
     {
-        _logger = logger;
     }
 
-    public Task<CheckVitalsResponse> ExecuteAsync(CancellationToken cancellationToken, CheckVitalsCommand command)
+    public async Task<CheckVitalsResponse> ExecuteAsync(CancellationToken cancellationToken, CheckVitalsCommand command)
     {
         StringBuilder tweet = new();
 
         FppStatusQueryHandler fppHandler = new(_fppHttpClient);
-        FppStatusQuery fppQuery = new("http://localhost");
+        FppStatusQuery fppQuery = new("http://127.0.0.1");
         FppStatusResponse result = await fppHandler.ExecuteAsync(cancellationToken, fppQuery);
 
         if (_previousStatus.Status != FppStatusTypes.Idle && result.Status == FppStatusTypes.Idle)
@@ -42,7 +40,8 @@ public sealed class CheckVitalsCommandHandler : ICommandHandler<CheckVitalsComma
         if (result.Status == FppStatusTypes.Idle)
         {
             await Task.Delay(TimeSpan.FromSeconds(15));
-            continue;
+            // continue;
+            return new CheckVitalsResponse();
         }
 
         CpuTemperatureQueryHandler temperatureHandler = new CpuTemperatureQueryHandler(_fppHttpClient);
@@ -60,5 +59,6 @@ public sealed class CheckVitalsCommandHandler : ICommandHandler<CheckVitalsComma
         // }
 
         _previousStatus = result;
+        return new CheckVitalsResponse();
     }
 }

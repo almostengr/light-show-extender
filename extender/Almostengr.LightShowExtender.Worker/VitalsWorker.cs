@@ -42,7 +42,7 @@ internal sealed class VitalsWorker : BackgroundService
                 StringBuilder tweet = new();
 
                 FppStatusQueryHandler fppHandler = new(_fppHttpClient);
-                FppStatusQuery fppQuery = new("http://localhost");
+                FppStatusQuery fppQuery = new("http://127.0.0.1");
                 FppStatusResponse result = await fppHandler.ExecuteAsync(cancellationToken, fppQuery);
 
                 if (_previousStatus.Status != FppStatusTypes.Idle && result.Status == FppStatusTypes.Idle)

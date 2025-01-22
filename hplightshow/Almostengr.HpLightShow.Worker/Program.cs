@@ -1,11 +1,13 @@
+using Almostengr.HpLightShow.Core.Countdowns;
 using Almostengr.HpLightShow.Worker;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddTransient<ChristmasCountdownHandler>();
-builder.Services.AddTransient<FppMonitorHandler>();
+builder.Services.AddHttpClient();
 
-builder.Services.AddHostedService<ChristmasCountdownWorker>();
+builder.Services.AddTransient<ICountdownService, CountdownService>();
+
+builder.Services.AddHostedService<CountdownWorker>();
 builder.Services.AddHostedService<FppMonitorWorker>();
 
 var host = builder.Build();

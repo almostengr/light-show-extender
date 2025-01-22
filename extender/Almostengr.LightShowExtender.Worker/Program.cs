@@ -39,7 +39,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<INwsHttpClient, NwsHttpClient>();
 
         services.AddHostedService<VitalsWorker>();
-        services.AddHostedService<HolidayCountdownWorker>();
+        // services.AddHostedService<HolidayCountdownWorker>();
     })
     .UseSystemd()
     .Build();

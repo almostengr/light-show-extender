@@ -1,24 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\Almostengr.Common\Almostengr.Common.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>Almostengr.Common</PackageId>
     <Company>Robinson Handy and Technology Services LLC</Company>
     <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
-    <Product>Almostengr HP Light Show</Product>
+    <Product>Almostengr Common Library</Product>
     <Authors>Kenny Robinson</Authors>
-    <AssemblyName>Almostengr.HpLightShow.Core</AssemblyName>
-    <RootNamespace>Almostengr.HpLightShow</RootNamespace>
+    <AssemblyName>Almostengr.Common</AssemblyName>
+    <RootNamespace>Almostengr.Common</RootNamespace>
     <Version>8.$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
     <PackageReadmeFile>./README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/almostengr/light-show-extender.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/almostengr/almostengr.common.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/almostengr/light-show-extender</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/almostengr/almostengr.common</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>
