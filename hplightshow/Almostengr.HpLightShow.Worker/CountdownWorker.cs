@@ -1,4 +1,5 @@
-using Almostengr.HpLightShow.Core.Countdowns;
+using Almostengr.HpLightShow.Core.Countdowns.DataTransferObjects;
+using Almostengr.HpLightShow.Core.Countdowns.Service;
 
 namespace Almostengr.HpLightShow.Worker;
 
@@ -18,25 +19,17 @@ internal sealed class CountdownWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         const int ERROR_DELAY = 6;
-        
+
         while (!stoppingToken.IsCancellationRequested)
         {
             int hoursDelay = 24;
-            try
-            {
-                DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-                var countdownDto = new ChristmasCountdownDto(currentDate);
+            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+            ChristmasCountdownDto countdownDto = new(currentDate);
 
-                var result = await _service.PostCountdownAsync(countdownDto);
-                if (result.Failed)
-                {
-                    result.Errors.ToList().ForEach(e => _logger.LogWarning(e));
-                    hoursDelay = ERROR_DELAY;
-                }
-            }
-            catch (Exception exception)
+            var result = await _service.PostCountdownAsync(countdownDto);
+            if (result.Failed)
             {
-                _logger.LogError(exception.Message);
+                result.Errors.ToList().ForEach(e => _logger.LogError(e));
                 hoursDelay = ERROR_DELAY;
             }
 

@@ -1,4 +1,4 @@
-namespace Almostengr.HpLightShow.Core.Countdowns;
+namespace Almostengr.HpLightShow.Core.Countdowns.DataTransferObjects;
 
 public class HolidayCountdownDto
 {

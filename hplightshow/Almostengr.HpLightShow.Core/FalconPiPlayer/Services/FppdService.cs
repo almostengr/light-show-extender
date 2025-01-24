@@ -24,44 +24,56 @@ public sealed class FppdService : IFppdService
 
     public async Task<Result<int>> MonitorAsync()
     {
-        Result<int> result = Result<int>.Create();
-
-        FppStatusDto fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
-        if (fppStatus.Status == (int)FppStatusType.Idle)
+        try
         {
+            FppStatusDto fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
+            if (fppStatus.Status == (int)FppStatusType.Idle)
+            {
+                return Result<int>.Success(0);
+            }
+
+            Result<int> result = CheckWarnings(fppStatus);
+
+            Result<int> subResult = CheckCpuTemperature(fppStatus);
+            if (subResult.Failed)
+            {
+                result.AddErrors(subResult.Errors);
+            }
+
+            if (result.Failed)
+            {
+                await _socialMediaPoster.PostAsync($"Check system. {result.Errors.Count()} error(s) reported.");
+            }
+
             return result;
         }
-
-        CheckWarnings(fppStatus, result);
-        CheckCpuTemperature(fppStatus, result);
-
-        if (result.Failed)
+        catch (Exception ex)
         {
-            await _socialMediaPoster.PostAsync($"Check system. {result.Errors.Count()} error(s) reported.");
+            return Result<int>.Failure(ex);
         }
-
-        return result;
     }
 
-    private void CheckWarnings(FppStatusDto fppStatus, Result<int> result)
+    private Result<int> CheckWarnings(FppStatusDto fppStatus)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
-        _ = result ?? throw new ArgumentNullException(nameof(result));
 
         if (fppStatus.Warnings.Count > 0)
         {
-            result.AddError("Warnings were found.");
+            return Result<int>.Failure("Warnings were found.");
         }
+
+        return Result<int>.Success(0);
     }
 
-    private void CheckCpuTemperature(FppStatusDto fppStatus, Result<int> result)
+    private Result<int> CheckCpuTemperature(FppStatusDto fppStatus)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
-        _ = result ?? throw new ArgumentNullException(nameof(result));
+
+        Result<int> result = Result<int>.Create();
 
         foreach (FppStatusDto.Sensor sensor in fppStatus.Sensors)
         {
-            if (sensor.Label.Contains("CPU"))
+            if (sensor.Label.Contains("CPU", StringComparison.OrdinalIgnoreCase))
             {
                 if (sensor.Value > _appSettings.MaxCpuTemperatureC)
                 {
@@ -69,18 +81,19 @@ public sealed class FppdService : IFppdService
                 }
             }
         }
+
+        return result;
     }
 
     public async Task<Result<int>> StartSequenceAsync(SequenceSelectorDto selectorDto)
     {
         _ = selectorDto ?? throw new ArgumentNullException(nameof(selectorDto));
 
-        Result<int> result = Result<int>.Create();
 
         if (!string.IsNullOrWhiteSpace(_appSettings.SequenceOverride))
         {
             await _fppClient.StartPlaylistAsync(_appSettings.SequenceOverride);
-            return result;
+            return Result<int>.Success(0);
         }
 
         IList<SequenceRule> rules = GetSequenceRules(selectorDto.CurrentDate.Year);
@@ -97,7 +110,7 @@ public sealed class FppdService : IFppdService
         }
 
         await _fppClient.StartPlaylistAsync(selectedSequence);
-        return result;
+        return Result<int>.Success(0);
     }
 
     private IList<SequenceRule> GetSequenceRules(int currentYear)

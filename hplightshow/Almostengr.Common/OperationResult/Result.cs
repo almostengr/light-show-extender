@@ -60,6 +60,11 @@ public class Result<TValue>
         _errors.Add(error);
     }
 
+    public void AddErrors(IEnumerable<string> errors)
+    {
+        _errors.AddRange(errors);
+    }
+
     public void SetValue(TValue value)
     {
         _ = value ?? throw new ArgumentNullException(nameof(value));

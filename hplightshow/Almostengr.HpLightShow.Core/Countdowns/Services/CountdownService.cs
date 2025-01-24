@@ -1,7 +1,8 @@
 using Almostengr.Common.OperationResult;
 using Almostengr.HpLightShow.Core.Common.Common;
+using Almostengr.HpLightShow.Core.Countdowns.DataTransferObjects;
 
-namespace Almostengr.HpLightShow.Core.Countdowns;
+namespace Almostengr.HpLightShow.Core.Countdowns.Service;
 
 public sealed class CountdownService : ICountdownService
 {
@@ -19,8 +20,6 @@ public sealed class CountdownService : ICountdownService
         int daysDifference = countdownDto.HolidayDate.DayNumber - countdownDto.CurrentDate.DayNumber;
         string? message;
 
-        Result<int> result = Result<int>.Create();
-
         if (daysDifference > 0)
         {
             message = $"{daysDifference} day(s) until {countdownDto.HolidayName}.";
@@ -29,17 +28,17 @@ public sealed class CountdownService : ICountdownService
         {
             message = $"Today is {countdownDto.HolidayName}!";
         }
-        else { 
-            result.AddError("Date difference was negative. Are the days entered backwards?");
-            return result;
+        else
+        {
+            return Result<int>.Failure("Date difference was negative. Are the days entered backwards?");
         }
 
         if (string.IsNullOrWhiteSpace(message))
         {
-            return result;
+            return Result<int>.Success(0);
         }
 
         await _socialMediaPoster.PostAsync(message);
-        return result;
+        return Result<int>.Success(0);
     }
 }

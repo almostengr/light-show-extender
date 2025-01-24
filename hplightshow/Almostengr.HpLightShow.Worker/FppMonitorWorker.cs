@@ -20,17 +20,10 @@ internal sealed class FppMonitorWorker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            try
+            Result<int> result = await _fppdService.MonitorAsync();
+            if (result.Failed)
             {
-                Result<int> result = await _fppdService.MonitorAsync();
-                if (result.Failed)
-                {
-                    result.Errors.ToList().ForEach(e => _logger.LogWarning(e));
-                }
-            }
-            catch (Exception exception)
-            {
-                _logger.LogError(exception.Message);
+                result.Errors.ToList().ForEach(e => _logger.LogError(e));
             }
 
             await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
