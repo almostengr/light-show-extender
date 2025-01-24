@@ -4,5 +4,5 @@ namespace Almostengr.HpLightShow.Core.Countdowns;
 
 public interface ICountdownService
 {
-    Task<ServiceResult<int>> PostCountdownAsync(HolidayCountdownDto countdownDto);
+    Task<Result<int>> PostCountdownAsync(HolidayCountdownDto countdownDto);
 }

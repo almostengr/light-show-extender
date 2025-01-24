@@ -4,5 +4,5 @@ namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 
 public interface IFppdService
 {
-    Task<ServiceResult<int>> MonitorAsync();
+    Task<Result<int>> MonitorAsync();
 }

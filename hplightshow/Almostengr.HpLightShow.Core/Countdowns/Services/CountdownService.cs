@@ -12,14 +12,14 @@ public sealed class CountdownService : ICountdownService
         _socialMediaPoster = socialMediaPoster;
     }
 
-    public async Task<ServiceResult<int>> PostCountdownAsync(HolidayCountdownDto countdownDto)
+    public async Task<Result<int>> PostCountdownAsync(HolidayCountdownDto countdownDto)
     {
         _ = countdownDto ?? throw new ArgumentNullException(nameof(countdownDto));
 
         int daysDifference = countdownDto.HolidayDate.DayNumber - countdownDto.CurrentDate.DayNumber;
         string? message;
 
-        ServiceResult<int> result = ServiceResult<int>.Create();
+        Result<int> result = Result<int>.Create();
 
         if (daysDifference > 0)
         {

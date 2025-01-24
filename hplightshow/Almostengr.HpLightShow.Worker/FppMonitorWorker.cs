@@ -22,7 +22,7 @@ internal sealed class FppMonitorWorker : BackgroundService
         {
             try
             {
-                ServiceResult<int> result = await _fppdService.MonitorAsync();
+                Result<int> result = await _fppdService.MonitorAsync();
                 if (result.Failed)
                 {
                     result.Errors.ToList().ForEach(e => _logger.LogWarning(e));

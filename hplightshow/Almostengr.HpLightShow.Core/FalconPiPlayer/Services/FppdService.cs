@@ -22,9 +22,9 @@ public sealed class FppdService : IFppdService
         _fppClient = fppClient;
     }
 
-    public async Task<ServiceResult<int>> MonitorAsync()
+    public async Task<Result<int>> MonitorAsync()
     {
-        ServiceResult<int> result = ServiceResult<int>.Create();
+        Result<int> result = Result<int>.Create();
 
         FppStatusDto fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
         if (fppStatus.Status == (int)FppStatusType.Idle)
@@ -43,7 +43,7 @@ public sealed class FppdService : IFppdService
         return result;
     }
 
-    private void CheckWarnings(FppStatusDto fppStatus, ServiceResult<int> result)
+    private void CheckWarnings(FppStatusDto fppStatus, Result<int> result)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
         _ = result ?? throw new ArgumentNullException(nameof(result));
@@ -54,7 +54,7 @@ public sealed class FppdService : IFppdService
         }
     }
 
-    private void CheckCpuTemperature(FppStatusDto fppStatus, ServiceResult<int> result)
+    private void CheckCpuTemperature(FppStatusDto fppStatus, Result<int> result)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
         _ = result ?? throw new ArgumentNullException(nameof(result));
@@ -71,11 +71,11 @@ public sealed class FppdService : IFppdService
         }
     }
 
-    public async Task<ServiceResult<int>> StartSequenceAsync(SequenceSelectorDto selectorDto)
+    public async Task<Result<int>> StartSequenceAsync(SequenceSelectorDto selectorDto)
     {
         _ = selectorDto ?? throw new ArgumentNullException(nameof(selectorDto));
 
-        ServiceResult<int> result = ServiceResult<int>.Create();
+        Result<int> result = Result<int>.Create();
 
         if (!string.IsNullOrWhiteSpace(_appSettings.SequenceOverride))
         {
