@@ -1,7 +1,7 @@
 using Almostengr.HpLightShow.Core.Common;
-using Almostengr.HpLightShow.Core.Countdowns.Service;
+using Almostengr.HpLightShow.Core.Countdowns.Common;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Common;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 using Almostengr.HpLightShow.Worker;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -10,9 +10,8 @@ builder.Services.AddHttpClient<IFppClient, FppClient>();
 
 loadConfiguration(builder);
 
-builder.Services.AddTransient<ICountdownService, CountdownService>();
-builder.Services.AddTransient<IFppdService, FppdService>();
-
+CountdownsBuilderService.Add(builder.Services);
+FalconPiPlayerBuilderService.Add(builder.Services);
 
 // builder.Services.AddSingleton(typeof(ILogger<>), typeof(LoggingService<>));
 
