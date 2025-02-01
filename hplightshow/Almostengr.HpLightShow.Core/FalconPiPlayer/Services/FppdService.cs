@@ -23,7 +23,7 @@ public sealed class FppdService : IFppdService
     {
         _appSettings = appSettings;
         _socialMediaPoster = socialMediaPoster;
-        this._wledClient = wledClient;
+        _wledClient = wledClient;
         _fppClient = fppClient;
     }
 
