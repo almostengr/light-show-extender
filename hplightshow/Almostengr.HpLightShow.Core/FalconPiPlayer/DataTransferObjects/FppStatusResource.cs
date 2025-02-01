@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
 
-namespace Almostengr.HpLightShow.Core.FalconPiPlayer.DataTransferObjects;
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
 
-public sealed class FppStatusDto
+public sealed class FppStatusResource
 {
     public List<Sensor> Sensors { get; init; } = new();
 

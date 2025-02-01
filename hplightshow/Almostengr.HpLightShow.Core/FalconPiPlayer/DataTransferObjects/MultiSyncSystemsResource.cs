@@ -1,6 +1,6 @@
-namespace Almostengr.HpLightShow.Core.FalconPiPlayer.DataTransferObjects;
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
 
-public sealed class MultiSyncSystemsDto
+public sealed class MultiSyncSystemsResource
 {
     public List<FppSystem> Systems { get; init; } = new();
 

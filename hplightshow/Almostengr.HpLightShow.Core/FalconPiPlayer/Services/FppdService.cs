@@ -1,9 +1,11 @@
 using Almostengr.Common.OperationResult;
 using Almostengr.HpLightShow.Core.Common;
 using Almostengr.HpLightShow.Core.Common.Common;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.DataTransferObjects;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
+using Almostengr.HpLightShow.Core.Wled.Infrastructure;
+using Almostengr.HpLightShow.Core.re;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 
@@ -11,14 +13,17 @@ public sealed class FppdService : IFppdService
 {
     private readonly AppSettings _appSettings;
     private readonly ISocialMediaPoster _socialMediaPoster;
+    private readonly IWledClient _wledClient;
     private readonly IFppClient _fppClient;
 
     public FppdService(AppSettings appSettings,
         ISocialMediaPoster socialMediaPoster,
+        IWledClient wledClient,
         IFppClient fppClient)
     {
         _appSettings = appSettings;
         _socialMediaPoster = socialMediaPoster;
+        this._wledClient = wledClient;
         _fppClient = fppClient;
     }
 
@@ -26,18 +31,21 @@ public sealed class FppdService : IFppdService
     {
         try
         {
-            FppStatusDto fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
+            FppStatusResource fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
             if (fppStatus.Status == (int)FppStatusType.Idle)
             {
+                // check each WLED instance and make sure it is truned off. 
+                // var result = await _wledClient.GetStatus();
+                
                 return Result<int>.Success(0);
             }
 
             Result<int> result = CheckWarnings(fppStatus);
 
-            Result<int> subResult = CheckCpuTemperature(fppStatus);
-            if (subResult.Failed)
+            Result<int> temperatureResult = CheckCpuTemperature(fppStatus);
+            if (temperatureResult.Failed)
             {
-                result.AddErrors(subResult.Errors);
+                result.AddErrors(temperatureResult.Errors);
             }
 
             if (result.Failed)
@@ -53,7 +61,7 @@ public sealed class FppdService : IFppdService
         }
     }
 
-    private Result<int> CheckWarnings(FppStatusDto fppStatus)
+    private Result<int> CheckWarnings(FppStatusResource fppStatus)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
 
@@ -65,13 +73,13 @@ public sealed class FppdService : IFppdService
         return Result<int>.Success(0);
     }
 
-    private Result<int> CheckCpuTemperature(FppStatusDto fppStatus)
+    private Result<int> CheckCpuTemperature(FppStatusResource fppStatus)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
 
         Result<int> result = Result<int>.Create();
 
-        foreach (FppStatusDto.Sensor sensor in fppStatus.Sensors)
+        foreach (FppStatusResource.Sensor sensor in fppStatus.Sensors)
         {
             if (sensor.Label.Contains("CPU", StringComparison.OrdinalIgnoreCase))
             {
@@ -85,7 +93,7 @@ public sealed class FppdService : IFppdService
         return result;
     }
 
-    public async Task<Result<int>> StartSequenceAsync(SequenceSelectorDto selectorDto)
+    public async Task<Result<int>> StartSequenceAsync(SequenceSelectorResource selectorDto)
     {
         _ = selectorDto ?? throw new ArgumentNullException(nameof(selectorDto));
 

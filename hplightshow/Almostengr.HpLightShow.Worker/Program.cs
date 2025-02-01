@@ -2,16 +2,20 @@ using Almostengr.HpLightShow.Core.Common;
 using Almostengr.HpLightShow.Core.Countdowns.Common;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Common;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
+using Almostengr.HpLightShow.Core.Wled.Common;
+using Almostengr.HpLightShow.Core.Wled.Infrastructure;
 using Almostengr.HpLightShow.Worker;
 
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddHttpClient<IFppClient, FppClient>();
+builder.Services.AddHttpClient<IWledClient, WledClient>();
 
 loadConfiguration(builder);
 
 CountdownsBuilderService.Add(builder.Services);
 FalconPiPlayerBuilderService.Add(builder.Services);
+WledBuilderService.Add(builder.Services);
 
 // builder.Services.AddSingleton(typeof(ILogger<>), typeof(LoggingService<>));
 
