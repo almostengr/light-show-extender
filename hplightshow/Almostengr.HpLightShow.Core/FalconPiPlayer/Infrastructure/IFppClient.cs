@@ -6,5 +6,6 @@ namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
 public interface IFppClient
 {
     Task<FppStatusResource> GetFppdStatusAsync();
+    Task<MultiSyncSystemsResource> MultiSyncSystemsResource();
     Task<string> StartPlaylistAsync(string playlist);
 }

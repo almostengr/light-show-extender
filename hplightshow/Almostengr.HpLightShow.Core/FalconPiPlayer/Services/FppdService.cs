@@ -6,6 +6,7 @@ using Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
 using Almostengr.HpLightShow.Core.Wled.Infrastructure;
 using Almostengr.HpLightShow.Core.re;
+using Almostengr.HpLightShow.Core.Wled.Resources;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 
@@ -31,21 +32,33 @@ public sealed class FppdService : IFppdService
     {
         try
         {
+            Result<int> result = Result<int>.Create();
+
             FppStatusResource fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
             if (fppStatus.Status == (int)FppStatusType.Idle)
             {
-                // check each WLED instance and make sure it is truned off. 
-                // var result = await _wledClient.GetStatus();
-                
-                return Result<int>.Success(0);
+                MultiSyncSystemsResource mulitSyncStatus = await _fppClient.MultiSyncSystemsResource();
+                if (mulitSyncStatus == null)
+                {
+                    result.AddError("Unable to get mulitsync status from FPP.");
+                    return result;
+                }
+
+                await CheckWledInstancesAsync(result, mulitSyncStatus);
             }
-
-            Result<int> result = CheckWarnings(fppStatus);
-
-            Result<int> temperatureResult = CheckCpuTemperature(fppStatus);
-            if (temperatureResult.Failed)
+            else
             {
-                result.AddErrors(temperatureResult.Errors);
+                Result<int> subTaskResult = CheckWarnings(fppStatus);
+                if (subTaskResult.Failed)
+                {
+                    result.AddErrors(subTaskResult.Errors);
+                }
+
+                subTaskResult = CheckCpuTemperature(fppStatus);
+                if (subTaskResult.Failed)
+                {
+                    result.AddErrors(subTaskResult.Errors);
+                }
             }
 
             if (result.Failed)
@@ -58,6 +71,30 @@ public sealed class FppdService : IFppdService
         catch (Exception ex)
         {
             return Result<int>.Failure(ex);
+        }
+    }
+
+    private async Task CheckWledInstancesAsync(Result<int> result, MultiSyncSystemsResource mulitSyncStatus)
+    {
+        foreach (var status in mulitSyncStatus.Systems)
+        {
+            WledStatusResource wledStatus = await _wledClient.GetStatusAsync(status.Address);
+            if (wledStatus == null)
+            {
+                result.AddError($"Unable to reach WLED instance. {status.Hostname}");
+                continue;
+            }
+
+            if (wledStatus.State.On == true)
+            {
+                WledStatusResource updateResource = new();
+                WledStatusResource updateResult = await _wledClient.UpdateStatusAsync(updateResource, status.Address);
+
+                if (updateResult.State.On == false)
+                {
+                    result.AddError($"Unable to turn off WLED instance {status.Hostname}");
+                }
+            }
         }
     }
 
@@ -96,7 +133,6 @@ public sealed class FppdService : IFppdService
     public async Task<Result<int>> StartSequenceAsync(SequenceSelectorResource selectorDto)
     {
         _ = selectorDto ?? throw new ArgumentNullException(nameof(selectorDto));
-
 
         if (!string.IsNullOrWhiteSpace(_appSettings.SequenceOverride))
         {
