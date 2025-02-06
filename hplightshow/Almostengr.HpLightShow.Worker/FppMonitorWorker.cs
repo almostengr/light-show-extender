@@ -1,4 +1,5 @@
 using Almostengr.Common.OperationResult;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
 
 namespace Almostengr.HpLightShow.Worker;
@@ -6,11 +7,12 @@ namespace Almostengr.HpLightShow.Worker;
 internal sealed class FppMonitorWorker : BackgroundService
 {
     private readonly ILogger<FppMonitorWorker> _logger;
-    private readonly IFppdService _fppdService;
+    private readonly IFppMonitorService _fppdService;
 
     public FppMonitorWorker(
         ILogger<FppMonitorWorker> logger,
-        IFppdService fppdService)
+        IFppMonitorService fppdService
+        )
     {
         _logger = logger;
         _fppdService = fppdService;
@@ -20,7 +22,8 @@ internal sealed class FppMonitorWorker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            Result<int> result = await _fppdService.MonitorAsync();
+            FppMonitorResource resource = new();
+            Result<FppMonitorResource> result = await _fppdService.ExecuteAsync(resource);
             if (result.Failed)
             {
                 result.Errors.ToList().ForEach(e => _logger.LogError(e));

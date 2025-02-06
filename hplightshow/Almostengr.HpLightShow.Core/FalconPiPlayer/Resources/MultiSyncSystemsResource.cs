@@ -1,6 +1,8 @@
+using Almostengr.Common.Resources;
+
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
 
-public sealed class MultiSyncSystemsResource
+public sealed class MultiSyncSystemsResource  : BaseResource
 {
     public List<FppSystem> Systems { get; init; } = new();
 

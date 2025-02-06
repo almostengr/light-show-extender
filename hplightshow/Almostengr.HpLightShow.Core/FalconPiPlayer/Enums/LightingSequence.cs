@@ -1,6 +1,6 @@
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
 
-internal sealed class LightingSequence
+public sealed class LightingSequence
 {
     public LightingSequence(string value)
     {
@@ -19,6 +19,7 @@ internal sealed class LightingSequence
     public static readonly LightingSequence Purple = new("Calendar Purple.fseq");
     public static readonly LightingSequence Red = new("Calendar Red.fseq");
     public static readonly LightingSequence RedBlue = new("Calendar Red Blue.fseq");
+    public static readonly LightingSequence RedYellowGreen = new("Calendar Red Yellow Green.fseq");
     public static readonly LightingSequence RedGreen = new("Calendar Red Green.fseq");
     public static readonly LightingSequence RedGreenBlack = new("Calendar Red Green Black.fseq");
     public static readonly LightingSequence RedPink = new("Calendar Red Pink.fseq");

@@ -1,8 +1,10 @@
+using Almostengr.Common.Resources;
+
 namespace Almostengr.HpLightShow.Core.Countdowns.DataTransferObjects;
 
-public class HolidayCountdownDto
+public class HolidayCountdownResource : BaseResource
 {
-    public HolidayCountdownDto(DateOnly currentDate, DateOnly holidayDate, string dayOfMessage, string holidayName)
+    public HolidayCountdownResource(DateOnly currentDate, DateOnly holidayDate, string dayOfMessage, string holidayName)
     {
         if (string.IsNullOrWhiteSpace(dayOfMessage))
         {

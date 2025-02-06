@@ -1,6 +1,8 @@
-namespace Almostengr.HpLightShow.Core.re;
+using Almostengr.Common.Resources;
 
-public sealed class SequenceSelectorResource
+namespace Almostengr.HpLightShow.Core.Resources;
+
+public sealed class SequenceSelectorResource : BaseResource
 {
     public SequenceSelectorResource(DateOnly currentDate)
     {

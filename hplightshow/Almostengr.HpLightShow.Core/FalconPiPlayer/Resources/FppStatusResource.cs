@@ -1,9 +1,10 @@
 using System.Text.Json.Serialization;
+using Almostengr.Common.Resources;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
 
-public sealed class FppStatusResource
+public sealed class FppStatusResource : BaseResource
 {
     public List<Sensor> Sensors { get; init; } = new();
 

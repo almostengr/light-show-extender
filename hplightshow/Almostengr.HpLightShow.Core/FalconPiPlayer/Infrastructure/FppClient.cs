@@ -27,10 +27,7 @@ public sealed class FppClient : IFppClient
 
     public async Task<string> StartPlaylistAsync(string playlist)
     {
-        if (string.IsNullOrWhiteSpace(playlist))
-        {
-            throw new ArgumentNullException("Invalid playlist name.");
-        }
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(playlist, nameof(playlist));
 
         string route = $"api/command/Start Playlist/{playlist}/true/false";
         return await _httpClient.GetAsync<string>(route);

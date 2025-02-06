@@ -24,9 +24,9 @@ internal sealed class CountdownWorker : BackgroundService
         {
             int hoursDelay = 24;
             DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-            ChristmasCountdownDto countdownDto = new(currentDate);
+            ChristmasCountdownResource resource = new(currentDate);
 
-            var result = await _service.PostCountdownAsync(countdownDto);
+            var result = await _service.ExecuteAsync(resource);
             if (result.Failed)
             {
                 result.Errors.ToList().ForEach(e => _logger.LogError(e));
