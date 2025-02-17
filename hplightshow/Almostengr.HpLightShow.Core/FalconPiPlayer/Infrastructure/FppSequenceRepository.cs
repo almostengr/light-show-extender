@@ -4,7 +4,7 @@ using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
 
-internal sealed class FppSequenceRepository : IFppSequenceRepository
+public sealed class FppSequenceRepository : IFppSequenceRepository
 {
     private readonly FppAppSettings _appSettings;
 
