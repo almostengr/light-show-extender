@@ -1,6 +1,7 @@
-using Almostengr.Common.Repositories.Interfaces;
+using Almostengr.Common.Domain;
+using Almostengr.Common.DomainServices.Interfaces;
 
-namespace Almostengr.Common.Repositories;
+namespace Almostengr.Common.Infrastructure;
 
 public class UpdateRepository<TEntity> : AddRepository<TEntity>, IUpdateRepository<TEntity> where TEntity : BaseEntity
 {

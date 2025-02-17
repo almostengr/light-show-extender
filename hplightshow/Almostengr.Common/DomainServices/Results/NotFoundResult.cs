@@ -1,4 +1,4 @@
-namespace Almostengr.Common.OperationResult;
+namespace Almostengr.Common.DomainServices.Results;
 
 public sealed class NotFoundResult<TValue> : Result<TValue>
 {

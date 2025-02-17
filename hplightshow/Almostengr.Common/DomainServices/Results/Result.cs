@@ -1,14 +1,14 @@
-namespace Almostengr.Common.OperationResult;
+namespace Almostengr.Common.DomainServices.Results;
 
 public class Result<TValue>
 {
     private readonly List<string> _errors = new();
     public bool Succeeded => _errors.Count() == 0;
     public bool Failed => !Succeeded;
-    public TValue? Value { get; private set; }
+    public TValue Value { get; private set; }
     public IReadOnlyList<string> Errors => _errors.AsReadOnly();
 
-    protected Result(TValue? value, IEnumerable<string>? errors)
+    protected Result(TValue value, IEnumerable<string> errors)
     {
         Value = value;
 

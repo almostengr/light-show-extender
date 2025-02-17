@@ -1,11 +1,12 @@
 using System.Linq.Expressions;
+using Almostengr.Common.Domain;
 
-namespace Almostengr.Common.Repositories.Interfaces;
+namespace Almostengr.Common.DomainServices.Interfaces;
 
 public interface IQueryRepository<TEntity> where TEntity : BaseEntity
 {
     Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
     Task<IEnumerable<TEntity>> GetAllAsync();
-    Task<TEntity> GetByIdAsync(Guid id);
-    Task<bool> ExistsByIdAsync(Guid id);
+    Task<TEntity> GetByGuidAsync(Guid guid);
+    Task<bool> ExistsByGuidAsync(Guid guid);
 }

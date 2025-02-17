@@ -1,6 +1,7 @@
-using Almostengr.Common.Repositories.Interfaces;
+using Almostengr.Common.Domain;
+using Almostengr.Common.DomainServices.Interfaces;
 
-namespace Almostengr.Common.Repositories;
+namespace Almostengr.Common.Infrastructure;
 
 public class AddRepository<TEntity> : QueryRepository<TEntity>, IAddRepository<TEntity> where TEntity : BaseEntity
 {
@@ -16,10 +17,3 @@ public class AddRepository<TEntity> : QueryRepository<TEntity>, IAddRepository<T
         await _dbContext.SaveChangesAsync();
     }
 }
-
-// public class UserRepository : DeleteRepository<User>
-// {
-//     public UserRepository(IDbContext context) : base(context) { }
-
-//     // Add any user-specific repository methods here
-// }

@@ -1,27 +1,25 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Almostengr.Common.Repositories;
+namespace Almostengr.Common.Domain;
 
-public class BaseEntity
+public abstract class BaseEntity
 {
     [Key]
     public int Id { get; private set; }
 
-    public Guid ReferenceId { get; private set; }
+    [Required]
+    public Guid Guid { get; private set; }
 
     public DateTime ModifiedDate { get; private set; }
 
     [Required, MaxLength(100)]
     public string ModifiedBy { get; private set; }
 
-    protected BaseEntity() { }
+    public BaseEntity() { }
 
-    public static BaseEntity Create(Guid referenceId)
+    public BaseEntity(string modifiedBy) : this()
     {
-        return new BaseEntity
-        {
-            ReferenceId = referenceId
-        };
+        UpdateModifiedBy(modifiedBy);
     }
 
     public void UpdateModifiedBy(string modifiedBy)

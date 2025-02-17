@@ -1,9 +1,11 @@
-using Almostengr.Common.Repositories.Interfaces;
+using Almostengr.Common.DomainServices;
+using Almostengr.Common.DomainServices.Interfaces;
+using Almostengr.Common.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Almostengr.Common.Repositories;
+namespace Almostengr.Common.Extensions;
 
-public static class RepositoryDependencyInjection
+public static class CommonDependencyInjection
 {
     public static void AddServices(IServiceCollection services)
     {
@@ -11,5 +13,7 @@ public static class RepositoryDependencyInjection
         services.AddTransient(typeof(IDeleteRepository<>), typeof(DeleteRepository<>));
         services.AddTransient(typeof(IQueryRepository<>), typeof(QueryRepository<>));
         services.AddTransient(typeof(IUpdateRepository<>), typeof(UpdateRepository<>));
+        
+        services.AddTransient(typeof(IQueryService<,>), typeof(QueryService<,>));
     }
 }
