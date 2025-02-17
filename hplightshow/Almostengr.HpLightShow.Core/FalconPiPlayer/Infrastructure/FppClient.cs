@@ -1,15 +1,16 @@
 using Almostengr.Common.Infrastructure;
-using Almostengr.HpLightShow.Core.Common;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Resources;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
 
 public sealed class FppClient : IFppClient
 {
-    private readonly AppSettings _appSettings;
+    private readonly FppAppSettings _appSettings;
     private readonly HttpClient _httpClient;
 
-    public FppClient(HttpClient httpClient, AppSettings appSettings)
+    public FppClient(HttpClient httpClient, FppAppSettings appSettings)
     {
         _appSettings = appSettings;
 
@@ -30,7 +31,7 @@ public sealed class FppClient : IFppClient
         ArgumentNullException.ThrowIfNullOrWhiteSpace(playlist, nameof(playlist));
 
         string route = $"api/command/Start Playlist/{playlist}/true/false";
-        return await _httpClient.GetAsync<string>(route);
+        return await _httpClient.GetStringAsync(route);
     }
 
     public async Task<MultiSyncSystemsResource> MultiSyncSystemsResource()

@@ -1,7 +1,8 @@
-using Almostengr.HpLightShow.Core.Common;
-using Almostengr.HpLightShow.Core.Countdowns.Common;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Common;
+using Almostengr.HpLightShow.Core.Countdowns.Shared;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
+using Almostengr.HpLightShow.Core.Wled.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.Wled.Infrastructure;
 using Almostengr.HpLightShow.Worker;
 
@@ -12,8 +13,8 @@ builder.Services.AddHttpClient<IWledClient, WledClient>();
 
 loadConfiguration(builder);
 
-CountdownsBuilderService.Add(builder.Services);
-FalconPiPlayerBuilderService.Add(builder.Services);
+CountdownDependencyInjection.Add(builder.Services);
+FalconPiPlayerDependencyInjection.Add(builder.Services);
 
 // builder.Services.AddSingleton(typeof(ILogger<>), typeof(LoggingService<>));
 
@@ -46,6 +47,6 @@ void loadConfiguration(HostApplicationBuilder builder)
             false)
         .Build();
 
-    // builder.Configuration.AddConfiguration(configuration);
-    builder.Services.AddSingleton(configuration.GetSection(nameof(AppSettings)));
+    builder.Services.AddSingleton(configuration.GetSection(nameof(CountdownAppSettings)));
+    builder.Services.AddSingleton(configuration.GetSection(nameof(FppAppSettings)));
 }

@@ -1,5 +1,6 @@
 using Almostengr.Common.Infrastructure;
-using Almostengr.HpLightShow.Core.Wled.Resources;
+using Almostengr.HpLightShow.Core.Wled.DomainServices;
+using Almostengr.HpLightShow.Core.Wled.DomainServices.Interfaces;
 
 namespace Almostengr.HpLightShow.Core.Wled.Infrastructure;
 

@@ -1,9 +1,9 @@
 using Moq;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
-using Almostengr.HpLightShow.Core.Common;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Services;
-using Almostengr.HpLightShow.Core.Resources;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Enums;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 
 
 namespace Almostengr.HpLightShow.Core.Tests.FalconPiPlayer;
@@ -11,14 +11,15 @@ namespace Almostengr.HpLightShow.Core.Tests.FalconPiPlayer;
 public class FppStartSequenceServiceTests
 {
     private readonly Mock<IFppClient> _mockFppClient;
-    private readonly AppSettings _appSettings;
+    private readonly FppAppSettings _appSettings;
     private readonly FppStartSequenceService _service;
+    private readonly Mock<IFppSequenceRepository> _mockRepository;
 
     public FppStartSequenceServiceTests()
     {
         _mockFppClient = new Mock<IFppClient>();
 
-        _appSettings = new AppSettings
+        _appSettings = new FppAppSettings
         {
             SequenceOverride = null,
             FatTuesdayDate = new DateOnly(2024, 2, 13),
@@ -26,7 +27,9 @@ public class FppStartSequenceServiceTests
             EasterEndDate = new DateOnly(2024, 4, 1),
         };
 
-        _service = new FppStartSequenceService(_appSettings, _mockFppClient.Object);
+        _mockRepository = new Mock<IFppSequenceRepository>();
+
+        _service = new FppStartSequenceService(_appSettings, _mockRepository.Object, _mockFppClient.Object);
     }
 
     [Fact]
@@ -40,7 +43,7 @@ public class FppStartSequenceServiceTests
     public async Task ExecuteAsync_ShouldUseSequenceOverride_WhenSet()
     {
         // Arrange
-        var appSettings = new AppSettings
+        var appSettings = new FppAppSettings
         {
             SequenceOverride = "CustomSequence",
             FatTuesdayDate = new DateOnly(2024, 2, 13),

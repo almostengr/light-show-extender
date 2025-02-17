@@ -5,12 +5,13 @@ namespace Almostengr.HpLightShow.Worker;
 
 internal sealed class CountdownWorker : BackgroundService
 {
-    private readonly ILogger<CountdownWorker> _logger;
     private readonly ICountdownService _service;
+    private readonly ILogger<CountdownWorker> _logger;
 
     public CountdownWorker(
-        ILogger<CountdownWorker> logger,
-        ICountdownService service)
+        ICountdownService service,
+        ILogger<CountdownWorker> logger
+        )
     {
         _logger = logger;
         _service = service;
