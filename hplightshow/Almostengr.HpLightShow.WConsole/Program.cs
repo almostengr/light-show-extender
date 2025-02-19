@@ -1,4 +1,5 @@
-﻿using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
+﻿using Almostengr.Common.DomainServices.Results;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
@@ -30,8 +31,8 @@ class Program
 
                     DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
                     SequenceSelectorResource resource = new(currentDate);
-                    var result = await fppStartSequenceService.ExecuteAsync(resource);
 
+                    Result<SequenceSelectorResource> result = await fppStartSequenceService.ExecuteAsync(resource);
                     if (result.Failed)
                     {
                         Console.WriteLine("Unable to start landscape lighting.");

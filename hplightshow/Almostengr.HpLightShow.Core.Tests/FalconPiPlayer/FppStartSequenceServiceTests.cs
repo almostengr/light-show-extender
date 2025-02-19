@@ -33,10 +33,14 @@ public class FppStartSequenceServiceTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ShouldThrowException_WhenRequestIsNull()
+    public async Task ExecuteAsync_ShouldFail_WhenRequestIsNull()
     {
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _service.ExecuteAsync(null!));
+        // act
+        var result = await _service.ExecuteAsync(null!);
+
+        // assert
+        Assert.Null(result.Value);
+        Assert.True(result.Failed);
     }
 
     [Fact]
