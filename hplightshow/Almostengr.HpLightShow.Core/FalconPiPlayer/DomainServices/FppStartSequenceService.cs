@@ -29,6 +29,12 @@ public sealed class FppStartSequenceService : IFppStartSequenceService
         {
             ArgumentNullException.ThrowIfNull(resource, nameof(resource));
 
+            var status = await _fppClient.GetFppdStatusAsync();
+            if (status.Status != FppStatusType.Idle)
+            {
+                return Result<SequenceSelectorResource>.Success(resource);
+            }
+
             if (!string.IsNullOrWhiteSpace(_appSettings.SequenceOverride))
             {
                 await _fppClient.StartPlaylistAsync(_appSettings.SequenceOverride);

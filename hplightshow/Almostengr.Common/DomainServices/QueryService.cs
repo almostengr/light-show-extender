@@ -6,9 +6,14 @@ namespace Almostengr.Common.DomainServices;
 public class QueryService<TEntity, TResource> : IQueryService<TEntity, TResource> where TEntity : BaseEntity, new() where TResource : BaseResource, new()
 {
     protected readonly IQueryRepository<TEntity> _repository;
+    protected readonly IMapper<TEntity, TResource> _mapper;
 
-    public QueryService(IQueryRepository<TEntity> repository)
+    public QueryService(
+        IMapper<TEntity, TResource> mapper,
+        IQueryRepository<TEntity> repository
+        )
     {
+        _mapper = mapper;
         _repository = repository;
     }
 
@@ -16,24 +21,10 @@ public class QueryService<TEntity, TResource> : IQueryService<TEntity, TResource
     {
         return await _repository.ExistsByGuidAsync(guid);
     }
-
-    protected virtual TResource ToResource(TEntity entity)
+    
+    public virtual async Task<TResource> GetByGuidAsync(Guid guid)
     {
-        if (entity == null)
-        {
-            return null;
-        }
-
-        return new TResource();
-    }
-
-    protected virtual TEntity ToEntity(TResource resource)
-    {
-        if (resource == null)
-        {
-            return null;
-        }
-
-        return new TEntity();
+        var entity = await _repository.GetByGuidAsync(guid);
+        return _mapper.ToResource(entity);
     }
 }

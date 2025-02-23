@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <PackageId>Almostengr.FalconPiPlayerClient</PackageId>
+    <Version>8.2025.02.19</Version>
+    <Authors>Kenny Robinson</Authors>
+    <Company>Robinson Handy and Technology Services</Company>
+    <Description>A .NET library to interact with Falcon Pi Player API.</Description>
+    <PackageLicenseExpression>GPL</PackageLicenseExpression>
+</PropertyGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>
