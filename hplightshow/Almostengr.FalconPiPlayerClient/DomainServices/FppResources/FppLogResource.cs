@@ -1,9 +1,8 @@
 using System.Text.Json.Serialization;
-using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
 namespace Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
-public sealed class FppLogResource : StatusResource
+public sealed class FppLogResource : StatusResponseResource
 {
     [JsonPropertyName("log")]
     public List<Log> Logs { get; set; } = new();

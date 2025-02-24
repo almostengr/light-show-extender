@@ -3,7 +3,7 @@ using Almostengr.Common.DomainServices.Interfaces;
 
 namespace Almostengr.Common.DomainServices;
 
-public class QueryService<TEntity, TResource> : IQueryService<TEntity, TResource> where TEntity : BaseEntity, new() where TResource : BaseResource, new()
+public class QueryService<TEntity, TResource> : IQueryService<TEntity, TResource> where TEntity : BaseEntity, new() where TResource : BaseEntityResource, new()
 {
     protected readonly IQueryRepository<TEntity> _repository;
     protected readonly IMapper<TEntity, TResource> _mapper;

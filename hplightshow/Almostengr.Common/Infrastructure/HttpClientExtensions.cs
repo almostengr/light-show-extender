@@ -19,7 +19,7 @@ public static class HttpClientExtensions
         response.EnsureSuccessStatusCode();
     }
 
-    private static StringContent SerializeRequestBody<TResource>(this TResource request) where TResource : BaseResource
+    public  static StringContent SerializeRequestBody<TResource>(this TResource request) where TResource : BaseResource
     {
         _ = request ?? throw new ArgumentNullException(nameof(request));
 
@@ -28,7 +28,7 @@ public static class HttpClientExtensions
         return content;
     }
 
-    private static async Task<TResource> DeserializeResponseBodyAsync<TResource>(this HttpResponseMessage response) where TResource : BaseResource
+    public  static async Task<TResource> DeserializeResponseBodyAsync<TResource>(this HttpResponseMessage response) where TResource : BaseResource
     {
         _ = response ?? throw new ArgumentNullException(nameof(response));
 
@@ -59,7 +59,7 @@ public static class HttpClientExtensions
         return "http://" + url;
     }
 
-    public static async Task<string> GetStringAsync<TResource>(this HttpClient httpClient, string route)where TResource : BaseResource
+    public static async Task<string> GetStringAsync<TResource>(this HttpClient httpClient, string route)where TResource : BaseEntityResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));
@@ -69,7 +69,7 @@ public static class HttpClientExtensions
         return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task<TResource> GetAsync<TResource>(this HttpClient httpClient, string route) where TResource : BaseResource
+    public static async Task<TResource> GetAsync<TResource>(this HttpClient httpClient, string route) where TResource : BaseEntityResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));
@@ -79,7 +79,7 @@ public static class HttpClientExtensions
         return await response.DeserializeResponseBodyAsync<TResource>();
     }
 
-    public static async Task<XResource> PostAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseResource where XResource : BaseResource
+    public static async Task<XResource> PostAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseEntityResource where XResource : BaseEntityResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));
@@ -91,7 +91,7 @@ public static class HttpClientExtensions
         return await response.DeserializeResponseBodyAsync<XResource>();
     }
 
-    public static async Task<XResource> PutAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseResource where XResource : BaseResource
+    public static async Task<XResource> PutAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseEntityResource where XResource : BaseEntityResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));

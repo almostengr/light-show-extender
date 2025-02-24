@@ -1,5 +1,5 @@
 namespace Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
-public sealed class FppVolumeResource : StatusResource
+public sealed class FppVolumeResource : StatusResponseResource
 {
 }

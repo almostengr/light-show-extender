@@ -13,6 +13,7 @@
 </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Almostengr.Common\Almostengr.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

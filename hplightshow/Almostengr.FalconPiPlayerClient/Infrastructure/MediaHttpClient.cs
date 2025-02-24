@@ -1,5 +1,5 @@
+using Almostengr.FalconPiPlayerClient.DomainServices;
 using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
-using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
 namespace Almostengr.FalconPiPlayerClient.Infrastructure;
 
@@ -23,8 +23,4 @@ public sealed class MediaHttpClient : BaseClient, IMediaHttpClient
         var result = await DeserializeResponseBodyAsync<MediaMetaResource>(response);
         return result;
     }
-}
-
-public sealed class MediaMetaResource : BaseResource
-{
 }

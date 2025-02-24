@@ -1,14 +1,14 @@
+using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
+using Almostengr.FalconPiPlayerClient.Infrastructure;
 using Almostengr.HpLightShow.Core.Countdowns.Shared;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Infrastructure;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
-using Almostengr.HpLightShow.Core.Wled.DomainServices.Interfaces;
-using Almostengr.HpLightShow.Core.Wled.Infrastructure;
 using Almostengr.HpLightShow.Worker;
+using Almostengr.WledClient.DomainServices.Interfaces;
+using Almostengr.WledClient.Infrastructure;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddHttpClient<IFppClient, FppClient>();
+builder.Services.AddHttpClient<IFppdHttpClient,FppdClient>();
 builder.Services.AddHttpClient<IWledClient, WledClient>();
 
 loadConfiguration(builder);

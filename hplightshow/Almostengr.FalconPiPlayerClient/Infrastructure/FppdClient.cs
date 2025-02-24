@@ -78,4 +78,14 @@ public sealed class FppdClient : BaseClient, IFppdHttpClient
         var result = await DeserializeResponseBodyAsync<FppVolumeResource>(response);
         return result;
     }
+
+    public Task<FppMultiSyncSystemsResource> MultiSyncSystemsResource()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task StartPlaylistAsync(string sequenceOverride)
+    {
+        throw new NotImplementedException();
+    }
 }

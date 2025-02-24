@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
-public sealed class FppdE131StatsResource : StatusResource
+public sealed class FppdE131StatsResource : StatusResponseResource
 {
     public List<Universe> Universes { get; set; } = new();
 

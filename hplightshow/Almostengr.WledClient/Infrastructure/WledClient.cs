@@ -1,8 +1,8 @@
 using Almostengr.Common.Infrastructure;
-using Almostengr.HpLightShow.Core.Wled.DomainServices;
-using Almostengr.HpLightShow.Core.Wled.DomainServices.Interfaces;
+using Almostengr.WledClient.DomainServices;
+using Almostengr.WledClient.DomainServices.Interfaces;
 
-namespace Almostengr.HpLightShow.Core.Wled.Infrastructure;
+namespace Almostengr.WledClient.Infrastructure;
 
 public sealed class WledClient : IWledClient
 {
@@ -20,8 +20,9 @@ public sealed class WledClient : IWledClient
         _ = hostname ?? throw new ArgumentNullException(nameof(hostname));
 
         string route = hostname + "/json/status";
-        var response = await _httpClient.GetAsync<WledStatusResource>(route);
-        return response;
+        var response = await _httpClient.GetAsync(route);
+        var result = await response.DeserializeResponseBodyAsync<WledStatusResource>();
+        return result;
     }
 
     public async Task<WledStatusResource> UpdateStatusAsync(WledStatusResource resource, string hostname)
@@ -30,7 +31,9 @@ public sealed class WledClient : IWledClient
         _ = hostname ?? throw new ArgumentNullException(nameof(hostname));
 
         string route = hostname + "/json/status";
-        var response = await _httpClient.PostAsync<WledStatusResource, WledStatusResource>(route, resource);
-        return response;
+        var json  = resource.SerializeRequestBody();
+        var response = await _httpClient.PostAsync(route, json);
+        var result = await response.DeserializeResponseBodyAsync<WledStatusResource>();
+        return result;
     }
 }

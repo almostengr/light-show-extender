@@ -1,6 +1,6 @@
 using Almostengr.Common.DomainServices;
 
-namespace Almostengr.HpLightShow.Core.Wled.DomainServices;
+namespace Almostengr.WledClient.DomainServices;
 
 public sealed class WledStatusResource : BaseResource
 {

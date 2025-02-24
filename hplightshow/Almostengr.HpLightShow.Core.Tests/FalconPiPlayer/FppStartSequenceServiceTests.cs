@@ -1,23 +1,23 @@
 using Moq;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
+using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
 
 
 namespace Almostengr.HpLightShow.Core.Tests.FalconPiPlayer;
 
 public class FppStartSequenceServiceTests
 {
-    private readonly Mock<IFppClient> _mockFppClient;
+    private readonly Mock<IFppdHttpClient> _mockFppClient;
     private readonly FppAppSettings _appSettings;
     private readonly FppStartSequenceService _service;
     private readonly Mock<IFppSequenceRepository> _mockRepository;
 
     public FppStartSequenceServiceTests()
     {
-        _mockFppClient = new Mock<IFppClient>();
+        _mockFppClient = new Mock<IFppdHttpClient>();
 
         _appSettings = new FppAppSettings
         {

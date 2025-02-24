@@ -1,4 +1,4 @@
-namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
+namespace Almostengr.FalconPiPlayerClient.Domain;
 
 public sealed class MultiSyncSystemsType(string value)
 {

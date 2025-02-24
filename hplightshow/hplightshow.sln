@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.FalconPiPlayerClient", "Almostengr.FalconPiPlayerClient\Almostengr.FalconPiPlayerClient.csproj", "{45512938-6E9E-4680-BD2E-B61CD46BE215}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.WledClient", "Almostengr.WledClient\Almostengr.WledClient.csproj", "{40046716-9644-4EB4-AB80-B49C2E6374FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{45512938-6E9E-4680-BD2E-B61CD46BE215}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45512938-6E9E-4680-BD2E-B61CD46BE215}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45512938-6E9E-4680-BD2E-B61CD46BE215}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40046716-9644-4EB4-AB80-B49C2E6374FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40046716-9644-4EB4-AB80-B49C2E6374FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40046716-9644-4EB4-AB80-B49C2E6374FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40046716-9644-4EB4-AB80-B49C2E6374FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

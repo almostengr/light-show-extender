@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
+using Almostengr.Common.DomainServices;
 
 namespace Almostengr.FalconPiPlayerClient.DomainServices.NetworkResources;
 
@@ -12,7 +12,7 @@ public class FppDnsResource : BaseResource
     public string Dns2 { get; set; }
 }
 
-public class FppDnsOutputResource : StatusResource
+public class FppDnsOutputResource : StatusResponseResource
 {
     [JsonPropertyName("DNS")]
     public FppDnsResource DNS { get; set; }

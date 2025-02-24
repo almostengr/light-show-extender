@@ -1,4 +1,4 @@
-namespace Almostengr.HpLightShow.Core.Wled.DomainServices.Interfaces;
+namespace Almostengr.WledClient.DomainServices.Interfaces;
 
 public interface IWledClient
 {

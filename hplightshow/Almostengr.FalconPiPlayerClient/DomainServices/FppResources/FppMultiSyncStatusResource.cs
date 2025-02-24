@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
-public sealed class FppMultiSyncStatusResource : StatusResource
+public sealed class FppMultiSyncStatusResource : StatusResponseResource
 {
     [JsonPropertyName("masterHostname")]
     public string MasterHostname { get; set; }

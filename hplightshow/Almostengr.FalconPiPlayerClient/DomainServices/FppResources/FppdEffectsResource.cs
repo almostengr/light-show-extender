@@ -1,8 +1,8 @@
-using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
+using Almostengr.FalconPiPlayerClient.DomainServices;
 
 namespace Almostengr.FalconPiPlayerClient.Infrastructure;
 
-public sealed class FppdEffectsResource : StatusResource
+public sealed class FppdEffectsResource : StatusResponseResource
 {
     public List<RunningEffect> RunningEffects { get; set; } = new();
 

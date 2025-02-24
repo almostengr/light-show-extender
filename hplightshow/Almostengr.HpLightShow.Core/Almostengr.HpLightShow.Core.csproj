@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Almostengr.Common\Almostengr.Common.csproj" />
     <ProjectReference Include="..\Almostengr.FalconPiPlayerClient\Almostengr.FalconPiPlayerClient.csproj" />
+    <ProjectReference Include="..\Almostengr.WledClient\Almostengr.WledClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>

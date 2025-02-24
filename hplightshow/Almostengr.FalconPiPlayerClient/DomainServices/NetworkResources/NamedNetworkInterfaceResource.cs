@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
+using Almostengr.Common.DomainServices;
 
 namespace Almostengr.FalconPiPlayerClient.DomainServices.NetworkResources;
 

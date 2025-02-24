@@ -1,11 +1,13 @@
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
 using Almostengr.Common.DomainServices.Results;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
 using Almostengr.HpLightShow.Core.SocialMedias.DomainServices;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
-using Almostengr.HpLightShow.Core.Wled.DomainServices.Interfaces;
-using Almostengr.HpLightShow.Core.Wled.DomainServices;
+using Almostengr.WledClient.DomainServices.Interfaces;
+using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
+using Almostengr.WledClient.DomainServices;
+using Almostengr.FalconPiPlayerClient.Domain;
+using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
 
@@ -14,11 +16,11 @@ public sealed class FppMonitorService : IFppMonitorService
     private readonly FppAppSettings _appSettings;
     private readonly ISocialMediaPoster _socialMediaPoster;
     private readonly IWledClient _wledClient;
-    private readonly IFppClient _fppClient;
+    private readonly IFppdHttpClient _fppClient;
 
     public FppMonitorService(
         FppAppSettings appSettings,
-        IFppClient fppClient,
+        IFppdHttpClient fppClient,
         ISocialMediaPoster socialMediaPoster,
         IWledClient wledClient
     )
@@ -35,10 +37,10 @@ public sealed class FppMonitorService : IFppMonitorService
         {
             Result<FppMonitorResource> result = Result<FppMonitorResource>.Create();
 
-            FppStatusResource fppStatus = await _fppClient.GetFppdStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
+            FppdStatusResource fppStatus = await _fppClient.GetStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
             if (fppStatus.Status == (int)FppStatusType.Idle)
             {
-                MultiSyncSystemsResource mulitSyncStatus = await _fppClient.MultiSyncSystemsResource();
+                FppMultiSyncSystemsResource mulitSyncStatus = await _fppClient.MultiSyncSystemsResource();
                 if (mulitSyncStatus == null)
                 {
                     result.AddError("Unable to get mulitsync status from FPP.");
@@ -66,7 +68,7 @@ public sealed class FppMonitorService : IFppMonitorService
         }
     }
 
-    private async Task CheckWledInstancesAsync(Result<FppMonitorResource> result, MultiSyncSystemsResource mulitSyncStatus)
+    private async Task CheckWledInstancesAsync(Result<FppMonitorResource> result, FppMultiSyncSystemsResource mulitSyncStatus)
     {
         foreach (var status in mulitSyncStatus.Systems)
         {
@@ -90,7 +92,7 @@ public sealed class FppMonitorService : IFppMonitorService
         }
     }
 
-    private void CheckWarnings(Result<FppMonitorResource> result, FppStatusResource fppStatus)
+    private void CheckWarnings(Result<FppMonitorResource> result, FppdStatusResource fppStatus)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
 
@@ -100,11 +102,11 @@ public sealed class FppMonitorService : IFppMonitorService
         }
     }
 
-    private void CheckCpuTemperature(Result<FppMonitorResource> result, FppStatusResource fppStatus)
+    private void CheckCpuTemperature(Result<FppMonitorResource> result, FppdStatusResource fppStatus)
     {
         _ = fppStatus ?? throw new ArgumentNullException(nameof(fppStatus));
 
-        foreach (FppStatusResource.Sensor sensor in fppStatus.Sensors)
+        foreach (FppdStatusResource.Sensor sensor in fppStatus.Sensors)
         {
             if (sensor.Label.Contains("CPU", StringComparison.OrdinalIgnoreCase) &&
                 sensor.Value > _appSettings.MaxCpuTemperatureC)

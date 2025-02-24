@@ -1,6 +1,7 @@
 using Almostengr.Common.DomainServices.Results;
+using Almostengr.FalconPiPlayerClient.Domain;
+using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Infrastructure;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 
@@ -10,12 +11,12 @@ public sealed class FppStartSequenceService : IFppStartSequenceService
 {
     private readonly FppAppSettings _appSettings;
     private readonly IFppSequenceRepository _repository;
-    private readonly IFppClient _fppClient;
+    private readonly IFppdHttpClient _fppClient;
 
     public FppStartSequenceService(
         FppAppSettings appSettings,
         IFppSequenceRepository repository,
-        IFppClient fppClient
+        IFppdHttpClient fppClient
         )
     {
         _appSettings = appSettings;
@@ -29,7 +30,7 @@ public sealed class FppStartSequenceService : IFppStartSequenceService
         {
             ArgumentNullException.ThrowIfNull(resource, nameof(resource));
 
-            var status = await _fppClient.GetFppdStatusAsync();
+            var status = await _fppClient.GetStatusAsync();
             if (status.Status != FppStatusType.Idle)
             {
                 return Result<SequenceSelectorResource>.Success(resource);

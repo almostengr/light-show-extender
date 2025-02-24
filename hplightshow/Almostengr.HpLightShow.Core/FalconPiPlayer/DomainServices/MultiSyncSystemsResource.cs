@@ -2,7 +2,7 @@ using Almostengr.Common.DomainServices;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
 
-public sealed class MultiSyncSystemsResource  : BaseResource
+public sealed class MultiSyncSystemsResource  : BaseEntityResource
 {
     public List<FppSystem> Systems { get; init; } = new();
 

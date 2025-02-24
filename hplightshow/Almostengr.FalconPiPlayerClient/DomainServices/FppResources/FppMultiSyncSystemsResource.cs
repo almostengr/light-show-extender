@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Almostengr.FalconPiPlayerClient.DomainServices.Resources;
 
 
-public sealed class FppMultiSyncSystemsResource : StatusResource
+public sealed class FppMultiSyncSystemsResource : StatusResponseResource
 {
     [JsonPropertyName("systems")]
     public List<FppSystem> Systems { get; set; } = new();

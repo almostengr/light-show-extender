@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using Almostengr.FalconPiPlayerClient.DomainServices.Resources;
+using Almostengr.Common.DomainServices;
 
 namespace Almostengr.FalconPiPlayerClient.Infrastructure;
 
