@@ -7,7 +7,9 @@ using Almostengr.WledClient.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<IFppdHttpClient, FppdClient>();
+builder.Services.AddHttpClient<IFppdHttpClient, FppdClient>(
+    options => options.BaseAddress = new Uri("http://10.10.50.101")
+);
 builder.Services.AddHttpClient<IWledClient, WledClient>();
 
 builder.Services.AddControllers();

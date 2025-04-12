@@ -5,10 +5,7 @@ namespace Almostengr.FalconPiPlayerClient.Infrastructure;
 
 public sealed class FppdClient : BaseClient, IFppdHttpClient
 {
-    public FppdClient(HttpClient httpClient) : base(httpClient)
-    {
-        httpClient.BaseAddress = new Uri("http://10.10.50.101");
-    }
+    public FppdClient(HttpClient httpClient) : base(httpClient) { }
 
     public async Task<FppdE131StatsResource> GetE131StatsAsync()
     {
