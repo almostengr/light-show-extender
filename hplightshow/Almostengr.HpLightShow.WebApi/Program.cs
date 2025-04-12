@@ -21,6 +21,8 @@ CommonDependencyInjection.AddServices(builder.Services);
 FalconPiPlayerDependencyInjection.AddServices(builder.Services);
 builder.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

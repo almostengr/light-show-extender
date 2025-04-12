@@ -2,13 +2,12 @@ using Almostengr.Common.DomainServices.Results;
 using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Resources.DomainServices;
+using Almostengr.HpLightShow.WebApi.Controller;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Almostengr.HpLightShow.WebApi;
 
-[ApiController]
-[Route("[controller]")]
-public sealed class FalconPiPlayerController : ControllerBase
+public sealed class FalconPiPlayerController : BaseApiController
 {
     private readonly IFppdHttpClient _fppdHttpClient;
     private readonly IFppStartSequenceService _fppStartSeqeunceService;
@@ -22,14 +21,14 @@ public sealed class FalconPiPlayerController : ControllerBase
         _fppStartSeqeunceService = fppStartSequenceService;
     }
 
-    [HttpGet]
+    [HttpGet("status")]
     public async Task<IActionResult> Status()
     {
         var response = await _fppdHttpClient.GetStatusAsync();
         return Ok(response);
     }
 
-    [HttpPost]
+    [HttpPost("start")]
     public async Task<IActionResult> StartSequence()
     {
         SequenceSelectorResource resource = new(DateOnly.FromDateTime(DateTime.Now));

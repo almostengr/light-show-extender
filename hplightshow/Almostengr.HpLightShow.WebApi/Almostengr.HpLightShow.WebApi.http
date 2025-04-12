@@ -1,6 +1,0 @@
-@Almostengr.HpLightShow.WebApi_HostAddress = http://localhost:5034
-
-GET {{Almostengr.HpLightShow.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
