@@ -5,7 +5,7 @@ namespace Almostengr.HpLightShow.Core.Countdowns.Shared;
 
 public sealed class CountdownDependencyInjection
 {
-    public static void Add(IServiceCollection collection)
+    public static void AddServices(IServiceCollection collection)
     {
         collection.AddTransient<ICountdownService, CountdownService>();
     }

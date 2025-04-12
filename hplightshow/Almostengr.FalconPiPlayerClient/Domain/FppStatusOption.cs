@@ -1,6 +1,6 @@
 namespace Almostengr.FalconPiPlayerClient.Domain;
 
-public enum FppStatusType
+public enum FppStatusOption
 {
     Idle = 0,
     Playing = 1,

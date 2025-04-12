@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Almostengr.Common.Infrastructure;
 
-public class QueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
+public class QueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseDomainEntity
 {
     protected readonly IDbContext _dbContext;
     protected readonly DbSet<TEntity> _dbSet;
@@ -34,5 +34,15 @@ public class QueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity 
     public async Task<bool> ExistsByGuidAsync(Guid guid)
     {
         return await _dbSet.Where(i => i.Guid == guid).AnyAsync();
+    }
+
+    public async Task<TEntity> GetByIdAsync(int id)
+    {
+        return await _dbSet.Where(i => i.Id == id).SingleOrDefaultAsync();
+    }
+
+    public async Task<bool> ExistsByIdAsync(int id)
+    {
+        return await _dbSet.Where(i => i.Id == id).AnyAsync();
     }
 }

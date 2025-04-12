@@ -1,6 +1,5 @@
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
 using Almostengr.Common.DomainServices.Results;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
 using Almostengr.HpLightShow.Core.SocialMedias.DomainServices;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 using Almostengr.WledClient.DomainServices.Interfaces;
@@ -38,7 +37,7 @@ public sealed class FppMonitorService : IFppMonitorService
             Result<FppMonitorResource> result = Result<FppMonitorResource>.Create();
 
             FppdStatusResource fppStatus = await _fppClient.GetStatusAsync() ?? throw new InvalidOperationException("Error when retrieving status from FPP.");
-            if (fppStatus.Status == (int)FppStatusType.Idle)
+            if (fppStatus.Status == (int)FppStatusOption.Idle)
             {
                 FppMultiSyncSystemsResource mulitSyncStatus = await _fppClient.MultiSyncSystemsResource();
                 if (mulitSyncStatus == null)

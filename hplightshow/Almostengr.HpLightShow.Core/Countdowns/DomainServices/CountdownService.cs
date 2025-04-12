@@ -18,7 +18,7 @@ public sealed class CountdownService : ICountdownService
         ArgumentNullException.ThrowIfNull(resource, nameof(resource));
 
         int daysDifference = resource.HolidayDate.DayNumber - resource.CurrentDate.DayNumber;
-        string? message;
+        string? message = null;
 
         if (daysDifference > 0)
         {
@@ -28,17 +28,12 @@ public sealed class CountdownService : ICountdownService
         {
             message = $"Today is {resource.HolidayName}!";
         }
-        else
+
+        if (!string.IsNullOrWhiteSpace(message))
         {
-            return Result<HolidayCountdownResource>.Failure("Date difference was negative. Are the days entered backwards?");
+            await _socialMediaPoster.PostAsync(message);
         }
 
-        if (string.IsNullOrWhiteSpace(message))
-        {
-            return Result<HolidayCountdownResource>.Success(resource);
-        }
-
-        await _socialMediaPoster.PostAsync(message);
         return Result<HolidayCountdownResource>.Success(resource);
     }
 }

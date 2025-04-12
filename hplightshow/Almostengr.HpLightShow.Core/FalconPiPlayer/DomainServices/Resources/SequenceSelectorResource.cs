@@ -1,8 +1,8 @@
 using Almostengr.Common.DomainServices;
 
-namespace Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices;
+namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Resources.DomainServices;
 
-public sealed class SequenceSelectorResource : BaseEntityResource
+public sealed class SequenceSelectorResource : BaseDomainResource
 {
     public SequenceSelectorResource(DateOnly currentDate)
     {

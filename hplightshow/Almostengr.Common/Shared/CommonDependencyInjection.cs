@@ -13,6 +13,7 @@ public static class CommonDependencyInjection
         services.AddTransient(typeof(IDeleteRepository<>), typeof(DeleteRepository<>));
         services.AddTransient(typeof(IQueryRepository<>), typeof(QueryRepository<>));
         services.AddTransient(typeof(IUpdateRepository<>), typeof(UpdateRepository<>));
+        services.AddTransient(typeof(IDeleteRepository<>), typeof(DeleteRepository<>));
         
         services.AddTransient(typeof(IQueryService<,>), typeof(QueryService<,>));
     }

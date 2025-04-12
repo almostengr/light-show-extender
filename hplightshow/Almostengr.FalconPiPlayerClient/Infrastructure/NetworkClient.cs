@@ -24,11 +24,6 @@ public sealed class NetWorkClient : BaseClient, INetworkHttpClient
         return result;
     }
 
-    public Task<List<NetworkInterfaceResource>> GetInterfacesAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<NamedNetworkInterfaceResource> GetInterfaceByNameAsync(string name)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(name);

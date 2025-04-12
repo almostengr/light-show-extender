@@ -13,7 +13,7 @@ public sealed class FppdStatusResource : BaseResource
     [JsonPropertyName("current_sequence")]
     public string Current_Sequence { get; init; } = string.Empty;
 
-    public FppStatusType Status { get; init; } = 0;
+    public FppStatusOption Status { get; init; } = 0;
     public List<string> Warnings { get; init; } = new();
 
     public sealed class Sensor

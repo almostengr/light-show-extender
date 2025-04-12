@@ -1,3 +1,4 @@
+using Almostengr.Common.Extensions;
 using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
 using Almostengr.FalconPiPlayerClient.Infrastructure;
 using Almostengr.HpLightShow.Core.Countdowns.Shared;
@@ -13,13 +14,14 @@ builder.Services.AddHttpClient<IWledClient, WledClient>();
 
 loadConfiguration(builder);
 
-CountdownDependencyInjection.Add(builder.Services);
-FalconPiPlayerDependencyInjection.Add(builder.Services);
+CommonDependencyInjection.AddServices(builder.Services);
+CountdownDependencyInjection.AddServices(builder.Services);
+FalconPiPlayerDependencyInjection.AddServices(builder.Services);
 
-// builder.Services.AddSingleton(typeof(ILogger<>), typeof(LoggingService<>));
+builder.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
-builder.Services.AddHostedService<CountdownWorker>();
-builder.Services.AddHostedService<FppMonitorWorker>();
+// builder.Services.AddHostedService<CountdownWorker>();
+// builder.Services.AddHostedService<FppMonitorWorker>();
 
 var host = builder.Build();
 host.Run();

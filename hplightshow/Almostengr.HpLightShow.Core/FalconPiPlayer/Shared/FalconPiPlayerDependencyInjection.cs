@@ -7,14 +7,14 @@ namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 
 public sealed class FalconPiPlayerDependencyInjection
 {
-    public static void Add(IServiceCollection collection)
+    public static void AddServices(IServiceCollection collection)
     {
         collection.AddSingleton<FppAppSettings>();
         // collection.AddSingleton(configuration.GetSection(nameof(AppSettings)));
 
         collection.AddTransient<IFppSequenceRepository, FppSequenceRepository>();
 
-        collection.AddTransient<IFppMonitorService, FppMonitorService>();
+        // collection.AddTransient<IFppMonitorService, FppMonitorService>();
         collection.AddTransient<IFppStartSequenceService, FppStartSequenceService>();
     }
 }

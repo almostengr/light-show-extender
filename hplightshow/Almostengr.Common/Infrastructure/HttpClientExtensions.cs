@@ -59,7 +59,7 @@ public static class HttpClientExtensions
         return "http://" + url;
     }
 
-    public static async Task<string> GetStringAsync<TResource>(this HttpClient httpClient, string route)where TResource : BaseEntityResource
+    public static async Task<string> GetStringAsync<TResource>(this HttpClient httpClient, string route)where TResource : BaseDomainResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));
@@ -69,7 +69,7 @@ public static class HttpClientExtensions
         return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task<TResource> GetAsync<TResource>(this HttpClient httpClient, string route) where TResource : BaseEntityResource
+    public static async Task<TResource> GetAsync<TResource>(this HttpClient httpClient, string route) where TResource : BaseDomainResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));
@@ -79,7 +79,7 @@ public static class HttpClientExtensions
         return await response.DeserializeResponseBodyAsync<TResource>();
     }
 
-    public static async Task<XResource> PostAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseEntityResource where XResource : BaseEntityResource
+    public static async Task<XResource> PostAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseDomainResource where XResource : BaseDomainResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));
@@ -91,7 +91,7 @@ public static class HttpClientExtensions
         return await response.DeserializeResponseBodyAsync<XResource>();
     }
 
-    public static async Task<XResource> PutAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseEntityResource where XResource : BaseEntityResource
+    public static async Task<XResource> PutAsync<TResource, XResource>(this HttpClient httpClient, string route, TResource request) where TResource : BaseDomainResource where XResource : BaseDomainResource
     {
         _ = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _ = route ?? throw new ArgumentNullException(nameof(route));

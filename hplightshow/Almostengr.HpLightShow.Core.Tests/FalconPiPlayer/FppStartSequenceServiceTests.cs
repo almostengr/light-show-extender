@@ -4,6 +4,7 @@ using Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.DomainServices.Interfaces;
 using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
 using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
+using Almostengr.HpLightShow.Core.FalconPiPlayer.Resources.DomainServices;
 
 
 namespace Almostengr.HpLightShow.Core.Tests.FalconPiPlayer;

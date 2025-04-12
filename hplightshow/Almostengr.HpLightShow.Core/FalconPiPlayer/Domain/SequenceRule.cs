@@ -2,7 +2,7 @@ using Almostengr.Common.Domain;
 
 namespace Almostengr.HpLightShow.Core.FalconPiPlayer.Domain;
 
-public sealed class SequenceRule : BaseEntity
+public sealed class SequenceRule : BaseDomainEntity
 {
     public SequenceRule(DateOnly startDate, DateOnly endDate, LightingSequence sequence, List<DayOfWeek>? daysOfWeek = null)
     {
