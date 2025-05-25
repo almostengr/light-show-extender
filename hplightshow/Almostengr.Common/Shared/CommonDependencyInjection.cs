@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Almostengr.Common.Extensions;
 
-public static class CommonDependencyInjection
+public sealed class CommonDependencyInjection // : IServiceDependencyInjection
 {
     public static void AddServices(IServiceCollection services)
     {

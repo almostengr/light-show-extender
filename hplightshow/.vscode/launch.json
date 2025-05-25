@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Almostengr.HpLightShow.Worker/bin/Debug/net8.0/Almostengr.HpLightShow.Worker.dll",
+            "program": "${workspaceFolder}/Almostengr.HpLightShow.WebApi/bin/Debug/net8.0/Almostengr.HpLightShow.WebApi.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Almostengr.HpLightShow.Worker",
+            "cwd": "${workspaceFolder}/Almostengr.HpLightShow.WebApi",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

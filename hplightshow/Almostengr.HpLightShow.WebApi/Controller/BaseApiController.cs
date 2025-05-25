@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Almostengr.HpLightShow.WebApi.Controller;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
 }
