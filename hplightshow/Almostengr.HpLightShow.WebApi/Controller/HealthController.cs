@@ -1,9 +1,9 @@
-using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
+using Almostengr.HpLightShow.WebApi.Features.Monitoring.DomainServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Almostengr.HpLightShow.WebApi.Controller;
 
-public sealed class HealthController : BaseApiController
+public class HealthController : BaseApiController
 {
     private readonly IFppdHttpClient _fppHttpClient;
 
@@ -19,8 +19,8 @@ public sealed class HealthController : BaseApiController
     {
         try
         {
-            await _fppHttpClient.GetStatusAsync();
-            return Ok("OK");
+            var resource = await _fppHttpClient.GetStatusAsync();
+            return Ok(resource);
         }
         catch (Exception ex)
         {

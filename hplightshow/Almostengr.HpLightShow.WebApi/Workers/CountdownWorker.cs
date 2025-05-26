@@ -1,5 +1,5 @@
-using Almostengr.HpLightShow.Core.Countdowns.DataTransferObjects;
-using Almostengr.HpLightShow.Core.Countdowns.Service;
+using Almostengr.HpLightShow.Core.Countdowns.DomainServices.Resources;
+using Almostengr.HpLightShow.WebApi.Countdowns.DomainServices.Interfaces;
 
 namespace Almostengr.HpLightShow.WebApi.Workers;
 

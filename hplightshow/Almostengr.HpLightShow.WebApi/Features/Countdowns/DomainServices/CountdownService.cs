@@ -1,7 +1,7 @@
 using Almostengr.Common.DomainServices.Results;
-using Almostengr.HpLightShow.Core.Countdowns.DataTransferObjects;
-using Almostengr.HpLightShow.Core.SocialMedias.DomainServices;
-using Microsoft.Extensions.Logging;
+using Almostengr.HpLightShow.Core.Countdowns.DomainServices.Resources;
+using Almostengr.HpLightShow.WebApi.Countdowns.DomainServices.Interfaces;
+using Almostengr.HpLightShow.WebApi.Features.SocialMediaPosts.DomainServices.Interfaces;
 
 namespace Almostengr.HpLightShow.Core.Countdowns.Service;
 
@@ -11,11 +11,12 @@ public sealed class CountdownService : ICountdownService
     private readonly ILogger<CountdownService> _logger;
 
     public CountdownService(
-        ISocialMediaPoster socialMediaPoster,
-        ILogger<CountdownService> logger)
+        ILogger<CountdownService> logger,
+        ISocialMediaPoster socialMediaPoster
+        )
     {
-        _socialMediaPoster = socialMediaPoster;
         _logger = logger;
+        _socialMediaPoster = socialMediaPoster;
     }
 
     public async Task<Result<HolidayCountdownResource>> ExecuteAsync(HolidayCountdownResource resource, bool commitTransaction = true)
@@ -25,7 +26,7 @@ public sealed class CountdownService : ICountdownService
             ArgumentNullException.ThrowIfNull(resource, nameof(resource));
 
             int daysDifference = resource.HolidayDate.DayNumber - resource.CurrentDate.DayNumber;
-            string? message = null;
+            string message = null;
 
             if (daysDifference > 0)
             {

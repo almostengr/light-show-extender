@@ -1,34 +1,27 @@
-using Almostengr.Common.Extensions;
-using Almostengr.FalconPiPlayerClient.DomainServices.Interfaces;
-using Almostengr.FalconPiPlayerClient.Infrastructure;
-using Almostengr.HpLightShow.Core.FalconPiPlayer.Shared;
-using Almostengr.HpLightShow.WebApi.Features.Wled.DomainServices.Interfaces;
-using Almostengr.HpLightShow.WebApi.Features.Wled.Infrastructure;
-using Almostengr.HpLightShow.WebApi.Features.Wled.Shared;
+using Almostengr.HpLightShow.WebApi.Features.Countdowns.Shared;
+using Almostengr.HpLightShow.WebApi.Features.Monitoring.Shared;
+using Almostengr.HpLightShow.WebApi.Features.StartSequence.Shared;
+using Almostengr.HpLightShow.WebApi.Models;
 using Almostengr.HpLightShow.WebApi.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<IFppdHttpClient, FppdClient>(
-    options => options.BaseAddress = new Uri("http://10.10.50.101")
-);
-builder.Services.AddHttpClient<IWledClient, WledClient>();
-
 loadConfiguration(builder);
+
+builder.Services.AddCountdownServices();
+builder.Services.AddMonitorServices();
+builder.Services.AddStartSequenceServices();
 
 builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-// builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-CommonDependencyInjection.AddServices(builder.Services);
-// CountdownDependencyInjection.AddServices(builder.Services);
-FalconPiPlayerDependencyInjection.AddServices(builder.Services);
-WledDependencyInjection.AddServices(builder.Services);
 builder.Services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
 
-builder.Services.AddHostedService<FppMonitorWorker>();
+// builder.Services.AddHostedService<CountdownWorker>();
+builder.Services.AddHostedService<MonitorWorker>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -48,8 +41,6 @@ app.MapControllers();
 app.Run();
 
 
-
-// void loadConfiguration(HostApplicationBuilder builder)
 void loadConfiguration(WebApplicationBuilder builder)
 {
     const string PROD = "prod";
@@ -69,6 +60,5 @@ void loadConfiguration(WebApplicationBuilder builder)
             false)
         .Build();
 
-    // builder.Services.AddSingleton(configuration.GetSection(nameof(CountdownAppSettings)));
-    // builder.Services.AddSingleton(configuration.GetSection(nameof(FppAppSettings)));
+    builder.Services.AddSingleton(configuration.GetSection(nameof(AppSettings)));
 }
