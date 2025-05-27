@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Almostengr.Common.Infrastructure;
 
-public class QueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseDomainEntity
+public class QueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
 {
     protected readonly IDbContext _dbContext;
     protected readonly DbSet<TEntity> _dbSet;

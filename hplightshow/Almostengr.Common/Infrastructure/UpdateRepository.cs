@@ -3,7 +3,7 @@ using Almostengr.Common.DomainServices.Interfaces;
 
 namespace Almostengr.Common.Infrastructure;
 
-public class UpdateRepository<TEntity> : AddRepository<TEntity>, IUpdateRepository<TEntity> where TEntity : BaseDomainEntity
+public class UpdateRepository<TEntity> : AddRepository<TEntity>, IUpdateRepository<TEntity> where TEntity : BaseEntity
 {
     protected UpdateRepository(IDbContext context) : base(context) { }
 

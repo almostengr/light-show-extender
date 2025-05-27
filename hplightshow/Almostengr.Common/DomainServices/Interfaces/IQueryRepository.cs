@@ -3,7 +3,7 @@ using Almostengr.Common.Domain;
 
 namespace Almostengr.Common.DomainServices.Interfaces;
 
-public interface IQueryRepository<TEntity> where TEntity : BaseDomainEntity
+public interface IQueryRepository<TEntity> where TEntity : BaseEntity
 {
     Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
     Task<IEnumerable<TEntity>> GetAllAsync();

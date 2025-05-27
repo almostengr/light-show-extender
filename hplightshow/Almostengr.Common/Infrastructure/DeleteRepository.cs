@@ -3,7 +3,7 @@ using Almostengr.Common.DomainServices.Interfaces;
 
 namespace Almostengr.Common.Infrastructure;
 
-public class DeleteRepository<TEntity> : UpdateRepository<TEntity>, IDeleteRepository<TEntity> where TEntity : BaseDomainEntity
+public class DeleteRepository<TEntity> : UpdateRepository<TEntity>, IDeleteRepository<TEntity> where TEntity : BaseEntity
 {
     protected DeleteRepository(IDbContext context) : base(context) { }
 
