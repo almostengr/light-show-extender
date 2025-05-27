@@ -9,6 +9,7 @@
     <Copyright>Copyright © $([System.DateTime]::UtcNow.ToString(yyyy)) Robinson Handy and Technology Services</Copyright>
     <Product>Almostengr Common Library</Product>
     <Authors>Kenny Robinson</Authors>
+    <Description>Common generic classes and methods used for building MVC and Web API applications.</Description>
     <AssemblyName>Almostengr.Common</AssemblyName>
     <RootNamespace>Almostengr.Common</RootNamespace>
     <Version>8.$([System.DateTime]::UtcNow.ToString(yyyy.MM.dd))</Version>
