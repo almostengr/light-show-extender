@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.Common", "Almostengr.Common\Almostengr.Common.csproj", "{F160DFD3-E028-4149-84C3-F86D9E6000A0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Almostengr.HpLightShow.WebApi", "Almostengr.HpLightShow.WebApi\Almostengr.HpLightShow.WebApi.csproj", "{C75B146B-4790-4D0C-B83F-198F3234F17D}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F160DFD3-E028-4149-84C3-F86D9E6000A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F160DFD3-E028-4149-84C3-F86D9E6000A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F160DFD3-E028-4149-84C3-F86D9E6000A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F160DFD3-E028-4149-84C3-F86D9E6000A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C75B146B-4790-4D0C-B83F-198F3234F17D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C75B146B-4790-4D0C-B83F-198F3234F17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C75B146B-4790-4D0C-B83F-198F3234F17D}.Release|Any CPU.ActiveCfg = Release|Any CPU

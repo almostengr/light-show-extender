@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Almostengr.Common.DomainServices;
+using Almostengr.Common.DomainServices.Resources;
 using Almostengr.HpLightShow.WebApi.Features.Monitoring.Domain;
 
 namespace Almostengr.HpLightShow.WebApi.Features.Monitoring.DomainServices.Resources;

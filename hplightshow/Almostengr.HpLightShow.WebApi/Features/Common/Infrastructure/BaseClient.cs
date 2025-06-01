@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using Almostengr.Common.DomainServices;
+using Almostengr.Common.DomainServices.Resources;
 
 namespace Almostengr.HpLightShow.WebApi.Features.Common.Infrastructure;
 

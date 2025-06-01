@@ -2,7 +2,7 @@ using Almostengr.Common.Domain;
 
 namespace Almostengr.HpLightShow.WebApi.Features.Monitoring.Domain;
 
-public sealed class SequenceRule : BaseDomainEntity
+public sealed class SequenceRule : BaseEntity
 {
     public SequenceRule(DateOnly startDate, DateOnly endDate, LightingSequence sequence, List<DayOfWeek> daysOfWeek = null)
     {

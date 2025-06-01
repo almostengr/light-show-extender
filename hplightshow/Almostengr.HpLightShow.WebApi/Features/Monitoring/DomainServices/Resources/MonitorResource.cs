@@ -1,4 +1,4 @@
-using Almostengr.Common.DomainServices;
+using Almostengr.Common.DomainServices.Resources;
 
 namespace Almostengr.HpLightShow.WebApi.Features.Monitoring.DomainServices.Resources;
 
