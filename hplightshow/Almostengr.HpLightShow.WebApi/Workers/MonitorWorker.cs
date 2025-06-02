@@ -24,11 +24,11 @@ internal sealed class MonitorWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        MonitorResource resource = new();
+        resource.MaxCpuTemperatureC = _appSettings.Fpp.MaxCpuTemperatureC;
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            MonitorResource resource = new();
-            resource.MaxCpuTemperatureC = _appSettings.MaxCpuTemperatureC;
-
             Result<MonitorResource> fppResult = await _monitorService.ExecuteAsync(resource);
             if (fppResult.Failed)
             {

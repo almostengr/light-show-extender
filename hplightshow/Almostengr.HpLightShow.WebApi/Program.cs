@@ -1,5 +1,6 @@
 using Almostengr.HpLightShow.WebApi.Features.Countdowns.Shared;
 using Almostengr.HpLightShow.WebApi.Features.Monitoring.Shared;
+using Almostengr.HpLightShow.WebApi.Features.SocialMediaPosts.Shared;
 using Almostengr.HpLightShow.WebApi.Features.StartSequence.Shared;
 using Almostengr.HpLightShow.WebApi.Models;
 using Almostengr.HpLightShow.WebApi.Workers;
@@ -10,6 +11,7 @@ loadConfiguration(builder);
 
 builder.Services.AddCountdownServices();
 builder.Services.AddMonitorServices();
+builder.Services.AddSocialMediaPostServices();
 builder.Services.AddStartSequenceServices();
 
 builder.Services.AddControllers();

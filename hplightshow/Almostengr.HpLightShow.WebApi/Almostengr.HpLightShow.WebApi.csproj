@@ -10,6 +10,8 @@
     <PackageReference Include="Almostengr.Common" Version="8.2025.5.28" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.15" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+    <PackageReference Include="X.Bluesky" Version="2.0.4" />
   </ItemGroup>
 
 </Project>

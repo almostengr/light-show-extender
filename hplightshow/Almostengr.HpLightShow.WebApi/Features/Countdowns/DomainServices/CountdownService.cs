@@ -2,21 +2,22 @@ using Almostengr.Common.DomainServices.Results;
 using Almostengr.HpLightShow.Core.Countdowns.DomainServices.Resources;
 using Almostengr.HpLightShow.WebApi.Countdowns.DomainServices.Interfaces;
 using Almostengr.HpLightShow.WebApi.Features.SocialMediaPosts.DomainServices.Interfaces;
+using Almostengr.HpLightShow.WebApi.Features.SocialMediaPosts.DomainServices.Resources;
 
 namespace Almostengr.HpLightShow.Core.Countdowns.Service;
 
 public sealed class CountdownService : ICountdownService
 {
-    private readonly ISocialMediaPoster _socialMediaPoster;
+    private readonly ISocialMediaPosterService _socialMediaPosterService;
     private readonly ILogger<CountdownService> _logger;
 
     public CountdownService(
         ILogger<CountdownService> logger,
-        ISocialMediaPoster socialMediaPoster
+        ISocialMediaPosterService socialMediaPosterService
         )
     {
         _logger = logger;
-        _socialMediaPoster = socialMediaPoster;
+        _socialMediaPosterService = socialMediaPosterService;
     }
 
     public async Task<Result<HolidayCountdownResource>> ExecuteAsync(HolidayCountdownResource resource, bool commitTransaction = true)
@@ -39,7 +40,11 @@ public sealed class CountdownService : ICountdownService
 
             if (!string.IsNullOrWhiteSpace(message))
             {
-                await _socialMediaPoster.PostAsync(message);
+                Result<SocialMediaResource> socialResult = await _socialMediaPosterService.PostAsync(message);
+                if (socialResult.Failed)
+                {
+                    return Result<HolidayCountdownResource>.Failure(socialResult.Errors);
+                }
             }
 
             return Result<HolidayCountdownResource>.Success(resource);

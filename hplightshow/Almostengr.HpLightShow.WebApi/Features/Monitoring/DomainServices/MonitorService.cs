@@ -1,7 +1,8 @@
+using Almostengr.Common.DomainServices.Interfaces;
 using Almostengr.Common.DomainServices.Results;
 using Almostengr.HpLightShow.WebApi.Features.Monitoring.Domain;
 using Almostengr.HpLightShow.WebApi.Features.Monitoring.DomainServices.Interfaces;
-using Almostengr.HpLightShow.WebApi.Features.SocialMediaPosts.DomainServices.Interfaces;
+using Almostengr.HpLightShow.WebApi.Features.SocialMediaPosts.DomainServices.Resources;
 
 namespace Almostengr.HpLightShow.WebApi.Features.Monitoring.DomainServices.Resources;
 
@@ -9,19 +10,19 @@ internal sealed class MonitorService : IMonitorService
 {
     private readonly IFppdHttpClient _fppClient;
     private readonly ILogger<MonitorService> _logger;
-    private readonly ISocialMediaPoster _socialMediaPoster;
+    private readonly ICommandService<SocialMediaResource> _socialMediaService;
     private readonly IWledClient _wledClient;
 
     public MonitorService(
         ILogger<MonitorService> logger,
         IFppdHttpClient fppClient,
-        ISocialMediaPoster socialMediaPoster,
+        ICommandService<SocialMediaResource> socialMediaService,
         IWledClient wledClient
     )
     {
         _fppClient = fppClient;
         _logger = logger;
-        _socialMediaPoster = socialMediaPoster;
+        _socialMediaService = socialMediaService;
         _wledClient = wledClient;
     }
 
@@ -53,7 +54,9 @@ internal sealed class MonitorService : IMonitorService
 
             if (result.Failed)
             {
-                await _socialMediaPoster.PostAsync($"Check system. {result.Errors.Count()} error(s) reported.");
+                SocialMediaResource socialMediaResource = new();
+                socialMediaResource.Text = $"Check system. {result.Errors.Count()} error(s) reported.";
+                await _socialMediaService.ExecuteAsync(socialMediaResource);
             }
 
             return result;
