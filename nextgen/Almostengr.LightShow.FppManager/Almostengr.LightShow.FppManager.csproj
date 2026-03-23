@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Almostengr.Common" Version="9.2025.10.912" />
+    <PackageReference Include="IOptionsWriter" Version="4.7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Almostengr.LightShow.Common\Almostengr.LightShow.Common.csproj" />
+  </ItemGroup>
+
+</Project>

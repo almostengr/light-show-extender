@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Almostengr.LightShow.Common/Almostengr.LightShow.Common.csproj" />
+  <Project Path="Almostengr.LightShow.FppManager/Almostengr.LightShow.FppManager.csproj" />
+  <Project Path="Almostengr.LightShow.Web/Almostengr.LightShow.Web.csproj" />
+</Solution>
